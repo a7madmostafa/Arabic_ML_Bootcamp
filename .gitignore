@@ -78,6 +78,9 @@ desktop.ini
 *.xlsx
 *.parquet
 
+# Specific large files
+12-intro_to_nlp/CODE/tweets.csv
+
 # Model artifacts
 *.pkl
 *.h5
