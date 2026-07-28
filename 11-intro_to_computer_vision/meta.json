@@ -1,0 +1,12 @@
+{
+  "module": 11,
+  "id": "MLB11",
+  "title": "Intro to Computer Vision",
+  "description": "CNNs, image classification, data augmentation, transfer learning",
+  "videos": 11,
+  "duration": "1:50:38",
+  "materials": {
+    "pdf": ["PDFs/Computer Vision with Deep Learning.pdf"],
+    "code": ["CODE/Image Classification with Classic ML and MLP.ipynb", "CODE/Image Classification with CNN.ipynb", "CODE/image-classification-for-beginners-step-by-step.ipynb"]
+  }
+}

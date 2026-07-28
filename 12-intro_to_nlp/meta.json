@@ -1,0 +1,12 @@
+{
+  "module": 12,
+  "id": "MLB12",
+  "title": "Intro to NLP",
+  "description": "Text processing, embeddings, RNNs, LSTMs, sentiment analysis",
+  "videos": 17,
+  "duration": "2:14:43",
+  "materials": {
+    "pdf": ["PDFs/NLP with Deep Learning.pdf", "PDFs/RNN & LSTM.pdf"],
+    "code": ["CODE/Text Cleaning and Processing.ipynb", "CODE/Tweets Sentiment Analysis_LogReg.ipynb", "CODE/Tweets Sentiment Analysis_ANN.ipynb", "CODE/Tweets Sentiment Analysis_RNN.ipynb", "CODE/tweets.csv"]
+  }
+}

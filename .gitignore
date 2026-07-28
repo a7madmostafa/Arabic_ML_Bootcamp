@@ -73,10 +73,10 @@ ENV/
 # Windows
 desktop.ini
 
-# Large data files (uncomment if needed)
-# *.csv
-# *.xlsx
-# *.parquet
+# Large data files
+*.csv
+*.xlsx
+*.parquet
 
 # Model artifacts
 *.pkl

@@ -1,0 +1,12 @@
+{
+  "module": 10,
+  "id": "MLB10",
+  "title": "Intro to Deep Learning",
+  "description": "Neural networks, backpropagation, Keras, training tips",
+  "videos": 9,
+  "duration": "1:53:20",
+  "materials": {
+    "pdf": ["PDFs/Intro to Deep Learning (Board).pdf", "PDFs/Intro to Deep Learning(Slides).pdf"],
+    "code": ["CODE/Neural Network from Scratch.ipynb", "CODE/Neural Network from Scratch(Multi-layer).ipynb", "CODE/Mnist with keras.ipynb", "CODE/Fashion Mnist with keras.ipynb", "CODE/Practical Tips.ipynb", "CODE/DL Project 1_Bike Sharing/"]
+  }
+}
