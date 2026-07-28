@@ -1,7 +1,7 @@
 # MLB11 — Intro to Computer Vision
 
 <p align="center">
-  <img src="11-intro_to_computer_vision_thumbnail.png" width="600">
+  <img src="intro_to_computer_vision_thumbnail.png" width="600">
 </p>
 
 > **PDF:** [Computer Vision with Deep Learning](PDFs/Computer%20Vision%20with%20Deep%20Learning.pdf)

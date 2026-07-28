@@ -1,7 +1,7 @@
 # MLB04 — Python Web Scraping
 
 <p align="center">
-  <img src="04-python_web_scraping_thumbnail.png" width="600">
+  <img src="python_web_scraping_thumbnail.png" width="600">
 </p>
 
 | # | Topic | Duration | YouTube | PDF | CODE |

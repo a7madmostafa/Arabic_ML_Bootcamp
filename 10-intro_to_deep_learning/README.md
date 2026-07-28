@@ -1,7 +1,7 @@
 # MLB10 — Intro to Deep Learning
 
 <p align="center">
-  <img src="10-intro_to_deep_learning_thumbnail.png" width="600">
+  <img src="intro_to_deep_learning_thumbnail.png" width="600">
 </p>
 
 > **PDFs:** [Intro to Deep Learning (Board)](PDFs/Intro%20to%20Deep%20Learning%20(Board).pdf) | [Intro to Deep Learning (Slides)](PDFs/Intro%20to%20Deep%20Learning(Slides).pdf)

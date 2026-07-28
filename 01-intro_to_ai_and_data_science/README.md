@@ -1,7 +1,7 @@
 # MLB01 — Intro to AI & Data Science
 
 <p align="center">
-  <img src="01-intro_to_ai_and_data_science_thumbnail.png" width="600">
+  <img src="intro_to_ai_and_data_science_thumbnail.png" width="600">
 </p>
 
 > **PDF:** [Intro to AI](Intro%20to%20AI.pdf)

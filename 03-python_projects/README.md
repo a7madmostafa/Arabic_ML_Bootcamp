@@ -1,7 +1,7 @@
 # MLB03 — Python Projects
 
 <p align="center">
-  <img src="03-python_projects_thumbnail.png" width="600">
+  <img src="python_projects_thumbnail.png" width="600">
 </p>
 
 | # | Project | Duration | YouTube | CODE |

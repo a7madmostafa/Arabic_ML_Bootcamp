@@ -1,7 +1,7 @@
 # MLB07 — Streamlit
 
 <p align="center">
-  <img src="07-streamlit_thumbnail.png" width="600">
+  <img src="streamlit_thumbnail.png" width="600">
 </p>
 
 | # | Topic | Duration | YouTube | CODE |

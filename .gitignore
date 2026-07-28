@@ -74,11 +74,10 @@ ENV/
 desktop.ini
 
 # Large data files
-*.csv
 *.xlsx
 *.parquet
 
-# Specific large files
+# Specific large CSV files (>100MB)
 12-intro_to_nlp/CODE/tweets.csv
 
 # Model artifacts
