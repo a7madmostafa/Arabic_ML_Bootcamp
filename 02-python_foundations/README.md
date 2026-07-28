@@ -1,5 +1,9 @@
 # MLB02 — Python Foundations
 
+<p align="center">
+  <img src="02-python_foundations_thumbnail.png" width="600">
+</p>
+
 > **Notes:** [OOP Complete Notes](OOP_Complete_Notes.md)
 
 | # | Topic | Duration | YouTube | CODE |

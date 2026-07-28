@@ -1,5 +1,9 @@
 # MLB03 — Python Projects
 
+<p align="center">
+  <img src="03-python_projects_thumbnail.png" width="600">
+</p>
+
 | # | Project | Duration | YouTube | CODE |
 |---|---------|----------|---------|------|
 | P1 | Guessing Game | `17:04` | [Link](https://www.youtube.com/watch?v=pSpO2VWFs2s) | [Code](CODE/01-%20Word%20Guess/) |

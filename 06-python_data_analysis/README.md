@@ -1,5 +1,9 @@
 # MLB06 — Python Data Analysis
 
+<p align="center">
+  <img src="06-python_data_analysis_thumbnail.png" width="600">
+</p>
+
 > **PDFs:** [Intro to Data Analysis](PDFs/Intro%20to%20Data%20Analysis.pdf) | [Intro to Linear Algebra](PDFs/Intro%20to%20Linear%20Algebra.pdf) | [Descriptive Statistics](PDFs/Descriptive%20Statistics.pdf)
 
 | # | Topic | Duration | YouTube | PDF | CODE |

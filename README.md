@@ -22,7 +22,7 @@ A structured machine learning bootcamp covering AI fundamentals, Python, data an
 | 06 | [Python Data Analysis](06-python_data_analysis/) | Linear algebra, statistics, EDA | [YouTube](https://www.youtube.com/playlist?list=PLdDo53W10MXs) |
 | 07 | [Streamlit](07-streamlit/) | App building, deployment | [YouTube](https://www.youtube.com/playlist?list=PLbP9YuXytU5E) |
 | 08 | [Data Preprocessing & Feature Engineering](08-data_preprocessing_and_feature_engineering/) | Cleaning, scaling, encoding, pipelines | [YouTube](https://www.youtube.com/playlist?list=PLUD2gKdRqrQE) |
-| 09 | [Python Machine Learning](09-python_machine_learning/) | Regression, classification, clustering, PCA | [YouTube](https://www.youtube.com/playlist?list=PLXyDaiLmW7B0) |
+| 09 | [Machine Learning](09-machine_learning/) | Regression, classification, clustering, PCA | [YouTube](https://www.youtube.com/playlist?list=PLXyDaiLmW7B0) |
 | 10 | [Intro to Deep Learning](10-intro_to_deep_learning/) | Neural networks, backpropagation, Keras, training tips | [YouTube](https://www.youtube.com/playlist?list=PLUyb26mmTfwY) |
 | 11 | [Intro to Computer Vision](11-intro_to_computer_vision/) | CNNs, image classification, data augmentation, transfer learning | [YouTube](https://www.youtube.com/playlist?list=PLOOXAS2adxSE) |
 | 12 | [Intro to NLP](12-intro_to_nlp/) | Text processing, embeddings, RNNs, LSTMs, sentiment analysis | [YouTube](https://www.youtube.com/playlist?list=PLbNGwJVxHTT0) |

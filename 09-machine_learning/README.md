@@ -1,4 +1,8 @@
-# MLB09 — Python Machine Learning
+# MLB09 — Machine Learning
+
+<p align="center">
+  <img src="09-machine_learning_thumbnail.png" width="600">
+</p>
 
 > **Extra Projects:** [Used Cars Price Prediction](CODE/04-%20Used%20Cars%20Price%20Prediction/) | [Home Loan Approval](CODE/09-%20Home%20Loan%20Approval/) | [Walmart Store Sales](CODE/10-%20Walmart%20Store%20Sales%20Prediction/)
 

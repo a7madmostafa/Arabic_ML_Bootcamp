@@ -1,5 +1,9 @@
 # MLB08 — Data Preprocessing and Feature Engineering
 
+<p align="center">
+  <img src="08-data_preprocessing_and_feature_engineering_thumbnail.png" width="600">
+</p>
+
 > **Data:** [train-data.csv](data/train-data.csv) | [semi_cleaned_data.csv](data/semi_cleaned_data.csv) | [cleaned_data.csv](data/cleaned_data.csv)
 
 | # | Topic | Duration | YouTube | CODE |

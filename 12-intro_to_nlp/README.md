@@ -1,5 +1,9 @@
 # MLB12 — Intro to NLP
 
+<p align="center">
+  <img src="12-intro_to_nlp_thumbnail.png" width="600">
+</p>
+
 > **PDFs:** [NLP with Deep Learning](PDFs/NLP%20with%20Deep%20Learning.pdf) | [RNN & LSTM](PDFs/RNN%20%26%20LSTM.pdf)
 
 | # | Topic | Duration | YouTube | PDF | CODE |

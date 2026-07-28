@@ -1,5 +1,9 @@
 # MLB04 — Python Web Scraping
 
+<p align="center">
+  <img src="04-python_web_scraping_thumbnail.png" width="600">
+</p>
+
 | # | Topic | Duration | YouTube | PDF | CODE |
 |---|-------|----------|---------|-----|------|
 | 01 | Web Scraping Intro | `6:36` | [Link](https://www.youtube.com/watch?v=rvpEEOHLa6s) | [Notes](Intro_to_Web_Scraping_Complete_Notes.md) | - |

@@ -1,5 +1,9 @@
 # MLB07 — Streamlit
 
+<p align="center">
+  <img src="07-streamlit_thumbnail.png" width="600">
+</p>
+
 | # | Topic | Duration | YouTube | CODE |
 |---|-------|----------|---------|------|
 | 01 | Intro to Streamlit | `8:06` | [Link](https://www.youtube.com/watch?v=uiQSpas0nxg) | [Notebook](CODE/Streamlit%20Tutorial.ipynb) |

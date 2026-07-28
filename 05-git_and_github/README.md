@@ -1,5 +1,9 @@
 # MLB05 — Git & GitHub
 
+<p align="center">
+  <img src="05-git_and_github_thumbnail.png" width="600">
+</p>
+
 > **Notes:** [Git & GitHub Notes](Git_and_GitHub_Notes.md)
 
 | # | Topic | Duration | YouTube | PDF |
