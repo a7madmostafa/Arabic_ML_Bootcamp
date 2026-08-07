@@ -6,6 +6,8 @@
 
 > **Notes:** [OOP Complete Notes](OOP_Complete_Notes.md)
 
+> **Self-Paced Tutorial:** [Python OOP Study Guide](OOP_Tutorial/)
+
 | # | Topic | Duration | YouTube | CODE |
 |---|-------|----------|---------|------|
 | 00 | Intro to Programming | `13:17` | [Link](https://www.youtube.com/watch?v=hKrpuR9jUas) | - |
