@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — OOP Complete Notes</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('theme');
+    if(saved === 'dark' || saved === 'light'){
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+<button class="theme-toggle" aria-label="Toggle dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+</button>
+<div class="sidebar-backdrop"></div>
+<nav class="site-sidebar">
+<div class="brand">Arabic ML Bootcamp</div>
+<a href="../index.html" class="home-entry">Home</a>
+<a href="../01-intro_to_ai_and_data_science/01_reading.html"><span class="daynum">Module 01</span>Intro to AI &amp; Data Science</a>
+<a href="../02-python_foundations/02_reading.html" class="active"><span class="daynum">Module 02</span>Python Foundations</a>
+<a href="../03-python_projects/03_reading.html"><span class="daynum">Module 03</span>Python Projects</a>
+<a href="../04-python_web_scraping/04_reading.html"><span class="daynum">Module 04</span>Python Web Scraping</a>
+<a href="../05-git_and_github/05_reading.html"><span class="daynum">Module 05</span>Git &amp; GitHub</a>
+<a href="../06-python_data_analysis/06_reading.html"><span class="daynum">Module 06</span>Python Data Analysis</a>
+<a href="../07-streamlit/07_reading.html"><span class="daynum">Module 07</span>Streamlit</a>
+<a href="../08-data_preprocessing_and_feature_engineering/08_reading.html"><span class="daynum">Module 08</span>Preprocessing &amp; Feature Eng.</a>
+<a href="../09-machine_learning/09_reading.html"><span class="daynum">Module 09</span>Machine Learning</a>
+<a href="../10-intro_to_deep_learning/10_reading.html"><span class="daynum">Module 10</span>Intro to Deep Learning</a>
+<a href="../11-intro_to_computer_vision/11_reading.html"><span class="daynum">Module 11</span>Intro to Computer Vision</a>
+<a href="../12-intro_to_nlp/12_reading.html"><span class="daynum">Module 12</span>Intro to NLP</a>
+</nav>
+<div class="page">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="erd-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+      <path d="M 18 0 L 0 0 0 18" fill="none" stroke="#e6edf3" stroke-width="1"/>
+    </pattern>
+    <symbol id="icon-download" viewBox="0 0 16 16">
+      <path d="M8 2v7M4.5 6.5L8 10l3.5-3.5M2.5 12.5h11"/>
+    </symbol>
+    <symbol id="icon-external" viewBox="0 0 16 16">
+      <path d="M6.5 2.5h7v7M13.5 2.5L6 10M4 4H2.5v9.5H12V12"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="crumb">Module 02 · OOP Notes · Companion page</div>
+<h1 class="title">Object-Oriented Programming — Complete Notes</h1>
+<p class="subtitle">The full written companion to Module 02's OOP lectures: what OOP is, how objects and classes work, and the four core principles — converted from the handwritten notes into a readable page.</p>
+
+<div class="day-links">
+  <a class="primary" href="02_reading.html">Back to Module 02 Reading</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/02-python_foundations/README.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Module Notes</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/02-python_foundations/OOP_Tutorial" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>OOP Study Guide</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/02-python_foundations/OOP_Complete_Notes.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Source .md</a>
+</div>
+
+<div class="objectives">
+  <h2>In these notes</h2>
+  <ol>
+    <li>What is object-oriented programming?</li>
+    <li>What is an object?</li>
+    <li>Classes and instances</li>
+    <li>Methods, attributes, and <code class="inline">self</code></li>
+    <li>The <code class="inline">__init__</code> constructor</li>
+    <li>The four core OOP principles</li>
+    <li>Inheritance</li>
+    <li>Polymorphism</li>
+    <li>Quick summary + a complete combined example</li>
+  </ol>
+</div>
+
+<div class="callout tip">
+  <div class="ti">How these notes relate to the module</div>
+  <p>This page is the written form of the <code class="inline">OOP_Complete_Notes.md</code> file (converted from handwritten notes; code normalized into valid, consistent syntax). It pairs with the <a href="02_reading.html">Module 02 reading page</a> — Sections 20–23 there give the lecture version, this page gives the deeper reference.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>What is object-oriented programming?</h2>
+<p class="section-intro">A paradigm — a way of organizing a program.</p>
+<p>OOP, or <strong>object-oriented programming</strong>, is a programming <strong>paradigm</strong>: a coding style, a way of organizing a program. The common paradigms are:</p>
+<div class="card-grid">
+  <div class="card"><h4>Procedural</h4><p>A program as a <strong>sequence of steps</strong> — input, then step after step, then output.</p></div>
+  <div class="card"><h4>Object-oriented</h4><p>A program as <strong>objects and their interactions</strong> — each object bundles data with the code that uses it.</p></div>
+</div>
+<div class="card-grid three">
+  <div class="card"><h4>Reusable</h4><p>Classes are written once and used many times.</p></div>
+  <div class="card"><h4>Readable</h4><p>Code is grouped around real things, not raw steps.</p></div>
+  <div class="card"><h4>Maintainable</h4><p>Fit for larger packages and applications.</p></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Everything in Python is an object</div>
+  <p>Lists, strings, tuples, dictionaries, numbers, functions — and even classes themselves. You have been using objects since Module 02's very first notebook.</p>
+</div>
+
+<h2 class="section"><span class="num">2</span>What is an object?</h2>
+<p class="section-intro">An object has two parts: state and behavior.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the rule</span></div>
+  <div class="code-body"># Object = State + Behavior
+
+# State    -> attributes  -> variables attached to the object
+# Behavior -> methods     -> functions defined inside a class</div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>State (attributes)</h4><p>A player's name, a player's age, a customer's balance, an employee's job.</p></div>
+  <div class="card"><h4>Behavior (methods)</h4><p>Setting a player's name, changing a player's position, displaying an employee greeting.</p></div>
+</div>
+<p><br><strong>Encapsulation</strong> is the act of bundling data together with the code that operates on that data:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">encapsulation = data + methods</span></div>
+  <div class="code-body"># A Player object stores the name AND knows how to change it
+<span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">def</span> <span class="fn">set_name</span>(self, name):
+        self.name = name</div>
+</div>
+
+<h2 class="section"><span class="num">3</span>Classes and instances</h2>
+<p class="section-intro">The blueprint, and the objects built from it.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Class</h4>
+    <p>A <strong>blueprint</strong> or template used to create objects.</p>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">an empty class</span></div>
+      <div class="code-body"><span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">pass</span>   <span class="com"># no implementation yet</span></div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>Instance</h4>
+    <p>A <strong>specific object</strong> created from the class.</p>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">two separate players</span></div>
+      <div class="code-body">p1 = <span class="fn">Player</span>()    <span class="com"># instance #1</span>
+p2 = <span class="fn">Player</span>()    <span class="com"># instance #2 — a different object</span></div>
+    </div>
+  </div>
+</div>
+<p><code class="inline">p1</code> and <code class="inline">p2</code> are separate objects, even though both were made from the same <code class="inline">Player</code> blueprint.</p>
+
+<h2 class="section"><span class="num">4</span>Methods, attributes, and <code class="inline">self</code></h2>
+<p class="section-intro">A method is a function defined inside a class — and <code class="inline">self</code> is who's calling it.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">set_name</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">def</span> <span class="fn">set_name</span>(self, name):   <span class="com"># self = the instance that calls it</span>
+        self.name = name          <span class="com"># self.name: an attribute on the object</span>
+
+p1 = <span class="fn">Player</span>()
+p1.<span class="fn">set_name</span>(<span class="str">"Ahmed"</span>)
+<span class="fn">print</span>(p1.name)   <span class="com"># Ahmed</span></div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>self</b><p>Refers to the current instance. It is conventionally the first parameter of every instance method — Python allows another name, but <code class="inline">self</code> is the standard.</p></div>
+  <div class="annotation"><b>p1.set_name("Ahmed")</b><p>Conceptually the same as <code class="inline">p1.name = "Ahmed"</code> — the method call sets the attribute for you.</p></div>
+  <div class="annotation"><b>dir(Player)</b><p>The built-in <code class="inline">dir()</code> inspects everything available on a class or object — its attributes, methods, and inherited names.</p></div>
+</div>
+
+<h2 class="section"><span class="num">5</span>The <code class="inline">__init__</code> constructor</h2>
+<p class="section-intro">Initializing data at the moment an instance is created.</p>
+<p><code class="inline">__init__()</code> initializes instance data and is commonly called the class <strong>constructor</strong> — though strictly, Python creates the object before <code class="inline">__init__()</code> initializes it. Data is supplied while creating each instance:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">Player with init</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age):
+        self.name = name
+        self.age = age
+
+p1 = <span class="fn">Player</span>(<span class="str">"Ahmed"</span>, <span class="num">29</span>)   <span class="com"># __init__ runs right now</span>
+p2 = <span class="fn">Player</span>(<span class="str">"Anas"</span>, <span class="num">5</span>)
+
+<span class="fn">print</span>(p1.name, p1.age)   <span class="com"># Ahmed 29</span>
+<span class="fn">print</span>(p2.name, p2.age)   <span class="com"># Anas 5 — each instance keeps its own values</span></div>
+</div>
+<p>A richer example straight from the notes — a customer with a job and a balance:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">Customer</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Customer</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, job, balance):
+        self.name = name
+        self.job = job
+        self.balance = balance
+
+c1 = <span class="fn">Customer</span>(<span class="str">"Abdo"</span>, <span class="str">"Engineer"</span>, <span class="num">20_000</span>)
+
+<span class="fn">print</span>(c1.job)       <span class="com"># Engineer</span>
+<span class="fn">print</span>(c1.balance)   <span class="com"># 20000</span></div>
+</div>
+<div class="callout tip">
+  <div class="ti">Runs every time</div>
+  <p>The initialization code executes fresh for each new instance — every <code class="inline">Customer(...)</code> call re-runs <code class="inline">__init__</code> with that call's arguments.</p>
+</div>
+
+<h2 class="section"><span class="num">6</span>The four core OOP principles</h2>
+<p class="section-intro">The pillars the whole object-oriented mindset rests on.</p>
+<table class="api">
+  <thead><tr><th>Principle</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Encapsulation</strong></td><td>Combining data and the code that operates on it.</td></tr>
+    <tr><td><strong>Inheritance</strong></td><td>Extending functionality from a parent class to child classes.</td></tr>
+    <tr><td><strong>Polymorphism</strong></td><td>Providing a unified interface through methods with the same name.</td></tr>
+    <tr><td><strong>Abstraction</strong></td><td>Working with an outer interface while hiding implementation details.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub">6.1 Encapsulation</h3>
+<p>Data and the methods that use it live together in one class:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">Customer with behavior</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Customer</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, balance):
+        self.name = name
+        self.balance = balance
+
+    <span class="kw">def</span> <span class="fn">show_balance</span>(self):      <span class="com"># behavior belongs next to its data</span>
+        <span class="fn">print</span>(self.balance)</div>
+</div>
+
+<h3 class="sub">6.2 Inheritance</h3>
+<p>A child class receives the parent's functionality and adds its own:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">parent → child</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Animal</span>:
+    <span class="kw">def</span> <span class="fn">eat</span>(self): ...
+    <span class="kw">def</span> <span class="fn">sleep</span>(self): ...
+
+<span class="kw">class</span> <span class="fn">Dog</span>(Animal):      <span class="com"># child = parent functionality MORE</span>
+    <span class="kw">def</span> <span class="fn">bark</span>(self): ...</div>
+</div>
+<div class="callout insight">
+  <div class="ti">"is-a" relationship</div>
+  <p>Not all class relationships are inheritance — a <code class="inline">Dog</code> <em>is an</em> <code class="inline">Animal</code>, so inheritance fits. Section 7 builds the concrete player example from the notes.</p>
+</div>
+
+<h3 class="sub">6.3 Polymorphism</h3>
+<p>Different classes expose methods with the <strong>same name</strong>, each implementing its own behavior.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">same name, different behavior</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Football_Player</span>:
+    <span class="kw">def</span> <span class="fn">shoot</span>(self): <span class="fn">print</span>(<span class="str">"kick the ball"</span>)
+
+<span class="kw">class</span> <span class="fn">Tennis_Player</span>:
+    <span class="kw">def</span> <span class="fn">shoot</span>(self): <span class="fn">print</span>(<span class="str">"hit the ball"</span>)</div>
+</div>
+
+<h3 class="sub">6.4 Abstraction</h3>
+<p>The user works with the object's visible interface — the internal details stay hidden.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">interface vs details</span></div>
+  <div class="code-body">engine.<span class="fn">start</span>()      <span class="com"># visible interface</span>
+                    <span class="com"># fuel mix, spark timing — hidden inside</span></div>
+</div>
+
+<h2 class="section"><span class="num">7</span>Inheritance</h2>
+<p class="section-intro">The player example done properly — a parent <code class="inline">Player</code> and a child <code class="inline">AfricanPlayer</code>.</p>
+<p>The parent class holds general player functionality:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">parent — Player</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age):
+        self.name = name
+        self.age = age
+
+    <span class="kw">def</span> <span class="fn">set_position</span>(self, position):
+        self.position = position
+
+    <span class="kw">def</span> <span class="fn">set_celebration</span>(self, celebration):
+        self.celebration = celebration</div>
+</div>
+<p>The child inherits all of that and adds its own attributes and methods:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">child — AfricanPlayer</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">AfricanPlayer</span>(Player):          <span class="com"># draws from Player</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age, color, hair_style):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name, age)      <span class="com"># parent's constructor runs first</span>
+        self.color = color
+        self.hair_style = hair_style
+
+    <span class="kw">def</span> <span class="fn">set_speed</span>(self, speed):           <span class="com"># brand-new for the child</span>
+        self.speed = speed
+
+player = <span class="fn">AfricanPlayer</span>(name=<span class="str">"Ahmed"</span>, age=<span class="num">29</span>,
+                         color=<span class="str">"Brown"</span>, hair_style=<span class="str">"Curly"</span>)
+
+player.<span class="fn">set_position</span>(<span class="str">"Forward"</span>)    <span class="com"># inherited</span>
+player.<span class="fn">set_celebration</span>(<span class="str">"Slide"</span>)  <span class="com"># inherited</span>
+player.<span class="fn">set_speed</span>(<span class="num">90</span>)              <span class="com"># own</span></div>
+</div>
+<figure>
+  <div class="diagram-label">Inheritance hierarchy</div>
+  <svg width="420" height="150" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="420" height="150" fill="#fff"/>
+    <rect x="0" y="0" width="420" height="150" fill="url(#erd-grid)"/>
+    <line x1="210" y1="92" x2="210" y2="52" stroke="#1f6fb2" stroke-width="2"/>
+    <polygon points="210,45 206,56 214,56" fill="#1f6fb2"/>
+    <rect x="125" y="20" width="170" height="32" rx="8" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="210" y="40" text-anchor="middle" font-size="13.5" font-weight="700">Player</text>
+    <text x="210" y="60" text-anchor="middle" font-size="12.5" fill="#5B6472">name · age · set_position · set_celebration</text>
+    <rect x="125" y="100" width="170" height="32" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="210" y="120" text-anchor="middle" font-size="13.5" font-weight="700">AfricanPlayer</text>
+    <text x="210" y="140" text-anchor="middle" font-size="12.5" fill="#5B6472">+ color · hair_style · set_speed</text>
+  </svg>
+  <figcaption>inherits everything from the parent, then adds its own members.</figcaption>
+</figure>
+<div class="callout tip">
+  <div class="ti">super() vs. direct call</div>
+  <p>You can call the parent constructor directly with <code class="inline">Player.__init__(self, name, age)</code> — but <code class="inline">super().__init__(name, age)</code> is clearer and easier to maintain, especially in deeper hierarchies.</p>
+</div>
+
+<h2 class="section"><span class="num">8</span>Polymorphism</h2>
+<p class="section-intro">Both classes define <code class="inline">set_name()</code> — each with its own data and behavior.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Player</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">two names</span></div>
+      <div class="code-body"><span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">def</span> <span class="fn">set_name</span>(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+        <span class="fn">print</span>(<span class="str">f"Name is set to {self.first_name} {self.last_name}"</span>)</div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>Employee</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">one name</span></div>
+      <div class="code-body"><span class="kw">class</span> <span class="fn">Employee</span>:
+    <span class="kw">def</span> <span class="fn">set_name</span>(self, name):
+        self.name = name
+        <span class="fn">print</span>(<span class="str">f"Hello Mr. {self.name}"</span>)</div>
+    </div>
+  </div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">same interface</span></div>
+  <div class="code-body">p1 = <span class="fn">Player</span>()
+e1 = <span class="fn">Employee</span>()
+
+p1.<span class="fn">set_name</span>(<span class="str">"Ahmed"</span>, <span class="str">"Mostafa"</span>)
+e1.<span class="fn">set_name</span>(<span class="str">"Ahmed"</span>)</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>Output</b><p><code class="inline">Name is set to Ahmed Mostafa</code> then <code class="inline">Hello Mr. Ahmed</code>.</p></div>
+  <div class="annotation"><b>Why it's useful</b><p>Both objects answer to the same method name — calling code can treat them uniformly while each class keeps its own implementation.</p></div>
+</div>
+
+<h2 class="section"><span class="num">9</span>Quick summary + combined example</h2>
+<p class="section-intro">The whole set of ideas in one program.</p>
+<div class="card-grid three">
+  <div class="card"><h4>Objects</h4><p>State (attributes) + behavior (methods).</p></div>
+  <div class="card"><h4>Classes &amp; self</h4><p>A blueprint; <code class="inline">self</code> is the current instance.</p></div>
+  <div class="card"><h4>__init__</h4><p>Initializes each new instance's data.</p></div>
+  <div class="card"><h4>Encapsulation</h4><p>Data + methods that operate on it.</p></div>
+  <div class="card"><h4>Inheritance</h4><p>Child extends parent functionality.</p></div>
+  <div class="card"><h4>Polymorphism</h4><p>Same method name, class-specific behavior.</p></div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">everything together</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Player</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age):
+        self.name = name
+        self.age = age
+
+    <span class="kw">def</span> <span class="fn">set_position</span>(self, position):
+        self.position = position
+
+    <span class="kw">def</span> <span class="fn">set_celebration</span>(self, celebration):
+        self.celebration = celebration
+
+    <span class="kw">def</span> <span class="fn">display</span>(self):
+        <span class="fn">print</span>(<span class="str">f"Player: {self.name}, Age: {self.age}"</span>)
+
+
+<span class="kw">class</span> <span class="fn">AfricanPlayer</span>(Player):                       <span class="com"># inheritance</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age, color, hair_style):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name, age)                <span class="com"># parent constructor</span>
+        self.color = color
+        self.hair_style = hair_style
+
+    <span class="kw">def</span> <span class="fn">set_speed</span>(self, speed):
+        self.speed = speed
+
+    <span class="kw">def</span> <span class="fn">display</span>(self):                              <span class="com"># polymorphism — override</span>
+        <span class="fn">print</span>(<span class="str">f"Player: {self.name}, Age: {self.age}, "</span>
+              <span class="str">f"Color: {self.color}, Hair style: {self.hair_style}"</span>)
+
+
+player = <span class="fn">AfricanPlayer</span>(name=<span class="str">"Ahmed"</span>, age=<span class="num">29</span>,
+                         color=<span class="str">"Brown"</span>, hair_style=<span class="str">"Curly"</span>)
+
+player.<span class="fn">set_position</span>(<span class="str">"Forward"</span>)
+player.<span class="fn">set_celebration</span>(<span class="str">"Slide"</span>)
+player.<span class="fn">set_speed</span>(<span class="num">90</span>)
+player.<span class="fn">display</span>()</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Objects bundle state and behavior; classes are their blueprints; <code class="inline">__init__</code> and <code class="inline">self</code> wire each instance up; and encapsulation, inheritance, polymorphism, and abstraction are the four organizing principles on top.</p>
+</div>
+
+<div class="day-nav">
+  <a class="day-nav-link prev" href="../02-python_foundations/02_reading.html">
+    <span class="dn-label">&larr; Previous</span>
+    <span class="dn-title">Module 02 &middot; Reading page</span>
+  </a>
+  <a class="day-nav-link next" href="../03-python_projects/03_reading.html">
+    <span class="dn-label">Next &rarr;</span>
+    <span class="dn-title">Module 03 &middot; Python Projects</span>
+  </a>
+</div>
+
+<footer>Module 02 · OOP Complete Notes · self-paced</footer>
+</div>
+<script>
+(function(){
+  var sidebar = document.querySelector('.site-sidebar');
+  var toggle = document.querySelector('.sidebar-toggle');
+  var backdrop = document.querySelector('.sidebar-backdrop');
+  if(!sidebar || !toggle || !backdrop) return;
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
+    if (sidebar.classList.contains('open')) close(); else openMenu();
+  });
+  backdrop.addEventListener('click', close);
+})();
+</script>
+<script>
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if(!btn) return;
+  function currentTheme(){
+    var attr = document.documentElement.getAttribute('data-theme');
+    if(attr === 'dark' || attr === 'light') return attr;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  btn.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
+</script>
+</body></html>

@@ -17,145 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ink:#141414; --blue:#2F63E8; --blue-dark:#1E4BC4; --gray:#5B6472; --gray-muted:#9CA3AF;
-  --border:#E5E7EB; --panel:#F3F4F6; --white:#FFFFFF; --paper:#FAFBFC; --card-bg:#FFFFFF;
-  --code-bg:#1E1E1E; --code-default:#D4D4D4; --code-kw:#569CD6; --code-fn:#DCDCAA;
-  --code-str:#CE9178; --code-com:#6A9955;
-  --insight-bg:#E8F5E9; --insight-bd:#1E8449; --insight-ti:#1E5631;
-  --tip-bg:#EEF6FF; --tip-bd:#2E6FB5; --tip-ti:#1F4E82;
-  --warn-bg:#FDECEA; --warn-bd:#C0392B; --warn-ti:#7B1F14;
-  --annotations-bg:#FAFBFD; --divider:#EEF2F7;
-  --recap-bg:#FFF8E1; --recap-bd:#B45309; --recap-ti:#8A4B00;
-}
-:root[data-theme="dark"]{
-  --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
-  --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
-  --annotations-bg:#14171C; --divider:#242830;
-  --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
-  --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
-  --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
-  --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
-}
-@media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
-    --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
-    --annotations-bg:#14171C; --divider:#242830;
-    --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
-    --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
-    --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
-    --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
-  }
-}
-body{transition:background-color .15s ease,color .15s ease}
-.theme-toggle{position:fixed;top:14px;right:20px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);display:flex;align-items:center;justify-content:center}
-.theme-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.theme-toggle .icon-moon{display:none}
-:root[data-theme="dark"] .theme-toggle .icon-sun{display:none}
-:root[data-theme="dark"] .theme-toggle .icon-moon{display:block}
-@media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .theme-toggle .icon-sun{display:none}
-  :root:not([data-theme="light"]) .theme-toggle .icon-moon{display:block}
-}
-:root[data-theme="light"] .theme-toggle .icon-sun{display:block}
-:root[data-theme="light"] .theme-toggle .icon-moon{display:none}
-*{box-sizing:border-box} html,body{margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;line-height:1.7;font-size:16px}
-.page{max-width:920px;margin:0 auto;padding:56px 48px 90px}
-.crumb{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
-h1.title{font-family:'Bricolage Grotesque',Georgia,serif;font-size:42px;line-height:1.12;color:var(--ink);margin:0 0 12px;font-weight:800}
-.subtitle{font-size:19px;color:var(--gray);margin:0 0 30px}
-.objectives{background:var(--panel);border-left:4px solid var(--blue);border-radius:4px;padding:20px 24px;margin:24px 0 36px}
-.objectives h2{font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin:0 0 10px;font-weight:700}
-.objectives ul{margin:0;padding-left:20px}.objectives li{font-size:15px;margin-bottom:6px}
-h2.section{font-family:'Bricolage Grotesque',Georgia,serif;font-size:26px;color:var(--ink);margin:52px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink);font-weight:700}
-h2.section .num{color:var(--blue);margin-right:10px}
-.section-intro{font-size:16.5px;color:var(--gray);margin:0 0 20px}
-h3.sub{font-size:17.5px;color:var(--ink);margin:30px 0 10px;font-weight:700}
-p{margin:0 0 15px} p.lead{font-size:18px;color:var(--ink);font-weight:600}
-strong{color:var(--ink);font-weight:700}
-code.inline{font-family:'IBM Plex Mono',monospace;font-size:.88em;background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--blue-dark)}
-table.api{width:100%;border-collapse:collapse;margin:14px 0 22px;background:var(--card-bg);font-size:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
-table.api th,table.api td{padding:10px 13px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
-table.api thead th{background:var(--panel);color:var(--ink);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em}
-table.api tbody tr:last-child td{border-bottom:none}
-
-.callout{margin:22px 0 26px;border-radius:6px;padding:15px 20px 17px;border-left:4px solid}
-.callout .ti{font-family:'IBM Plex Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:7px}
-.callout p{font-size:15px;margin:0 0 6px}.callout p:last-child{margin-bottom:0}
-.callout.tip{background:var(--tip-bg);border-color:var(--tip-bd)}.callout.tip .ti{color:var(--tip-ti)}
-.callout.insight{background:var(--insight-bg);border-color:var(--insight-bd)}.callout.insight .ti{color:var(--insight-ti)}
-.callout.warn{background:var(--warn-bg);border-color:var(--warn-bd)}.callout.warn .ti{color:var(--warn-ti)}
-.callout.recap{background:var(--recap-bg);border-color:var(--recap-bd)}.callout.recap .ti{color:var(--recap-ti)}
-
-.code-block{margin:18px 0 8px;border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(20,20,30,.12)}
-.code-header{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#161616}
-.code-header .dot{width:10px;height:10px;border-radius:50%}
-.code-header .dot.r{background:#FF5F56}.code-header .dot.y{background:#FFBD2E}.code-header .dot.g{background:#27C93F}
-.code-header .fname{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9C9C9C;margin-left:6px}
-.code-body{background:var(--code-bg);color:var(--code-default);padding:16px 20px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;line-height:1.75;overflow-x:auto;white-space:pre}
-.code-body .kw{color:var(--code-kw)}.code-body .fn{color:var(--code-fn)}
-.code-body .str{color:var(--code-str)}.code-body .com{color:var(--code-com);font-style:italic}
-.code-body .def{color:var(--code-default)}
-.annotations{background:var(--annotations-bg);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px 20px 14px;margin-bottom:28px}
-.annotation{padding:11px 0;border-top:1px solid var(--divider)}
-.annotation:first-child{border-top:0}
-.annotation b{color:var(--blue);font-size:14px}
-.annotation p{margin:3px 0 0;font-size:14.5px;color:var(--ink)}
-
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 26px}
-.compare .col{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:17px 19px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
-.compare .col h4{margin:0 0 8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
-.compare .col p,.compare .col li{font-size:14.5px}
-.compare .col ul{margin:6px 0 0;padding-left:18px}
-
-.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0 26px}
-.card-grid.three{grid-template-columns:repeat(3,1fr)}
-.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:16px 18px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
-.card h4{margin:0 0 7px;color:var(--ink);font-size:16px;font-weight:700}
-.card p{font-size:14.5px;margin:0 0 6px;color:var(--gray)}
-.card p:last-child{margin-bottom:0}
-.card code.inline{font-size:.82em}
-
-figure{margin:24px 0 8px;text-align:center;background:linear-gradient(180deg,#fff,#FAFBFD);border:1px solid var(--border);border-radius:10px;padding:26px 14px 18px}
-figcaption{font-size:13.5px;color:var(--gray);margin-top:12px;font-style:italic}
-.diagram-label{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;color:var(--blue);text-align:left;margin:0 0 4px}
-
-footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);color:var(--gray-muted);font-size:12px;text-align:center;font-family:'IBM Plex Mono',monospace}
-@media(max-width:760px){.page{padding:32px 22px}h1.title{font-size:30px}.card-grid,.card-grid.three,.compare{grid-template-columns:1fr}}
-.site-sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--panel);border-right:1px solid var(--border);padding:22px 0;overflow-y:auto;z-index:1000}
-.site-sidebar .brand{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;font-size:14.5px;color:var(--ink);padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;line-height:1.3}
-.site-sidebar a{display:block;padding:9px 20px;font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;font-size:14px;color:var(--gray);text-decoration:none;border-left:3px solid transparent}
-.site-sidebar a:hover{background:var(--card-bg);color:var(--blue)}
-.site-sidebar a.active{background:var(--card-bg);color:var(--blue);font-weight:700;border-left-color:var(--blue)}
-.site-sidebar .daynum{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--gray-muted);display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
-.site-sidebar a.active .daynum{color:var(--blue)}
-body{margin-left:220px;background:var(--paper)}
-.sidebar-toggle{display:none;position:fixed;top:14px;left:14px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);align-items:center;justify-content:center}
-.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900}
-@media(max-width:900px){
-.site-sidebar{width:250px;transform:translateX(-100%);transition:transform .25s ease;box-shadow:2px 0 16px rgba(0,0,0,.18)}
-.site-sidebar.open{transform:translateX(0)}
-.sidebar-toggle{display:flex}
-.sidebar-backdrop.open{display:block}
-body{margin-left:0}
-}
-.day-links{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 28px}
-.day-links a{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;text-decoration:none;color:var(--blue-dark);background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 11px;display:inline-flex;align-items:center}
-.day-links a:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
-.day-links a.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
-.day-links a.primary:hover{background:var(--blue-dark)}
-.dl-icon{width:11px;height:11px;margin-right:5px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.day-nav{display:flex;gap:16px;margin:40px 0 0;flex-wrap:wrap}
-.day-nav-link{flex:1 1 260px;max-width:340px;display:flex;flex-direction:column;gap:4px;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:border-color .15s,background .15s}
-.day-nav-link:hover{background:var(--card-bg);border-color:var(--blue)}
-.day-nav-link.next{margin-left:auto;text-align:right;align-items:flex-end}
-.day-nav-link .dn-label{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700}
-.day-nav-link .dn-title{font-size:14.5px;color:var(--ink);font-weight:600}
-@media(max-width:520px){.day-nav-link{flex:1 1 100%;max-width:none}.day-nav-link.next{text-align:left;align-items:flex-start;margin-left:0}}
-</style>
+<link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
 <button class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
@@ -216,22 +78,22 @@ body{margin-left:0}
 
 <div class="day-links">
   <a class="primary" href="02_reading.html">Reading</a>
-  <a href="README.md">Module Notes</a>
-  <a href="OOP_Complete_Notes.md">OOP Complete Notes</a>
-  <a href="OOP_Tutorial/">OOP Study Guide</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/02-python_foundations/README.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Module Notes</a>
+  <a href="OOP_Notes.html">OOP Notes (HTML)</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/02-python_foundations/OOP_Tutorial" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>OOP Study Guide</a>
   <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/02-python_foundations" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
 </div>
 
 <div class="callout tip">
   <div class="ti">Before you start</div>
-  <p>Install Python and Jupyter. The <code class="inline">CODE/</code> folder has <strong>23 numbered notebooks</strong> (00–23) that follow the lecture order exactly — open one per video. This page mirrors that same structure, grouped into the four "Parts" the course itself uses.</p>
+  <p>Install Python and Jupyter. This module has <strong>23 numbered notebooks</strong> (00–23) that follow the lecture order exactly — open one per video. <a href="notebooks/00-%20Simple%20Arithmetic%20Operations.html">Every notebook is rendered here as a page</a>; the header of each code block links to its notebook. This page mirrors the same structure, grouped into the four "Parts" the course itself uses. To run the code yourself, grab the originals from the <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/02-python_foundations/CODE" target="_blank" rel="noopener">CODE folder on GitHub</a>.</p>
 </div>
 
 <h2 class="section"><span class="num">1</span>First programs &amp; simple arithmetic</h2>
 <p class="section-intro">Your first program, and Python's operators and precedence.</p>
 
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">00-simple_arithmetic.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/00-%20Simple%20Arithmetic%20Operations.html">00-simple_arithmetic.ipynb</a></span></div>
   <div class="code-body"><span class="fn">print</span>(<span class="str">'Hello world!'</span>)
 <span class="fn">print</span>(<span class="num">2</span> + <span class="num">2</span>)
 <span class="num">5</span> + <span class="num">4</span> - <span class="num">3</span>
@@ -282,7 +144,7 @@ has a <em>type</em> that defines what programs can do with it. Objects are eithe
 </div>
 
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">01-simple_data_types.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/01-%20Simple%20Data%20Types.html">01-simple_data_types.ipynb</a></span></div>
   <div class="code-body"><span class="fn">type</span>(<span class="num">100</span>)       <span class="com"># &lt;class 'int'&gt;</span>
 <span class="fn">type</span>(<span class="num">5.7</span>)       <span class="com"># &lt;class 'float'&gt;</span>
 <span class="fn">type</span>(<span class="num">5</span> == <span class="num">5</span>)  <span class="com"># &lt;class 'bool'&gt;</span></div>
@@ -313,7 +175,7 @@ time a model needs a condition:</p>
 <p>Variables let you <strong>reuse names instead of repeating values</strong>, and make changing code
 later easy. The course's running example is the area of a circle:</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">02-variables_assignment.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/02-%20Variables%20Assignment.html">02-variables_assignment.ipynb</a></span></div>
   <div class="code-body"><span class="com"># Area of a circle</span>
 pi = <span class="num">3.14159</span>
 radius = <span class="num">2.2</span> / <span class="num">2</span>
@@ -344,7 +206,7 @@ returns a string — so you cast it with <code class="inline">int()</code> or <c
 when you need a number.</p>
 
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">03-strings.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/03-%20Strings.html">03-strings.ipynb</a></span></div>
   <div class="code-body">s = <span class="str">'Hello, I_am learning_Python'</span>
 s.split(<span class="str">'_'</span>)       <span class="com"># ['Hello, I', '', 'am learning', 'Python']</span>
 s.split()             <span class="com"># split on whitespace</span>
@@ -395,7 +257,7 @@ name = <span class="str">'Ahmad'</span>; age = <span class="num">30</span>
 <h2 class="section"><span class="num">5</span>Lists</h2>
 <p class="section-intro">Ordered, indexable, and <strong>mutable</strong> — the workhorse sequence.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">04-lists.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/04-%20Lists.html">04-lists.ipynb</a></span></div>
   <div class="code-body">num_list = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
 mix_list = [<span class="str">'A'</span>, <span class="num">2</span>, <span class="num">3.7</span>]           <span class="com"># mixed types allowed</span>
 
@@ -439,7 +301,7 @@ and unpack an unknown number of inputs with a starred name:
 <h2 class="section"><span class="num">6</span>Tuples</h2>
 <p class="section-intro">Ordered, indexable, and <strong>immutable</strong> — for things that must not change.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">05-tuples.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/05-%20Tuples.html">05-tuples.ipynb</a></span></div>
   <div class="code-body">t = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
 t.<span class="fn">append</span>(<span class="num">2</span>)     <span class="com"># AttributeError — no append on a tuple</span>
 t[<span class="num">1</span>] = <span class="num">7</span>        <span class="com"># TypeError — no item assignment</span>
@@ -458,7 +320,7 @@ y, x = x, y   <span class="com"># swap — no temp variable needed</span></div>
 <h2 class="section"><span class="num">7</span>Dictionaries</h2>
 <p class="section-intro">Mappings of key → value, accessed by key, not position.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">06-dictionary.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/06-%20Dictionary.html">06-dictionary.ipynb</a></span></div>
   <div class="code-body">ages = {<span class="str">"Muhammad"</span>: <span class="num">24</span>, <span class="str">"Maryam"</span>: <span class="num">42</span>, <span class="str">"Anas"</span>: <span class="num">58</span>}
 ages[<span class="str">"Anas"</span>]          <span class="com"># 58</span>
 ages.<span class="fn">keys</span>();   ages.<span class="fn">values</span>()
@@ -482,7 +344,7 @@ primes = {<span class="num">1</span>: <span class="num">2</span>, <span class="n
 <h2 class="section"><span class="num">8</span>Sets</h2>
 <p class="section-intro">Unordered collections of <strong>unique</strong> elements.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">07-set.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/07-%20Set.html">07-set.ipynb</a></span></div>
   <div class="code-body">y = {<span class="num">3</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">3</span>, <span class="num">3</span>}     <span class="com"># {3, 4, 5} — duplicates removed</span>
 y[<span class="num">0</span>]                       <span class="com"># TypeError — not subscriptable</span>
 
@@ -502,7 +364,7 @@ set1.<span class="fn">issuperset</span>(set2)    <span class="com"># subset/supe
 <h2 class="section"><span class="num">9</span>If / elif / else</h2>
 <p class="section-intro">Part 2 begins: control flow — deciding what to do.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">08-if_condition.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/08-%20If%20Condition.html">08-if_condition.ipynb</a></span></div>
   <div class="code-body">num = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'Enter an integer number: '</span>))
 <span class="kw">if</span> num >= <span class="num">10</span>:
     <span class="kw">if</span> num &lt;= <span class="num">100</span>:            <span class="com"># nested if</span>
@@ -530,7 +392,7 @@ which you'll rewrite as a loop (Section 10) and again as a function (Section 13)
 <h2 class="section"><span class="num">10</span>While loop</h2>
 <p class="section-intro">Repeat an action based on a check.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">09-while_loop.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/09-%20While%20Loop.html">09-while_loop.ipynb</a></span></div>
   <div class="code-body">num = <span class="num">1</span>    <span class="com"># counter</span>
 <span class="kw">while</span> num &lt;= <span class="num">10</span>:
     <span class="fn">print</span>(num)
@@ -554,7 +416,7 @@ which you'll rewrite as a loop (Section 10) and again as a function (Section 13)
 <h2 class="section"><span class="num">11</span>For loop &amp; range</h2>
 <p class="section-intro">Iterate over any sequence — and loop over indices when you need them.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">10-for_loop.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/10-%20For%20Loop.html">10-for_loop.ipynb</a></span></div>
   <div class="code-body">words = [<span class="str">"hello"</span>, <span class="str">"hi"</span>, <span class="str">"good morning"</span>, <span class="str">"good night"</span>, <span class="num">1</span>]
 <span class="kw">for</span> word <span class="kw">in</span> words:
     <span class="fn">print</span>(word)               <span class="com"># iterate directly</span>
@@ -599,7 +461,7 @@ fahrenheit = [((<span class="num">9</span>/<span class="num">5</span>)*temp + <s
 </div>
 <p><code class="inline">enumerate()</code> returns the index <em>and</em> the value during iteration:</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">12-enumerate.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/12-%20Enumerate.html">12-enumerate.ipynb</a></span></div>
   <div class="code-body"><span class="kw">for</span> i, letter <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="str">'Hello'</span>):
     <span class="fn">print</span>(<span class="str">"index {}: {}"</span>.<span class="fn">format</span>(i, letter))
 
@@ -613,7 +475,7 @@ dic   <span class="com"># {'H': 0, 'e': 1, 'l': 3, 'o': 4}</span></div>
 <h2 class="section"><span class="num">13</span>Functions</h2>
 <p class="section-intro">Part 3 begins: a block of code that is used more than once.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">13-functions.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/13-%20Functions.html">13-functions.ipynb</a></span></div>
   <div class="code-body"><span class="kw">def</span> <span class="fn">circle_area</span>(radius, PI = <span class="num">3.14</span>):   <span class="com"># default parameter</span>
     <span class="str">"""
     Function circle_area : calculates the area of circle
@@ -635,7 +497,7 @@ dic   <span class="com"># {'H': 0, 'e': 1, 'l': 3, 'o': 4}</span></div>
 <h2 class="section"><span class="num">14</span>*args &amp; **kwargs</h2>
 <p class="section-intro">Functions that accept an undefined number of arguments.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">14-args_and_kwargs.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/14-%20Args%20%26%20Kwargs.html">14-args_and_kwargs.ipynb</a></span></div>
   <div class="code-body"><span class="kw">def</span> <span class="fn">mean</span>(*nums):        <span class="com"># *args → tuple of positional args</span>
     <span class="kw">return</span> <span class="fn">sum</span>(nums)/<span class="fn">len</span>(nums)
 
@@ -678,7 +540,7 @@ foo(); <span class="fn">print</span>(x)  <span class="com"># 5 — global untouc
   </div>
 </div>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">15-scope_and_modules.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/15-%20Scope%20%26%20Modules.html">15-scope_and_modules.ipynb</a></span></div>
   <div class="code-body"><span class="kw">import</span> My_Module
 <span class="kw">from</span> My_Module <span class="kw">import</span> f1, f3     <span class="com"># import just specific names</span>
 
@@ -718,7 +580,7 @@ eventually reach one.</p>
 <h2 class="section"><span class="num">17</span>Fruitful functions: zip, lambda, filter, map, reduce</h2>
 <p class="section-intro">Functional-style utilities that show up constantly in data work.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">17-fruitful_functions.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/17-%20Fruitful%20Functions.html">17-fruitful_functions.ipynb</a></span></div>
   <div class="code-body"><span class="com"># zip: pair up iterables element by element</span>
 <span class="fn">list</span>(<span class="fn">zip</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>], [<span class="str">'one'</span>, <span class="str">'two'</span>, <span class="str">'three'</span>]))  <span class="com"># [(1,'one'), (2,'two'), (3,'three')]</span>
 
@@ -745,7 +607,7 @@ double(<span class="num">3</span>)   <span class="com"># 6</span>
 <h2 class="section"><span class="num">18</span>Files handling</h2>
 <p class="section-intro">Reading, writing, and appending text files — with context managers.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">18-files_handling.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/18-%20Files%20Handling.html">18-files_handling.ipynb</a></span></div>
   <div class="code-body"><span class="com"># read the whole file, then reset the cursor</span>
 my_file = <span class="fn">open</span>(<span class="str">'test.txt'</span>)
 <span class="fn">print</span>(my_file.<span class="fn">read</span>())
@@ -772,7 +634,7 @@ my_file.<span class="fn">seek</span>(<span class="num">0</span>)     <span class
 <h2 class="section"><span class="num">19</span>Exceptions handling</h2>
 <p class="section-intro">The built-in exceptions, and the <code class="inline">try</code>/<code class="inline">except</code>/<code class="inline">else</code>/<code class="inline">finally</code> ladder.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">19-exceptions_handling.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/19-%20Exceptions%20Handling.html">19-exceptions_handling.ipynb</a></span></div>
   <div class="code-body"><span class="com"># The usual suspects</span>
 <span class="fn">print</span>(<span class="str">'hello'</span> + n)     <span class="com"># NameError</span>
 <span class="num">100</span>/<span class="num">0</span>                  <span class="com"># ZeroDivisionError</span>
@@ -807,7 +669,7 @@ l[<span class="num">5</span>]                    <span class="com"># IndexError<
 <h2 class="section"><span class="num">20</span>What is OOP?</h2>
 <p class="section-intro">Python is an object-oriented language — everything is an object.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">20-oop_what_is_oop.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/20-%20OOP%20What%20is%20OOP.html">20-oop_what_is_oop.ipynb</a></span></div>
   <div class="code-body">a = <span class="num">10</span>;  b = <span class="num">3.25</span>;  c = <span class="str">"hi"</span>;  d = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">5</span>]
 <span class="fn">print</span>(<span class="fn">type</span>(a))  <span class="com"># &lt;class 'int'&gt;</span>
 <span class="fn">print</span>(<span class="fn">type</span>(d))  <span class="com"># &lt;class 'list'&gt;</span>
@@ -829,7 +691,7 @@ s1 = <span class="str">'hi'</span>;  s2 = <span class="str">'bye'</span>
 <h2 class="section"><span class="num">21</span>Class anatomy: __init__, attributes, methods</h2>
 <p class="section-intro">The structure of a class — the blueprint for an object.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">21-oop_class_anatomy.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/21-%20OOP%20Class%20Anatomy.html">21-oop_class_anatomy.ipynb</a></span></div>
   <div class="code-body"><span class="kw">class</span> <span class="fn">Customer</span>:    <span class="com"># blueprint for an object</span>
 
     <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age):  <span class="com"># constructor — runs automatically</span>
@@ -868,7 +730,7 @@ c1.<span class="fn">place_order</span>()          <span class="com"># Mohamed ha
 <h3 class="sub">Abstraction &amp; encapsulation</h3>
 <p>The user calls a method and gets a result — without needing to know the internal logic:</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">22-oop_principles.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/22-%20OOP%20Principles.html">22-oop_principles.ipynb</a></span></div>
   <div class="code-body"><span class="kw">class</span> <span class="fn">Employee</span>():
     <span class="kw">def</span> <span class="fn">__init__</span>(self, name, salary):
         self.name = name
@@ -932,7 +794,7 @@ it their own way:</p>
 <h2 class="section"><span class="num">23</span>The ML example — sklearn is just OOP</h2>
 <p class="section-intro">The payoff: everything you'll do in Modules 09–12 is calling methods on class instances.</p>
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">23-oop_ml_example.ipynb</span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/23-%20OOP%20ML%20Example.html">23-oop_ml_example.ipynb</a></span></div>
   <div class="code-body"><span class="kw">from</span> sklearn.datasets <span class="kw">import</span> fetch_california_housing
 housing = <span class="fn">fetch_california_housing</span>()
 features = housing.data
