@@ -1,6 +1,6 @@
 # Object-Oriented Programming in Python
 
-> These notes were converted from the handwritten PDF. The explanations and examples preserve the source material, while the Python code has been normalized into valid syntax and consistent class naming.
+> These notes were converted from handwritten notes. The explanations and examples preserve the source material, while the Python code has been normalized into valid syntax and consistent class naming.
 
 ## Table of Contents
 
