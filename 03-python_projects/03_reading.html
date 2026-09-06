@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Python Projects</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('theme');
+    if(saved === 'dark' || saved === 'light'){
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141414; --blue:#2F63E8; --blue-dark:#1E4BC4; --gray:#5B6472; --gray-muted:#9CA3AF;
+  --border:#E5E7EB; --panel:#F3F4F6; --white:#FFFFFF; --paper:#FAFBFC; --card-bg:#FFFFFF;
+  --code-bg:#1E1E1E; --code-default:#D4D4D4; --code-kw:#569CD6; --code-fn:#DCDCAA;
+  --code-str:#CE9178; --code-com:#6A9955;
+  --insight-bg:#E8F5E9; --insight-bd:#1E8449; --insight-ti:#1E5631;
+  --tip-bg:#EEF6FF; --tip-bd:#2E6FB5; --tip-ti:#1F4E82;
+  --warn-bg:#FDECEA; --warn-bd:#C0392B; --warn-ti:#7B1F14;
+  --annotations-bg:#FAFBFD; --divider:#EEF2F7;
+  --recap-bg:#FFF8E1; --recap-bd:#B45309; --recap-ti:#8A4B00;
+}
+:root[data-theme="dark"]{
+  --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
+  --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
+  --annotations-bg:#14171C; --divider:#242830;
+  --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
+  --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
+  --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
+  --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
+    --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
+    --annotations-bg:#14171C; --divider:#242830;
+    --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
+    --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
+    --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
+    --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
+  }
+}
+body{transition:background-color .15s ease,color .15s ease}
+.theme-toggle{position:fixed;top:14px;right:20px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);display:flex;align-items:center;justify-content:center}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.theme-toggle .icon-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-moon{display:block}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon{display:block}
+}
+:root[data-theme="light"] .theme-toggle .icon-sun{display:block}
+:root[data-theme="light"] .theme-toggle .icon-moon{display:none}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;line-height:1.7;font-size:16px}
+.page{max-width:920px;margin:0 auto;padding:56px 48px 90px}
+.crumb{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
+h1.title{font-family:'Bricolage Grotesque',Georgia,serif;font-size:42px;line-height:1.12;color:var(--ink);margin:0 0 12px;font-weight:800}
+.subtitle{font-size:19px;color:var(--gray);margin:0 0 30px}
+.objectives{background:var(--panel);border-left:4px solid var(--blue);border-radius:4px;padding:20px 24px;margin:24px 0 36px}
+.objectives h2{font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin:0 0 10px;font-weight:700}
+.objectives ul{margin:0;padding-left:20px}.objectives li{font-size:15px;margin-bottom:6px}
+h2.section{font-family:'Bricolage Grotesque',Georgia,serif;font-size:26px;color:var(--ink);margin:52px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink);font-weight:700}
+h2.section .num{color:var(--blue);margin-right:10px}
+.section-intro{font-size:16.5px;color:var(--gray);margin:0 0 20px}
+h3.sub{font-size:17.5px;color:var(--ink);margin:30px 0 10px;font-weight:700}
+p{margin:0 0 15px} p.lead{font-size:18px;color:var(--ink);font-weight:600}
+strong{color:var(--ink);font-weight:700}
+code.inline{font-family:'IBM Plex Mono',monospace;font-size:.88em;background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--blue-dark)}
+table.api{width:100%;border-collapse:collapse;margin:14px 0 22px;background:var(--card-bg);font-size:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+table.api th,table.api td{padding:10px 13px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+table.api thead th{background:var(--panel);color:var(--ink);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em}
+table.api tbody tr:last-child td{border-bottom:none}
+
+.callout{margin:22px 0 26px;border-radius:6px;padding:15px 20px 17px;border-left:4px solid}
+.callout .ti{font-family:'IBM Plex Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:7px}
+.callout p{font-size:15px;margin:0 0 6px}.callout p:last-child{margin-bottom:0}
+.callout.tip{background:var(--tip-bg);border-color:var(--tip-bd)}.callout.tip .ti{color:var(--tip-ti)}
+.callout.insight{background:var(--insight-bg);border-color:var(--insight-bd)}.callout.insight .ti{color:var(--insight-ti)}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn-bd)}.callout.warn .ti{color:var(--warn-ti)}
+.callout.recap{background:var(--recap-bg);border-color:var(--recap-bd)}.callout.recap .ti{color:var(--recap-ti)}
+
+.code-block{margin:18px 0 8px;border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(20,20,30,.12)}
+.code-header{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#161616}
+.code-header .dot{width:10px;height:10px;border-radius:50%}
+.code-header .dot.r{background:#FF5F56}.code-header .dot.y{background:#FFBD2E}.code-header .dot.g{background:#27C93F}
+.code-header .fname{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9C9C9C;margin-left:6px}
+.code-body{background:var(--code-bg);color:var(--code-default);padding:16px 20px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.code-body .kw{color:var(--code-kw)}.code-body .fn{color:var(--code-fn)}
+.code-body .str{color:var(--code-str)}.code-body .com{color:var(--code-com);font-style:italic}
+.code-body .def{color:var(--code-default)}
+.annotations{background:var(--annotations-bg);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px 20px 14px;margin-bottom:28px}
+.annotation{padding:11px 0;border-top:1px solid var(--divider)}
+.annotation:first-child{border-top:0}
+.annotation b{color:var(--blue);font-size:14px}
+.annotation p{margin:3px 0 0;font-size:14.5px;color:var(--ink)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 26px}
+.compare .col{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:17px 19px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
+.compare .col h4{margin:0 0 8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
+.compare .col p,.compare .col li{font-size:14.5px}
+.compare .col ul{margin:6px 0 0;padding-left:18px}
+
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0 26px}
+.card-grid.three{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:16px 18px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
+.card h4{margin:0 0 7px;color:var(--ink);font-size:16px;font-weight:700}
+.card p{font-size:14.5px;margin:0 0 6px;color:var(--gray)}
+.card p:last-child{margin-bottom:0}
+.card code.inline{font-size:.82em}
+
+figure{margin:24px 0 8px;text-align:center;background:linear-gradient(180deg,#fff,#FAFBFD);border:1px solid var(--border);border-radius:10px;padding:26px 14px 18px}
+figcaption{font-size:13.5px;color:var(--gray);margin-top:12px;font-style:italic}
+.diagram-label{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;color:var(--blue);text-align:left;margin:0 0 4px}
+
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);color:var(--gray-muted);font-size:12px;text-align:center;font-family:'IBM Plex Mono',monospace}
+@media(max-width:760px){.page{padding:32px 22px}h1.title{font-size:30px}.card-grid,.card-grid.three,.compare{grid-template-columns:1fr}}
+.site-sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--panel);border-right:1px solid var(--border);padding:22px 0;overflow-y:auto;z-index:1000}
+.site-sidebar .brand{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;font-size:14.5px;color:var(--ink);padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;line-height:1.3}
+.site-sidebar a{display:block;padding:9px 20px;font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;font-size:14px;color:var(--gray);text-decoration:none;border-left:3px solid transparent}
+.site-sidebar a:hover{background:var(--card-bg);color:var(--blue)}
+.site-sidebar a.active{background:var(--card-bg);color:var(--blue);font-weight:700;border-left-color:var(--blue)}
+.site-sidebar .daynum{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--gray-muted);display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
+.site-sidebar a.active .daynum{color:var(--blue)}
+body{margin-left:220px;background:var(--paper)}
+.sidebar-toggle{display:none;position:fixed;top:14px;left:14px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);align-items:center;justify-content:center}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900}
+@media(max-width:900px){
+.site-sidebar{width:250px;transform:translateX(-100%);transition:transform .25s ease;box-shadow:2px 0 16px rgba(0,0,0,.18)}
+.site-sidebar.open{transform:translateX(0)}
+.sidebar-toggle{display:flex}
+.sidebar-backdrop.open{display:block}
+body{margin-left:0}
+}
+.day-links{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 28px}
+.day-links a{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;text-decoration:none;color:var(--blue-dark);background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 11px;display:inline-flex;align-items:center}
+.day-links a:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.day-links a.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.day-links a.primary:hover{background:var(--blue-dark)}
+.dl-icon{width:11px;height:11px;margin-right:5px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.day-nav{display:flex;gap:16px;margin:40px 0 0;flex-wrap:wrap}
+.day-nav-link{flex:1 1 260px;max-width:340px;display:flex;flex-direction:column;gap:4px;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:border-color .15s,background .15s}
+.day-nav-link:hover{background:var(--card-bg);border-color:var(--blue)}
+.day-nav-link.next{margin-left:auto;text-align:right;align-items:flex-end}
+.day-nav-link .dn-label{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700}
+.day-nav-link .dn-title{font-size:14.5px;color:var(--ink);font-weight:600}
+@media(max-width:520px){.day-nav-link{flex:1 1 100%;max-width:none}.day-nav-link.next{text-align:left;align-items:flex-start;margin-left:0}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+<button class="theme-toggle" aria-label="Toggle dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+</button>
+<div class="sidebar-backdrop"></div>
+<nav class="site-sidebar">
+<div class="brand">Arabic ML Bootcamp</div>
+<a href="../index.html" class="home-entry">Home</a>
+<a href="../01-intro_to_ai_and_data_science/01_reading.html"><span class="daynum">Module 01</span>Intro to AI &amp; Data Science</a>
+<a href="../02-python_foundations/02_reading.html"><span class="daynum">Module 02</span>Python Foundations</a>
+<a href="../03-python_projects/03_reading.html" class="active"><span class="daynum">Module 03</span>Python Projects</a>
+<a href="../04-python_web_scraping/04_reading.html"><span class="daynum">Module 04</span>Python Web Scraping</a>
+<a href="../05-git_and_github/05_reading.html"><span class="daynum">Module 05</span>Git &amp; GitHub</a>
+<a href="../06-python_data_analysis/06_reading.html"><span class="daynum">Module 06</span>Python Data Analysis</a>
+<a href="../07-streamlit/07_reading.html"><span class="daynum">Module 07</span>Streamlit</a>
+<a href="../08-data_preprocessing_and_feature_engineering/08_reading.html"><span class="daynum">Module 08</span>Preprocessing &amp; Feature Eng.</a>
+<a href="../09-machine_learning/09_reading.html"><span class="daynum">Module 09</span>Machine Learning</a>
+<a href="../10-intro_to_deep_learning/10_reading.html"><span class="daynum">Module 10</span>Intro to Deep Learning</a>
+<a href="../11-intro_to_computer_vision/11_reading.html"><span class="daynum">Module 11</span>Intro to Computer Vision</a>
+<a href="../12-intro_to_nlp/12_reading.html"><span class="daynum">Module 12</span>Intro to NLP</a>
+</nav>
+<div class="page">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="erd-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+      <path d="M 18 0 L 0 0 0 18" fill="none" stroke="#e6edf3" stroke-width="1"/>
+    </pattern>
+    <symbol id="icon-download" viewBox="0 0 16 16">
+      <path d="M8 2v7M4.5 6.5L8 10l3.5-3.5M2.5 12.5h11"/>
+    </symbol>
+    <symbol id="icon-external" viewBox="0 0 16 16">
+      <path d="M6.5 2.5h7v7M13.5 2.5L6 10M4 4H2.5v9.5H12V12"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="crumb">Module 03 of 12 · Python Projects</div>
+<h1 class="title">Python Projects</h1>
+<p class="subtitle">Seven complete programs that put Module 02 to work — two word-guessing games, Tic-Tac-Toe, an ATM menu app, two API clients, a book-scraping pipeline, and a Streamlit dashboard.</p>
+
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Turn a plain-language problem into a few functions plus a running menu loop.</li>
+    <li>Use <code class="inline">random.choice()</code>, <code class="inline">input()</code> and <code class="inline">set()</code> to build interactive command-line games.</li>
+    <li>Validate user input in an endless loop, rejecting bad entries with <code class="inline">continue</code> and leaving with <code class="inline">break</code>.</li>
+    <li>Talk to live web services with the <code class="inline">requests</code> library and read the JSON they return.</li>
+    <li>Keep API keys out of your code with environment variables and a <code class="inline">.env</code> file.</li>
+    <li>Scrape a real website with <code class="inline">BeautifulSoup</code> and package the results into a <code class="inline">pandas</code> DataFrame.</li>
+    <li>Wrap a scraper in a small Streamlit app so anyone can browse it.</li>
+    <li>Recognize the same Module 02 building blocks — functions, loops, dicts, sets, <code class="inline">if __name__ == "__main__"</code> — in every single project.</li>
+  </ul>
+</div>
+
+<div class="day-links">
+  <a class="primary" href="03_reading.html">Reading</a>
+  <a href="README.md">Module Notes</a>
+  <a href="CODE/01-%20Word%20Guess/">Word Guess Code</a>
+  <a href="CODE/02-%20Weather%20API/">Weather API Code</a>
+  <a href="CODE/03-%20ATM%20App/">ATM App Code</a>
+  <a href="CODE/04-%20Books%20Scraping/">Books Scraping Code</a>
+  <a href="CODE/05-%20News%20API/">News API Code</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/03-python_projects" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+</div>
+
+<table class="api">
+  <thead>
+    <tr><th>Project</th><th>Duration</th><th>What you build</th><th>CODE</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>P1 · Guessing Game</td><td>17:04</td><td>A hangman-style letter game against <code class="inline">random</code></td><td><code class="inline">01- Word Guess</code></td></tr>
+    <tr><td>P2 · Tic-Tac-Toe</td><td>24:01</td><td>A two-player board game on the terminal</td><td>—</td></tr>
+    <tr><td>P3 · Simple ATM</td><td>8:19</td><td>A menu-driven balance app with deposit &amp; withdraw</td><td><code class="inline">03- ATM App</code></td></tr>
+    <tr><td>P4 · Weather API</td><td>35:45</td><td>A city → live-weather client over HTTP</td><td><code class="inline">02- Weather API</code></td></tr>
+    <tr><td>P5 · News API</td><td>11:52</td><td>A top-headlines client with a keyword &amp; country</td><td><code class="inline">05- News API</code></td></tr>
+    <tr><td>P6 · Books Scraping</td><td>17:11</td><td>A scraper that turns a whole category into a DataFrame</td><td><code class="inline">04- Books Scraping</code></td></tr>
+    <tr><td>P7 · Guess the Word</td><td>28:26</td><td>A polished version of P1 with lives, rules &amp; screen clears</td><td><code class="inline">01- Word Guess</code></td></tr>
+  </tbody>
+</table>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Everything in this module is built from Module 02 material — this is the payoff section. You'll also install your first non-standard libraries: <code class="inline">requests</code>, <code class="inline">beautifulsoup4</code>, <code class="inline">pandas</code>, <code class="inline">streamlit</code> and <code class="inline">python-dotenv</code>. One lecture (P5/P6) at a time; the code folders point at the finished scripts so you can compare.</p>
+</div>
+
+<figure>
+  <div class="diagram-label">The anatomy of every project in this module</div>
+  <svg width="780" height="190" viewBox="0 0 780 190" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="780" height="190" fill="#fff"/>
+    <rect x="0" y="0" width="780" height="190" fill="url(#erd-grid)"/>
+    <rect x="18" y="45" width="165" height="64" rx="8" fill="#dfe3e8" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="100" y="72" text-anchor="middle" font-size="13.5" font-weight="700">print() the menu</text>
+    <text x="100" y="93" text-anchor="middle" font-size="12.5">show the choices</text>
+    <line x1="183" y1="77" x2="213" y2="77" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="213" y="45" width="170" height="64" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="298" y="72" text-anchor="middle" font-size="13.5" font-weight="700">input() the choice</text>
+    <text x="298" y="93" text-anchor="middle" font-size="12.5">crack the number as int()</text>
+    <line x1="383" y1="77" x2="413" y2="77" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="413" y="45" width="175" height="64" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="500" y="72" text-anchor="middle" font-size="13.5" font-weight="700">if / elif chain</text>
+    <text x="500" y="93" text-anchor="middle" font-size="12.5">route 1 → function A, 2 → B</text>
+    <line x1="588" y1="77" x2="618" y2="77" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="618" y="45" width="145" height="64" rx="8" fill="#eef6fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="690" y="72" text-anchor="middle" font-size="13.5" font-weight="700">do the work</text>
+    <text x="690" y="93" text-anchor="middle" font-size="12.5">a function per feature</text>
+    <line x1="690" y1="145" x2="690" y2="109" stroke="#1f6fb2" stroke-width="1.5"/>
+    <line x1="298" y1="145" x2="690" y2="145" stroke="#1f6fb2" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="500" y="167" text-anchor="middle" font-size="12.5" fill="#5B6472" font-family="IBM Plex Mono, monospace">while True:  &#8230; break on "Exit"</text>
+  </svg>
+  <figcaption>Menu app skeleton — the exact shape of P2 and P3, and the core loop of every other project.</figcaption>
+</figure>
+
+<div class="callout insight">
+  <div class="ti">The pattern to copy</div>
+  <p>Every project here is <strong>functions + a loop + a main guard</strong>. Write one function per feature (<code class="inline">display_word</code>, <code class="inline">deposit_money</code>, <code class="inline">scrape_books</code>&#8230;), drive them from a <code class="inline">while True</code> loop, and shield it all with <code class="inline">if __name__ == "__main__"</code> so the script runs when executed and imports cleanly as a module.</p>
+</div>
+
+<h2 class="section"><span class="num">P1</span>Guessing Game</h2>
+<p class="section-intro">17:04 — your first program that plays with you. <code class="inline">random</code> picks a word, you guess it one letter at a time.</p>
+
+<p>The game needs three little functions: pick a word at random, draw the partially-revealed word, and run the guess loop. The set <code class="inline">guessed_letters</code> remembers what you already tried — its uniqueness guarantee is exactly why sets were worth learning in Module 02.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/01- Word Guess/guess_word.py</span></div>
+  <div class="code-body"><span class="kw">import</span> random
+
+<span class="kw">def</span> <span class="fn">choose_word</span>():
+    words = [<span class="str">"python"</span>, <span class="str">"programming"</span>, <span class="str">"computer"</span>, <span class="str">"algorithm"</span>,
+             <span class="str">"data"</span>, <span class="str">"science"</span>, <span class="str">"machine"</span>, <span class="str">"learning"</span>]
+    <span class="kw">return</span> random.<span class="fn">choice</span>(words)          <span class="com"># one random pick</span>
+
+<span class="kw">def</span> <span class="fn">display_word</span>(word, guessed_letters):
+    display = <span class="str">""</span>
+    <span class="kw">for</span> letter <span class="kw">in</span> word:                    <span class="com"># letter-wise rebuild</span>
+        <span class="kw">if</span> letter <span class="kw">in</span> guessed_letters:
+            display += letter
+        <span class="kw">else</span>:
+            display += <span class="str">"-"</span>
+    <span class="kw">return</span> display                        <span class="com"># "p-----" style output</span>
+
+<span class="kw">def</span> <span class="fn">guess_word</span>(word):
+    guessed_letters = <span class="fn">set</span>()              <span class="com"># letters already tried</span>
+    attempts = <span class="num">0</span>
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="fn">print</span>(<span class="str">f"\nWord: {display_word(word, guessed_letters)}"</span>)
+        user_guess = <span class="fn">input</span>(<span class="str">"Enter a letter: "</span>).<span class="fn">lower</span>()
+        attempts += <span class="num">1</span>
+
+        <span class="kw">if</span> <span class="fn">len</span>(user_guess) != <span class="num">1</span> <span class="kw">or</span> <span class="kw">not</span> user_guess.<span class="fn">isalpha</span>():
+            <span class="fn">print</span>(<span class="str">"Invalid input! Please enter a single letter."</span>)
+            <span class="kw">continue</span>                     <span class="com"># skip, don't count it</span>
+        <span class="kw">elif</span> user_guess <span class="kw">in</span> guessed_letters:
+            <span class="fn">print</span>(<span class="str">"You already guessed that letter."</span>)
+        <span class="kw">elif</span> user_guess <span class="kw">in</span> word:
+            <span class="fn">print</span>(<span class="str">"Correct guess!"</span>)
+            guessed_letters.<span class="fn">add</span>(user_guess)
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="str">"Incorrect guess. Try again."</span>)
+
+        <span class="kw">if</span> <span class="fn">all</span>(letter <span class="kw">in</span> guessed_letters <span class="kw">for</span> letter <span class="kw">in</span> word):
+            <span class="fn">print</span>(<span class="str">f"Congratulations! You guessed '</span>{word}<span class="str">' in {attempts} attempts."</span>)
+            <span class="kw">break</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="fn">guess_word</span>(<span class="fn">choose_word</span>())</div>
+</div>
+
+<div class="annotations">
+  <div class="annotation"><b>random.choice(words)</b><p>Picks one element from the list uniformly at random — the whole "surprise" of the game.</p></div>
+  <div class="annotation"><b>set() for guessed letters</b><p>Adding a letter twice is a no-op, and <code class="inline">in</code> membership tests against a set are fast. It makes every check below simpler.</p></div>
+  <div class="annotation"><b>all(...) generator</b><p>True only when every letter of the word is in <code class="inline">guessed_letters</code> — a one-line win condition.</p></div>
+  <div class="annotation"><b>continue vs break</b><p><code class="inline">continue</code> sends a bad input back to the top (no attempt counted); <code class="inline">break</code> leaves the loop when you win.</p></div>
+</div>
+
+<h2 class="section"><span class="num">P2</span>Tic-Tac-Toe Game</h2>
+<p class="section-intro">24:01 — a two-player board game. The lecture has no CODE folder for this one, so you draw every line yourself.</p>
+
+<p>A 3×3 board fits perfectly in a list: nine cells, players marking <code class="inline">X</code> or <code class="inline">O</code> by number. The two hard problems this lecture teaches are <em>drawing</em> the board and <em>checking for a win</em> after every move.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">a board is just a list (representative drawing-stub)</span></div>
+  <div class="code-body">board = [<span class="str">" "</span>] * <span class="num">9</span>          <span class="com"># nine empty cells: indices 0…8</span>
+
+<span class="kw">def</span> <span class="fn">draw</span>(board):
+    <span class="fn">print</span>(<span class="str">f"  </span>{board[<span class="num">0</span>]}<span class="str"> |  </span>{board[<span class="num">1</span>]}<span class="str"> |  </span>{board[<span class="num">2</span>]}<span class="str">"</span>)
+    <span class="fn">print</span>(<span class="str">" --+---+--"</span>)
+    <span class="fn">print</span>(<span class="str">f"  </span>{board[<span class="num">3</span>]}<span class="str"> |  </span>{board[<span class="num">4</span>]}<span class="str"> |  </span>{board[<span class="num">5</span>]}<span class="str">"</span>)
+    <span class="fn">print</span>(<span class="str">" --+---+--"</span>)
+    <span class="fn">print</span>(<span class="str">f"  </span>{board[<span class="num">6</span>]}<span class="str"> |  </span>{board[<span class="num">7</span>]}<span class="str"> |  </span>{board[<span class="num">8</span>]}<span class="str">"</span>)
+
+<span class="com"># A win means one of the 8 winning lines is all-X or all-O:</span>
+wins = [
+    [<span class="num">0</span>,<span class="num">1</span>,<span class="num">2</span>], [<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>], [<span class="num">6</span>,<span class="num">7</span>,<span class="num">8</span>],      <span class="com"># rows</span>
+    [<span class="num">0</span>,<span class="num">3</span>,<span class="num">6</span>], [<span class="num">1</span>,<span class="num">4</span>,<span class="num">7</span>], [<span class="num">2</span>,<span class="num">5</span>,<span class="num">8</span>],      <span class="com"># columns</span>
+    [<span class="num">0</span>,<span class="num">4</span>,<span class="num">8</span>], [<span class="num">2</span>,<span class="num">4</span>,<span class="num">6</span>],                  <span class="com"># diagonals</span>
+]
+
+<span class="kw">def</span> <span class="fn">winner</span>(board, player):
+    <span class="kw">return</span> <span class="fn">any</span>(<span class="fn">all</span>(board[i] == player <span class="kw">for</span> i <span class="kw">in</span> line) <span class="kw">for</span> line <span class="kw">in</span> wins)</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>Alternating turns</b><p>A <code class="inline">turn</code> variable toggling between <code class="inline">"X"</code> and <code class="inline">"O"</code>, read a cell number with <code class="inline">input()</code>, and reject taken or out-of-range cells with <code class="inline">continue</code>.</p></div>
+  <div class="annotation"><b>any(...) over lines</b><p><code class="inline">winner()</code> becomes one readable expression: is there any line where all three cells belong to the player?</p></div>
+  <div class="annotation"><b>Draw detection</b><p>If the board has no <code class="inline">" "</code> left and nobody has won, the game is a tie — a second condition in the same check.</p></div>
+</div>
+
+<div class="callout warn">
+  <div class="ti">Your Tic-Tac-Toe has no answer key</div>
+  <p>Unlike the other six projects, the repo ships no Tic-Tac-Toe code — build it live with the video and keep your solution for the portfolio. The lesson is the design process itself: data structure (a list of 9), a draw function, a win check, then the turn loop.</p>
+</div>
+
+<h2 class="section"><span class="num">P3</span>Simple ATM</h2>
+<p class="section-intro">8:19 — the shortest project, and the cleanest example of the menu-app skeleton: a balance you carry across menu choices.</p>
+
+<p>One <code class="inline">global balance</code> shared by all functions, each feature in its own function, and a <code class="inline">while True</code> menu that keeps you inside the ATM until you press 4. Notice how <code class="inline">withdraw_money</code> protects against overdrawing.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/03- ATM App/atm.py</span></div>
+  <div class="code-body">balance = <span class="num">0</span>
+
+<span class="kw">def</span> <span class="fn">deposit_money</span>():
+    <span class="kw">global</span> balance
+    amount = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Enter the amount to deposit: "</span>))
+    balance += amount
+    <span class="fn">print</span>(<span class="str">f"You have successfully deposited ${amount}"</span>)
+
+<span class="kw">def</span> <span class="fn">withdraw_money</span>():
+    <span class="kw">global</span> balance
+    amount = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Enter the amount to withdraw: "</span>))
+    <span class="kw">if</span> amount &gt; balance:
+        <span class="fn">print</span>(<span class="str">"Insufficient balance!"</span>)
+        <span class="kw">return</span>                         <span class="com"># leave without touching balance</span>
+    balance -= amount
+    <span class="fn">print</span>(<span class="str">f"You have successfully withdrawn ${amount}"</span>)
+
+<span class="kw">def</span> <span class="fn">check_balance</span>():
+    <span class="kw">global</span> balance
+    <span class="fn">print</span>(<span class="str">f"Your current balance is ${balance}"</span>)
+
+<span class="kw">def</span> <span class="fn">atm</span>():
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="fn">print</span>(<span class="str">"""
+        1. Deposit Money
+        2. Withdraw Money
+        3. Check Balance
+        4. Exit
+        """</span>)
+        choice = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter your choice: "</span>))
+        <span class="kw">if</span> choice == <span class="num">1</span>:
+            <span class="fn">deposit_money</span>()
+        <span class="kw">elif</span> choice == <span class="num">2</span>:
+            <span class="fn">withdraw_money</span>()
+        <span class="kw">elif</span> choice == <span class="num">3</span>:
+            <span class="fn">check_balance</span>()
+        <span class="kw">elif</span> choice == <span class="num">4</span>:
+            <span class="fn">print</span>(<span class="str">"Goodbye!"</span>)
+            <span class="kw">break</span>
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="str">"Invalid choice!"</span>)</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>float() not int()</b><p>Money has decimals — <code class="inline">float</code> reads <code class="inline">"10.50"</code>, <code class="inline">int</code> would crash on it.</p></div>
+  <div class="annotation"><b>global balance</b><p>The module-level variable lives for the whole session; each function declares <code class="inline">global</code> only when it <em>assigns</em> to it.</p></div>
+  <div class="annotation"><b>Guard with return</b><p>An early <code class="inline">return</code> after "Insufficient balance!" stops the function before the overdraft line — no <code class="inline">else</code> needed.</p></div>
+  <div class="annotation"><b>Menu loop</b><p>The <code class="inline">while True</code> + numbered <code class="inline">if/elif</code> chain is the skeleton from the diagram — repeat it and you can build any CLI app.</p></div>
+</div>
+
+<h2 class="section"><span class="num">P4</span>Weather API</h2>
+<p class="section-intro">35:45 — your first real HTTP call. A city name goes out, live weather data comes back as JSON.</p>
+
+<p>Three new ideas at once: the <code class="inline">requests</code> library, JSON responses, and keys slotted into a URL. The OpenWeatherMap endpoint is one f-string away:</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/02- Weather API/Weather_App.py</span></div>
+  <div class="code-body"><span class="kw">import</span> requests
+
+<span class="kw">def</span> <span class="fn">display_weather</span>(data_dic):
+    <span class="kw">for</span> key, value <span class="kw">in</span> data_dic.<span class="fn">items</span>():
+        <span class="fn">print</span>(<span class="str">f"{key.title()} : {value}"</span>)
+
+<span class="kw">def</span> <span class="fn">get_weather_data</span>(city):
+    my_key = <span class="str">"&lt;your-openweathermap-key&gt;"</span>
+    url = <span class="str">f"https://api.openweathermap.org/data/2.5/weather?q={city}&amp;units=metric&amp;appid={my_key}"</span>
+    response = requests.<span class="fn">get</span>(url)
+    data = response.<span class="fn">json</span>()                     <span class="com"># JSON → Python dict</span>
+    <span class="kw">if</span> data[<span class="str">"cod"</span>] != <span class="num">200</span>:
+        <span class="kw">return</span> <span class="str">"City is not Found"</span>
+    <span class="fn">print</span>(<span class="str">f"## Weather in {data['name']} ##"</span>)
+    <span class="kw">return</span> <span class="fn">display_weather</span>(data[<span class="str">"main"</span>])</div>
+</div>
+
+<p>The repo's second version, <code class="inline">weather.py</code>, wraps the same call in a <code class="inline">while True</code> "ask another city? (y/n)" loop, breaks out of it, and uses <code class="inline">assert response.status_code == 200</code> to catch a bad request up front — a nice mash-up of Module 02's exceptions section.</p>
+
+<div class="callout tip">
+  <div class="ti">API keys are secrets</div>
+  <p>In this lecture the key sits in the code — fine for a tutorial, bad for anything shared. The free OpenWeatherMap tier gives you a key; treat it like a password: paste it into <strong>your own</strong> file, and never commit it. P5 shows the professional way — an environment variable.</p>
+</div>
+
+<h2 class="section"><span class="num">P5</span>News API</h2>
+<p class="section-intro">11:52 — the same <code class="inline">requests</code> pattern, but now the key comes from an environment variable and the query lives in a <code class="inline">params</code> dict.</p>
+
+<p>NewsAPI.org's top-headlines endpoint returns a JSON object whose <code class="inline">articles</code> list you walk with <code class="inline">enumerate</code>. Secrets ride in a <code class="inline">.env</code> file that <code class="inline">python-dotenv</code> loads at runtime — keeping the key out of the script entirely.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/05- News API/news.py</span></div>
+  <div class="code-body"><span class="kw">import</span> requests, os
+<span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv
+
+<span class="kw">def</span> <span class="fn">get_top_headlines</span>(api_key, keyword=<span class="str">"technology"</span>, country=<span class="str">"us"</span>):
+    url = <span class="str">"https://newsapi.org/v2/top-headlines"</span>
+    params = {
+        <span class="str">"q"</span>: keyword,
+        <span class="str">"country"</span>: country,
+        <span class="str">"apiKey"</span>: api_key,
+    }
+    response = requests.<span class="fn">get</span>(url, params=params)
+
+    <span class="kw">if</span> response.status_code == <span class="num">200</span>:
+        articles = response.<span class="fn">json</span>().<span class="fn">get</span>(<span class="str">"articles"</span>, [])
+        <span class="kw">for</span> i, article <span class="kw">in</span> <span class="fn">enumerate</span>(articles[:<span class="num">10</span>], start=<span class="num">1</span>):  <span class="com"># top 10</span>
+            <span class="fn">print</span>(<span class="str">f"\nHeadline {i}"</span>)
+            <span class="fn">print</span>(<span class="str">"Title:"</span>, article[<span class="str">"title"</span>])
+            <span class="fn">print</span>(<span class="str">"Source:"</span>, article[<span class="str">"source"</span>][<span class="str">"name"</span>])
+            <span class="fn">print</span>(<span class="str">"URL:"</span>, article[<span class="str">"url"</span>])
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">"Error:"</span>, response.status_code)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="fn">load_dotenv</span>()                         <span class="com"># reads your .env file</span>
+    api_key = os.<span class="fn">getenv</span>(<span class="str">"API_KEY"</span>)
+    <span class="fn">get_top_headlines</span>(api_key, <span class="fn">input</span>(<span class="str">"Enter your News keyword: "</span>),
+                      <span class="fn">input</span>(<span class="str">"Enter the country code (e.g. 'us'): "</span>))</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>params dict instead of a long URL</b><p><code class="inline">requests.get(url, params=...)</code> builds the query string for you — safer and readable than string surgery.</p></div>
+  <div class="annotation"><b>articles[:10]</b><p>Slicing prevents printing the full 20+ articles — a tidy reminder that lists, tuples and API results all slice the same way.</p></div>
+  <div class="annotation"><b>enumerate(..., start=1)</b><p>Number the headlines from 1 instead of 0, like the header of a report.</p></div>
+  <div class="annotation"><b>os.getenv + .env</b><p><code class="inline">API_KEY=your-key</code> lives in <code class="inline">.env</code>, loaded only in memory. Add <code class="inline">.env</code> to <code class="inline">.gitignore</code> so the secret never reaches GitHub — the setup you'll actually use at work.</p></div>
+</div>
+
+<h2 class="section"><span class="num">P6</span>Books Scraping</h2>
+<p class="section-intro">17:11 — the module's big one: pull an entire bookshop category off the web into a <code class="inline">pandas</code> DataFrame, paginating until you've captured every book.</p>
+
+<p>This is web scraping in miniature: send a <code class="inline">requests</code> request, parse the HTML with <code class="inline">BeautifulSoup</code>, extract the bits you want, and hand them to <code class="inline">pandas</code>. The pipeline below is the shape every scraper in Module 04 will follow.</p>
+
+<figure>
+  <div class="diagram-label">The scraping pipeline (P6, then Module 04's whole toolkit)</div>
+  <svg width="780" height="170" viewBox="0 0 780 170" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="780" height="170" fill="#fff"/>
+    <rect x="0" y="0" width="780" height="170" fill="url(#erd-grid)"/>
+    <rect x="20" y="48" width="160" height="74" rx="8" fill="#dfe3e8" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="100" y="72" text-anchor="middle" font-size="13" font-weight="700">books.toscrape.com</text>
+    <text x="100" y="93" text-anchor="middle" font-size="12">HTML pages, category</text>
+    <text x="100" y="110" text-anchor="middle" font-size="12">folders, pagination</text>
+    <line x1="180" y1="85" x2="217" y2="85" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="217" y="48" width="200" height="74" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="317" y="72" text-anchor="middle" font-size="13" font-weight="700">requests + BeautifulSoup</text>
+    <text x="317" y="93" text-anchor="middle" font-size="12">soup.find_all("h3"),</text>
+    <text x="317" y="110" text-anchor="middle" font-size="12">class_="price_color" &#8230;</text>
+    <line x1="417" y1="85" x2="454" y2="85" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="454" y="48" width="160" height="74" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="534" y="72" text-anchor="middle" font-size="13" font-weight="700">pandas DataFrame</text>
+    <text x="534" y="93" text-anchor="middle" font-size="12">names · prices · ratings</text>
+    <text x="534" y="110" text-anchor="middle" font-size="12">pd.concat per page</text>
+    <line x1="614" y1="85" x2="650" y2="85" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="650" y="48" width="115" height="74" rx="8" fill="#eef6fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="707" y="72" text-anchor="middle" font-size="13" font-weight="700">streamlit</text>
+    <text x="707" y="93" text-anchor="middle" font-size="12">select a category,</text>
+    <text x="707" y="110" text-anchor="middle" font-size="12">see the table</text>
+  </svg>
+  <figcaption>Scrape → parse → tabulate → present. Module 04 (Python Web Scraping) is this same pipeline, expanded into a stand-alone skill.</figcaption>
+</figure>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/04- Books Scraping/scrape.py (trimmed)</span></div>
+  <div class="code-body"><span class="kw">import</span> requests, math
+<span class="kw">from</span> bs4 <span class="kw">import</span> BeautifulSoup
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+base_url = <span class="str">"https://books.toscrape.com/"</span>
+
+<span class="kw">def</span> <span class="fn">get_categories</span>():
+    soup = <span class="fn">BeautifulSoup</span>(requests.<span class="fn">get</span>(base_url).content, <span class="str">"lxml"</span>)
+    categories = soup.<span class="fn">find</span>(<span class="str">"ul"</span>, class_=<span class="str">"nav nav-list"</span>).<span class="fn">find</span>(<span class="str">"ul"</span>).<span class="fn">find_all</span>(<span class="str">"li"</span>)
+    names = [c.a.text.<span class="fn">strip</span>() <span class="kw">for</span> c <span class="kw">in</span> categories]
+    keys  = [n.<span class="fn">lower</span>().<span class="fn">replace</span>(<span class="str">" "</span>, <span class="str">"-"</span>) + <span class="str">"_"</span> + <span class="fn">str</span>(i+<span class="num">2</span>)
+             <span class="kw">for</span> i, n <span class="kw">in</span> <span class="fn">enumerate</span>(names)]
+    <span class="kw">return</span> <span class="fn">dict</span>(<span class="fn">zip</span>(names, keys))            <span class="com"># "Travel" → "travel_2"</span>
+
+<span class="kw">def</span> <span class="fn">scrape_books</span>(category):
+    url = base_url + <span class="str">"catalogue/category/books/"</span> + <span class="fn">get_categories</span>()[category] + <span class="str">"/index.html"</span>
+    soup = <span class="fn">BeautifulSoup</span>(requests.<span class="fn">get</span>(url).content, <span class="str">"lxml"</span>)
+
+    total = <span class="fn">int</span>(soup.<span class="fn">find</span>(<span class="str">"form"</span>, class_=<span class="str">"form-horizontal"</span>).<span class="fn">find</span>(<span class="str">"strong"</span>).text)
+    pages = math.<span class="fn">ceil</span>(total / <span class="num">20</span>)          <span class="com"># 20 books per page</span>
+
+    all_books = pd.<span class="fn">DataFrame</span>()
+    <span class="kw">for</span> page <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, pages + <span class="num">1</span>):
+        page_url = url <span class="kw">if</span> page == <span class="num">1</span> <span class="kw">else</span> <span class="str">f"{url[:-10]}page-{page}.html"</span>
+        soup = <span class="fn">BeautifulSoup</span>(requests.<span class="fn">get</span>(page_url).content, <span class="str">"lxml"</span>)
+
+        names   = [h.a.<span class="fn">get</span>(<span class="str">"title"</span>) <span class="kw">for</span> h <span class="kw">in</span> soup.<span class="fn">find_all</span>(<span class="str">"h3"</span>)]
+        prices  = [p.text.<span class="fn">lstrip</span>(<span class="str">"£"</span>) <span class="kw">for</span> p <span class="kw">in</span> soup.<span class="fn">find_all</span>(<span class="str">"p"</span>, class_=<span class="str">"price_color"</span>)]
+        ratings = [r[<span class="str">"class"</span>][<span class="num">1</span>] <span class="kw">for</span> r <span class="kw">in</span> soup.<span class="fn">find_all</span>(<span class="str">"p"</span>, class_=<span class="str">"star-rating"</span>)]
+
+        books_df = pd.<span class="fn">DataFrame</span>({
+            <span class="str">"Book Name"</span>: names, <span class="str">"Price"</span>: prices, <span class="str">"Rating"</span>: ratings
+        })
+        all_books = pd.<span class="fn">concat</span>([all_books, books_df], ignore_index=<span class="kw">True</span>)
+    <span class="kw">return</span> all_books</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>soup.find_all / .find</b><p>BeautifulSoup turns HTML into a tree you interrogate with <code class="inline">find</code> (one) and <code class="inline">find_all</code> (many) — by tag, by <code class="inline">class_</code>, or by plain attribute like the rating classes.</p></div>
+  <div class="annotation"><b>math.ceil(total / 20)</b><p>Fifty-one books means three pages — <code class="inline">ceil</code> rounds up so the last partial page is still visited.</p></div>
+  <div class="annotation"><b>dict(zip(names, keys))</b><p>Module 02's <code class="inline">zip</code> pops up to build the category lookup — two parallel lists become one mapping.</p></div>
+  <div class="annotation"><b>pd.concat per page</b><p>Each page becomes a small DataFrame; they're stacked with <code class="inline">ignore_index=True</code> so row numbers stay continuous.</p></div>
+</div>
+
+<p>Then the payoff of having a DataFrame: <code class="inline">app.py</code> wraps the whole thing in a Streamlit dropdown so anyone can browse a category.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/04- Books Scraping/app.py</span></div>
+  <div class="code-body"><span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">from</span> scrape <span class="kw">import</span> scrape_books, get_categories
+
+st.<span class="fn">title</span>(<span class="str">"Books Scraping App"</span>)
+category = st.<span class="fn">selectbox</span>(<span class="str">"Select a category:"</span>, <span class="fn">get_categories</span>().<span class="fn">keys</span>())
+st.<span class="fn">markdown</span>(scrape_books(category).<span class="fn">to_markdown</span>(index=<span class="kw">False</span>))</div>
+</div>
+<div class="callout insight">
+  <div class="ti">A tiny sneak preview</div>
+  <p>Streamlit gets its own module (07). <code class="inline">st.selectbox</code> + <code class="inline">st.markdown</code> is already a working tool here — run <code class="inline">streamlit run app.py</code> and you have a dashboard.</p>
+</div>
+
+<h2 class="section"><span class="num">P7</span>Guess the Word</h2>
+<p class="section-intro">28:26 — the second word game: a redesign with rules, a 10-attempt limit, and a screen that clears between rounds.</p>
+
+<p>Same idea as P1, but this is where the course shows a game getting <em>polished</em>. Compare the two side by side:</p>
+<div class="compare">
+  <div class="col">
+    <h4>P1 · Guessing Game</h4>
+    <ul>
+      <li>Ends when the whole word is guessed.</li>
+      <li>Counts attempts and reports them.</li>
+      <li>Validates single-letter input.</li>
+      <li><code class="inline">display_word</code> builds a string with dashes.</li>
+    </ul>
+  </div>
+  <div class="col">
+    <h4>P7 · Guess the Word</h4>
+    <ul>
+      <li>Shows a welcome + rules screen.</li>
+      <li>Hard limit of 10 attempts — fail and the word is revealed.</li>
+      <li>Clears the screen (sleeps, then <code class="inline">os.system('cls')</code>) each round.</li>
+      <li>Ends the same game by comparing set sizes.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">CODE/01- Word Guess/guess_word2.py (trimmed)</span></div>
+  <div class="code-body"><span class="kw">import</span> random, time, os
+
+allowed_attempts = <span class="num">10</span>
+
+<span class="kw">def</span> <span class="fn">clear_screen</span>():
+    time.<span class="fn">sleep</span>(<span class="num">0.8</span>)               <span class="com"># let the last message be read</span>
+    os.<span class="fn">system</span>(<span class="str">'cls'</span>)           <span class="com"># 'clear' on macOS / Linux</span>
+
+<span class="kw">def</span> <span class="fn">display_word</span>(word, guessed_letters):
+    <span class="kw">for</span> letter <span class="kw">in</span> word:
+        <span class="fn">print</span>(letter <span class="kw">if</span> letter <span class="kw">in</span> guessed_letters <span class="kw">else</span> <span class="str">"-"</span>, end=<span class="str">""</span>)
+
+<span class="kw">def</span> <span class="fn">guess_word</span>():
+    word = random.<span class="fn">choice</span>([<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"orange"</span>, <span class="str">"grape"</span>])
+    guessed_letters = <span class="fn">set</span>()
+    attempts = <span class="num">0</span>
+    <span class="kw">while</span> <span class="kw">True</span>:
+        guess = <span class="fn">input</span>(<span class="str">"\nEnter a letter: "</span>)
+        attempts += <span class="num">1</span>
+        <span class="kw">if</span> guess <span class="kw">in</span> word:
+            guessed_letters.<span class="fn">add</span>(guess)
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="str">"Wrong guess!"</span>)
+
+        <span class="fn">clear_screen</span>()
+        <span class="fn">display_word</span>(word, guessed_letters)
+
+        <span class="kw">if</span> <span class="fn">len</span>(guessed_letters) == <span class="fn">len</span>(<span class="fn">set</span>(word)):      <span class="com"># every distinct letter found</span>
+            <span class="fn">print</span>(<span class="str">f"\nYou guessed the word {word} correctly!"</span>)
+            <span class="kw">break</span>
+        <span class="kw">elif</span> attempts == allowed_attempts:                <span class="com"># out of lives</span>
+            <span class="fn">print</span>(<span class="str">f"\nYou have exhausted all {allowed_attempts} attempts."</span>)
+            <span class="fn">print</span>(<span class="str">f"The correct word was {word}."</span>)
+            <span class="kw">break</span></div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>Small functions again</b><p><code class="inline">clear_screen</code> and <code class="inline">display_word</code> are one-job helpers — the code actually got <em>easier</em> to follow while the game got richer.</p></div>
+  <div class="annotation"><b>len(set(word))</b><p>The win condition collapses letters like "banana" to its distinct set so repeated letters are only guessed once.</p></div>
+  <div class="annotation"><b>Attempt budget</b><p>A second exit route (<code class="inline">elif attempts == allowed_attempts</code>) means the loop always terminates — the "how does this loop end?" question from Module 02.</p></div>
+  <div class="annotation"><b>os.system('cls')</b><p>Runs a shell command to clear the terminal — a platform quirk (<code class="inline">'cls'</code> on Windows, <code class="inline">'clear'</code> elsewhere) worth a comment so you remember why.</p></div>
+</div>
+
+<div class="callout recap">
+  <div class="ti">What the whole module added up to</div>
+  <p>Seven projects, three basic ingredients: <strong>functions</strong> (one per feature), a <strong>loop</strong> (menu or game), and <strong>a main guard</strong>. From there you stacked on new tools — <code class="inline">random</code>, <code class="inline">requests</code> + JSON, <code class="inline">BeautifulSoup</code>, <code class="inline">pandas</code>, <code class="inline">streamlit</code> — while <code class="inline">while True</code>, <code class="inline">break</code>/<code class="inline">continue</code>, <code class="inline">zip</code>, <code class="inline">enumerate</code>, sets and dicts did the heavy lifting. That's the whole idea of the bootcamp: small tools, composed.</p>
+</div>
+
+<div class="callout warn">
+  <div class="ti">Before you move on — common beginner traps</div>
+  <p><strong>Trusting the player:</strong> <code class="inline">int(input(...))</code> crashes on non-numeric input. Wrap risky reads in <code class="inline">try/except</code> or validate the string first (P1 does this with <code class="inline">isalpha()</code>).</p>
+  <p><strong>Forgetting keys are secrets:</strong> never commit a weather or news key. Use an environment variable as P5 does, and <code class="inline">.gitignore</code> your <code class="inline">.env</code>.</p>
+  <p><strong>If statements that overwrite instead of branch:</strong> assign <code class="inline">balance</code> inside <code class="inline">deposit_money</code> without <code class="inline">global</code> and you'll shadow it silently — the ATM "stops working" with zero error message.</p>
+  <p><strong>Ignoring the loop's exit:</strong> every <code class="inline">while True</code> must have at least one <code class="inline">break</code> reachable from real inputs — check P3 (choice 4) and P7 (win or attempts out).</p>
+  <p><strong>Slicing internals you can't see:</strong> scraping depends on the current HTML of a page. Selectors can break when a site redesigns — that's normal, re-inspect with a fresh <code class="inline">soup</code>.</p>
+</div>
+
+<div class="callout recap">
+  <div class="ti">Next: Module 04</div>
+  <p>Python Web Scraping — P6's pipeline becomes a full module: more BeautifulSoup, real-world sites with JavaScript, and the conventions for extracting clean tabular data at scale.</p>
+</div>
+
+<div class="day-nav">
+  <a class="day-nav-link prev" href="../02-python_foundations/02_reading.html">
+    <span class="dn-label">&larr; Previous</span>
+    <span class="dn-title">Module 02 &middot; Python Foundations</span>
+  </a>
+  <a class="day-nav-link next" href="../04-python_web_scraping/04_reading.html">
+    <span class="dn-label">Next &rarr;</span>
+    <span class="dn-title">Module 04 &middot; Python Web Scraping</span>
+  </a>
+</div>
+
+<footer>Module 03 · Python Projects · self-paced</footer>
+</div>
+<script>
+(function(){
+  var sidebar = document.querySelector('.site-sidebar');
+  var toggle = document.querySelector('.sidebar-toggle');
+  var backdrop = document.querySelector('.sidebar-backdrop');
+  if(!sidebar || !toggle || !backdrop) return;
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
+    if (sidebar.classList.contains('open')) close(); else openMenu();
+  });
+  backdrop.addEventListener('click', close);
+})();
+</script>
+<script>
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if(!btn) return;
+  function currentTheme(){
+    var attr = document.documentElement.getAttribute('data-theme');
+    if(attr === 'dark' || attr === 'light') return attr;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  btn.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
+</script>
+</body></html>
