@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Python Foundations</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('theme');
+    if(saved === 'dark' || saved === 'light'){
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141414; --blue:#2F63E8; --blue-dark:#1E4BC4; --gray:#5B6472; --gray-muted:#9CA3AF;
+  --border:#E5E7EB; --panel:#F3F4F6; --white:#FFFFFF; --paper:#FAFBFC; --card-bg:#FFFFFF;
+  --code-bg:#1E1E1E; --code-default:#D4D4D4; --code-kw:#569CD6; --code-fn:#DCDCAA;
+  --code-str:#CE9178; --code-com:#6A9955;
+  --insight-bg:#E8F5E9; --insight-bd:#1E8449; --insight-ti:#1E5631;
+  --tip-bg:#EEF6FF; --tip-bd:#2E6FB5; --tip-ti:#1F4E82;
+  --warn-bg:#FDECEA; --warn-bd:#C0392B; --warn-ti:#7B1F14;
+  --annotations-bg:#FAFBFD; --divider:#EEF2F7;
+  --recap-bg:#FFF8E1; --recap-bd:#B45309; --recap-ti:#8A4B00;
+}
+:root[data-theme="dark"]{
+  --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
+  --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
+  --annotations-bg:#14171C; --divider:#242830;
+  --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
+  --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
+  --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
+  --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
+    --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
+    --annotations-bg:#14171C; --divider:#242830;
+    --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
+    --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
+    --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
+    --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
+  }
+}
+body{transition:background-color .15s ease,color .15s ease}
+.theme-toggle{position:fixed;top:14px;right:20px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);display:flex;align-items:center;justify-content:center}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.theme-toggle .icon-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-moon{display:block}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon{display:block}
+}
+:root[data-theme="light"] .theme-toggle .icon-sun{display:block}
+:root[data-theme="light"] .theme-toggle .icon-moon{display:none}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;line-height:1.7;font-size:16px}
+.page{max-width:920px;margin:0 auto;padding:56px 48px 90px}
+.crumb{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
+h1.title{font-family:'Bricolage Grotesque',Georgia,serif;font-size:42px;line-height:1.12;color:var(--ink);margin:0 0 12px;font-weight:800}
+.subtitle{font-size:19px;color:var(--gray);margin:0 0 30px}
+.objectives{background:var(--panel);border-left:4px solid var(--blue);border-radius:4px;padding:20px 24px;margin:24px 0 36px}
+.objectives h2{font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin:0 0 10px;font-weight:700}
+.objectives ul{margin:0;padding-left:20px}.objectives li{font-size:15px;margin-bottom:6px}
+h2.section{font-family:'Bricolage Grotesque',Georgia,serif;font-size:26px;color:var(--ink);margin:52px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink);font-weight:700}
+h2.section .num{color:var(--blue);margin-right:10px}
+.section-intro{font-size:16.5px;color:var(--gray);margin:0 0 20px}
+h3.sub{font-size:17.5px;color:var(--ink);margin:30px 0 10px;font-weight:700}
+p{margin:0 0 15px} p.lead{font-size:18px;color:var(--ink);font-weight:600}
+strong{color:var(--ink);font-weight:700}
+code.inline{font-family:'IBM Plex Mono',monospace;font-size:.88em;background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--blue-dark)}
+table.api{width:100%;border-collapse:collapse;margin:14px 0 22px;background:var(--card-bg);font-size:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+table.api th,table.api td{padding:10px 13px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+table.api thead th{background:var(--panel);color:var(--ink);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em}
+table.api tbody tr:last-child td{border-bottom:none}
+
+.callout{margin:22px 0 26px;border-radius:6px;padding:15px 20px 17px;border-left:4px solid}
+.callout .ti{font-family:'IBM Plex Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:7px}
+.callout p{font-size:15px;margin:0 0 6px}.callout p:last-child{margin-bottom:0}
+.callout.tip{background:var(--tip-bg);border-color:var(--tip-bd)}.callout.tip .ti{color:var(--tip-ti)}
+.callout.insight{background:var(--insight-bg);border-color:var(--insight-bd)}.callout.insight .ti{color:var(--insight-ti)}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn-bd)}.callout.warn .ti{color:var(--warn-ti)}
+.callout.recap{background:var(--recap-bg);border-color:var(--recap-bd)}.callout.recap .ti{color:var(--recap-ti)}
+
+.code-block{margin:18px 0 8px;border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(20,20,30,.12)}
+.code-header{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#161616}
+.code-header .dot{width:10px;height:10px;border-radius:50%}
+.code-header .dot.r{background:#FF5F56}.code-header .dot.y{background:#FFBD2E}.code-header .dot.g{background:#27C93F}
+.code-header .fname{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9C9C9C;margin-left:6px}
+.code-body{background:var(--code-bg);color:var(--code-default);padding:16px 20px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.code-body .kw{color:var(--code-kw)}.code-body .fn{color:var(--code-fn)}
+.code-body .str{color:var(--code-str)}.code-body .com{color:var(--code-com);font-style:italic}
+.code-body .def{color:var(--code-default)}
+.annotations{background:var(--annotations-bg);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px 20px 14px;margin-bottom:28px}
+.annotation{padding:11px 0;border-top:1px solid var(--divider)}
+.annotation:first-child{border-top:0}
+.annotation b{color:var(--blue);font-size:14px}
+.annotation p{margin:3px 0 0;font-size:14.5px;color:var(--ink)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 26px}
+.compare .col{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:17px 19px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
+.compare .col h4{margin:0 0 8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
+.compare .col p,.compare .col li{font-size:14.5px}
+.compare .col ul{margin:6px 0 0;padding-left:18px}
+
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0 26px}
+.card-grid.three{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:16px 18px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
+.card h4{margin:0 0 7px;color:var(--ink);font-size:16px;font-weight:700}
+.card p{font-size:14.5px;margin:0 0 6px;color:var(--gray)}
+.card p:last-child{margin-bottom:0}
+.card code.inline{font-size:.82em}
+
+figure{margin:24px 0 8px;text-align:center;background:linear-gradient(180deg,#fff,#FAFBFD);border:1px solid var(--border);border-radius:10px;padding:26px 14px 18px}
+figcaption{font-size:13.5px;color:var(--gray);margin-top:12px;font-style:italic}
+.diagram-label{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;color:var(--blue);text-align:left;margin:0 0 4px}
+
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);color:var(--gray-muted);font-size:12px;text-align:center;font-family:'IBM Plex Mono',monospace}
+@media(max-width:760px){.page{padding:32px 22px}h1.title{font-size:30px}.card-grid,.card-grid.three,.compare{grid-template-columns:1fr}}
+.site-sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--panel);border-right:1px solid var(--border);padding:22px 0;overflow-y:auto;z-index:1000}
+.site-sidebar .brand{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;font-size:14.5px;color:var(--ink);padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;line-height:1.3}
+.site-sidebar a{display:block;padding:9px 20px;font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;font-size:14px;color:var(--gray);text-decoration:none;border-left:3px solid transparent}
+.site-sidebar a:hover{background:var(--card-bg);color:var(--blue)}
+.site-sidebar a.active{background:var(--card-bg);color:var(--blue);font-weight:700;border-left-color:var(--blue)}
+.site-sidebar .daynum{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--gray-muted);display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
+.site-sidebar a.active .daynum{color:var(--blue)}
+body{margin-left:220px;background:var(--paper)}
+.sidebar-toggle{display:none;position:fixed;top:14px;left:14px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);align-items:center;justify-content:center}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900}
+@media(max-width:900px){
+.site-sidebar{width:250px;transform:translateX(-100%);transition:transform .25s ease;box-shadow:2px 0 16px rgba(0,0,0,.18)}
+.site-sidebar.open{transform:translateX(0)}
+.sidebar-toggle{display:flex}
+.sidebar-backdrop.open{display:block}
+body{margin-left:0}
+}
+.day-links{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 28px}
+.day-links a{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;text-decoration:none;color:var(--blue-dark);background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 11px;display:inline-flex;align-items:center}
+.day-links a:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.day-links a.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.day-links a.primary:hover{background:var(--blue-dark)}
+.dl-icon{width:11px;height:11px;margin-right:5px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.day-nav{display:flex;gap:16px;margin:40px 0 0;flex-wrap:wrap}
+.day-nav-link{flex:1 1 260px;max-width:340px;display:flex;flex-direction:column;gap:4px;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:border-color .15s,background .15s}
+.day-nav-link:hover{background:var(--card-bg);border-color:var(--blue)}
+.day-nav-link.next{margin-left:auto;text-align:right;align-items:flex-end}
+.day-nav-link .dn-label{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700}
+.day-nav-link .dn-title{font-size:14.5px;color:var(--ink);font-weight:600}
+@media(max-width:520px){.day-nav-link{flex:1 1 100%;max-width:none}.day-nav-link.next{text-align:left;align-items:flex-start;margin-left:0}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+<button class="theme-toggle" aria-label="Toggle dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+</button>
+<div class="sidebar-backdrop"></div>
+<nav class="site-sidebar">
+<div class="brand">Arabic ML Bootcamp</div>
+<a href="../index.html" class="home-entry">Home</a>
+<a href="../01-intro_to_ai_and_data_science/01_reading.html"><span class="daynum">Module 01</span>Intro to AI &amp; Data Science</a>
+<a href="../02-python_foundations/02_reading.html" class="active"><span class="daynum">Module 02</span>Python Foundations</a>
+<a href="../03-python_projects/03_reading.html"><span class="daynum">Module 03</span>Python Projects</a>
+<a href="../04-python_web_scraping/04_reading.html"><span class="daynum">Module 04</span>Python Web Scraping</a>
+<a href="../05-git_and_github/05_reading.html"><span class="daynum">Module 05</span>Git &amp; GitHub</a>
+<a href="../06-python_data_analysis/06_reading.html"><span class="daynum">Module 06</span>Python Data Analysis</a>
+<a href="../07-streamlit/07_reading.html"><span class="daynum">Module 07</span>Streamlit</a>
+<a href="../08-data_preprocessing_and_feature_engineering/08_reading.html"><span class="daynum">Module 08</span>Preprocessing &amp; Feature Eng.</a>
+<a href="../09-machine_learning/09_reading.html"><span class="daynum">Module 09</span>Machine Learning</a>
+<a href="../10-intro_to_deep_learning/10_reading.html"><span class="daynum">Module 10</span>Intro to Deep Learning</a>
+<a href="../11-intro_to_computer_vision/11_reading.html"><span class="daynum">Module 11</span>Intro to Computer Vision</a>
+<a href="../12-intro_to_nlp/12_reading.html"><span class="daynum">Module 12</span>Intro to NLP</a>
+</nav>
+<div class="page">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="erd-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+      <path d="M 18 0 L 0 0 0 18" fill="none" stroke="#e6edf3" stroke-width="1"/>
+    </pattern>
+    <symbol id="icon-download" viewBox="0 0 16 16">
+      <path d="M8 2v7M4.5 6.5L8 10l3.5-3.5M2.5 12.5h11"/>
+    </symbol>
+    <symbol id="icon-external" viewBox="0 0 16 16">
+      <path d="M6.5 2.5h7v7M13.5 2.5L6 10M4 4H2.5v9.5H12V12"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="crumb">Module 02 of 12 · Python Foundations</div>
+<h1 class="title">Python Foundations</h1>
+<p class="subtitle">From your first <code class="inline">print()</code> to object-oriented programming — data types, control flow, functions, files, exceptions, and OOP, with 23 notebooks to code along.</p>
+
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Write arithmetic expressions and know Python's operator precedence.</li>
+    <li>Describe Python's object model — scalar vs. non-scalar types, and dynamic typing.</li>
+    <li>Work with the core data structures: strings, lists, tuples, dictionaries, and sets.</li>
+    <li>Control program flow with <code class="inline">if</code>/<code class="inline">elif</code>/<code class="inline">else</code>, <code class="inline">while</code>, and <code class="inline">for</code> loops.</li>
+    <li>Compose reusable code with functions, <code class="inline">*args</code>/<code class="inline">**kwargs</code>, and understand scope and modules.</li>
+    <li>Handle files and exceptions safely.</li>
+    <li>Model real things with classes: <code class="inline">__init__</code>, attributes, methods, and the four OOP principles.</li>
+    <li>Recognize that even scikit-learn's <code class="inline">LinearRegression</code> is just a class you instantiate and call methods on.</li>
+  </ul>
+</div>
+
+<div class="day-links">
+  <a class="primary" href="02_reading.html">Reading</a>
+  <a href="README.md">Module Notes</a>
+  <a href="OOP_Complete_Notes.md">OOP Complete Notes</a>
+  <a href="OOP_Tutorial/">OOP Study Guide</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/02-python_foundations" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Install Python and Jupyter. The <code class="inline">CODE/</code> folder has <strong>23 numbered notebooks</strong> (00–23) that follow the lecture order exactly — open one per video. This page mirrors that same structure, grouped into the four "Parts" the course itself uses.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>First programs &amp; simple arithmetic</h2>
+<p class="section-intro">Your first program, and Python's operators and precedence.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">00-simple_arithmetic.ipynb</span></div>
+  <div class="code-body"><span class="fn">print</span>(<span class="str">'Hello world!'</span>)
+<span class="fn">print</span>(<span class="num">2</span> + <span class="num">2</span>)
+<span class="num">5</span> + <span class="num">4</span> - <span class="num">3</span>
+(<span class="num">2</span> * <span class="num">3</span>) + <span class="num">4</span>
+<span class="num">10</span> / <span class="num">2</span>
+(<span class="num">-7</span> + <span class="num">2</span>) * (<span class="num">-4</span>)</div>
+</div>
+
+<p>* <strong>Parentheses</strong> tell Python to do those operations first.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">exponent, quotient, remainder</span></div>
+  <div class="code-body"><span class="com"># Exponentiation</span>
+<span class="num">2</span>**<span class="num">5</span>            <span class="com"># 32</span>
+<span class="num">9</span> ** (<span class="num">1</span>/<span class="num">2</span>)    <span class="com"># 3.0 — square root</span>
+
+<span class="com"># Integer division (quotient)</span>
+<span class="num">20</span> // <span class="num">6</span>          <span class="com"># 3</span>
+
+<span class="com"># Remainder (modulo)</span>
+<span class="num">20</span> % <span class="num">6</span>           <span class="com"># 2</span></div>
+</div>
+
+<div class="callout insight">
+  <div class="ti">Precedence order</div>
+  <p>From highest to lowest: <code class="inline">**</code> (exponentiation) → <code class="inline">*</code>, <code class="inline">/</code>, <code class="inline">//</code>, <code class="inline">%</code> → <code class="inline">+</code>, <code class="inline">-</code> (evaluated left to right). Compare <code class="inline">(-7 + 2) * (-4) = 20</code> with <code class="inline">-7 + 2 * -4 = -15</code> — same numbers, different parentheses, different results.</p>
+</div>
+
+<p>The course also introduces the built-in numeric functions through a classic nested puzzle:
+<code class="inline">min([sum([11, 22]), max(abs(-30), 2)])</code> — sum the inner list (<code class="inline">33</code>),
+take the max of the absolutes (<code class="inline">30</code>), then the min of the two (<code class="inline">min(33, 30) = 30</code>).</p>
+
+<h2 class="section"><span class="num">2</span>Data types: scalar vs. non-scalar</h2>
+<p class="section-intro">Python is object-oriented, so everything is an object — and objects come in two broad flavors.</p>
+
+<p>Python is an <strong>object-oriented</strong> language, so "everything is an object" — each object
+has a <em>type</em> that defines what programs can do with it. Objects are either:</p>
+<div class="compare">
+  <div class="col">
+    <h4>Scalar</h4>
+    <p>Cannot be subdivided — a single atomic value.</p>
+    <ul><li><code class="inline">int</code> — <code class="inline">100</code></li><li><code class="inline">float</code> — <code class="inline">5.7</code></li><li><code class="inline">bool</code> — <code class="inline">True</code>/<code class="inline">False</code></li></ul>
+  </div>
+  <div class="col">
+    <h4>Non-scalar</h4>
+    <p>Have internal structure you can index or access.</p>
+    <ul><li><code class="inline">str</code></li><li><code class="inline">list</code></li><li><code class="inline">tuple</code></li><li><code class="inline">dict</code></li><li><code class="inline">set</code></li></ul>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">01-simple_data_types.ipynb</span></div>
+  <div class="code-body"><span class="fn">type</span>(<span class="num">100</span>)       <span class="com"># &lt;class 'int'&gt;</span>
+<span class="fn">type</span>(<span class="num">5.7</span>)       <span class="com"># &lt;class 'float'&gt;</span>
+<span class="fn">type</span>(<span class="num">5</span> == <span class="num">5</span>)  <span class="com"># &lt;class 'bool'&gt;</span></div>
+</div>
+
+<h3 class="sub">Type conversion (casting)</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">casting</span></div>
+  <div class="code-body"><span class="fn">float</span>(<span class="num">3</span>)         <span class="com"># 3.0</span>
+<span class="fn">int</span>(<span class="num">3.1</span>)        <span class="com"># 3 — truncates, never rounds</span>
+<span class="fn">int</span>(<span class="str">'12541'</span>)   <span class="com"># 12541 — string to int</span>
+<span class="fn">float</span>(<span class="str">'1.5'</span>)    <span class="com"># 1.5</span></div>
+</div>
+
+<h3 class="sub">Boolean logic</h3>
+<p>Comparisons produce <code class="inline">bool</code> values and combine with <code class="inline">and</code>,
+<code class="inline">or</code>, and <code class="inline">not</code> — the same operators you'll reach for every
+time a model needs a condition:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">boolean_logic</span></div>
+  <div class="code-body"><span class="num">1</span> == <span class="num">1</span> <span class="kw">and</span> <span class="num">2</span> == <span class="num">2</span>   <span class="com"># True</span>
+<span class="num">1</span> != <span class="num">1</span> <span class="kw">or</span> <span class="num">2</span> == <span class="num">2</span>    <span class="com"># True</span>
+<span class="kw">not</span> <span class="num">1</span> == <span class="num">1</span>           <span class="com"># False</span></div>
+</div>
+
+<h2 class="section"><span class="num">3</span>Variables &amp; assignment</h2>
+<p class="section-intro">Giving names to values — why, how, and what Python lets you do with them.</p>
+<p>Variables let you <strong>reuse names instead of repeating values</strong>, and make changing code
+later easy. The course's running example is the area of a circle:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">02-variables_assignment.ipynb</span></div>
+  <div class="code-body"><span class="com"># Area of a circle</span>
+pi = <span class="num">3.14159</span>
+radius = <span class="num">2.2</span> / <span class="num">2</span>
+area = pi*(radius**<span class="num">2</span>)
+
+radius = <span class="num">3.2</span> / <span class="num">2</span>    <span class="com"># re-assign</span>
+area = pi*(radius**<span class="num">2</span>) <span class="com"># recompute — area doesn't know to update itself</span></div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>Re-assignment</h4><p>The old value may still be in memory, but the name now points elsewhere. A variable's value only changes when you run a new assignment.</p></div>
+  <div class="card"><h4>Dynamic typing</h4><p><code class="inline">a = 5; a = 'Hello'</code> is legal — a name can hold different types over its lifetime.</p></div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">in-place operators</span></div>
+  <div class="code-body">radius = radius + <span class="num">1</span>   <span class="com"># legal — (=) is assignment, not equality</span>
+radius += <span class="num">1</span>            <span class="com"># same thing, shorthand</span></div>
+</div>
+<div class="callout warn">
+  <div class="ti">= vs ==</div>
+  <p><code class="inline">=</code> is <em>assignment</em> (give a name to a value). <code class="inline">==</code> is <em>comparison</em> (are two things equal?). Expect this mix-up to appear in your first bug — everyone's does.</p>
+</div>
+
+<h2 class="section"><span class="num">4</span>Strings</h2>
+<p class="section-intro">The first non-scalar type. If you want to use text in Python, you use a string.</p>
+<p>A string is created by entering text between two single or double quotation marks. Backslashes
+escape characters, and <code class="inline">\n</code> is the newline symbol. <code class="inline">input()</code>
+returns a string — so you cast it with <code class="inline">int()</code> or <code class="inline">float()</code>
+when you need a number.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">03-strings.ipynb</span></div>
+  <div class="code-body">s = <span class="str">'Hello, I_am learning_Python'</span>
+s.split(<span class="str">'_'</span>)       <span class="com"># ['Hello, I', '', 'am learning', 'Python']</span>
+s.split()             <span class="com"># split on whitespace</span>
+
+<span class="com"># Concatenation</span>
+<span class="str">'Hi'</span> + <span class="str">', '</span> + <span class="str">'friends'</span>
+
+<span class="com"># Multiplication!</span>
+<span class="str">'Python'</span> * <span class="num">3</span>         <span class="com"># 'PythonPythonPython'</span></div>
+</div>
+
+<h3 class="sub">Indexing and slicing</h3>
+<p>A string is a <strong>sequence</strong> of characters. Square brackets index it, and slicing uses
+<code class="inline">[start:stop:step]</code> — start defaults to <code class="inline">0</code>, stop to
+<code class="inline">len(s)</code>, step to <code class="inline">1</code>:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">indexing &amp; slicing</span></div>
+  <div class="code-body">s = <span class="str">'I am different'</span>
+s[<span class="num">0</span>]       <span class="com"># 'I'</span>
+s[-<span class="num">1</span>]      <span class="com"># 't' — negative indexes count from the end</span>
+s[<span class="num">0</span>:<span class="num">3</span>]    <span class="com"># 'I a'</span>
+s[<span class="num">0</span>:<span class="num">8</span>:<span class="num">2</span>] <span class="com"># 'Imdf'</span>
+s[::-<span class="num">1</span>]   <span class="com"># 'tnereffid ma I' — the "mirror" slice</span></div>
+</div>
+<p>Strings are <strong>immutable</strong>: <code class="inline">s[0] = 'y'</code> raises a
+<code class="inline">TypeError</code>. You rebuild instead:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">immutability</span></div>
+  <div class="code-body">s = <span class="str">'hello'</span>
+s = <span class="str">'y'</span> + s[<span class="num">1</span>:]   <span class="com"># 'yello' — a whole new string</span></div>
+</div>
+
+<h3 class="sub">String methods &amp; formatting</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">methods &amp; f-strings</span></div>
+  <div class="code-body">s.<span class="fn">upper</span>()                    <span class="com"># 'HELLO' — returns new string</span>
+<span class="str">'A_B_C'</span>.<span class="fn">split</span>(sep=<span class="str">'_'</span>)   <span class="com"># ['A', 'B', 'C']</span>
+
+name = <span class="str">'Ahmad'</span>; age = <span class="num">30</span>
+<span class="fn">print</span>(<span class="str">'My name is {} and my age is {}'</span>.<span class="fn">format</span>(name, age))
+<span class="fn">print</span>(<span class="str">f'My name is {name} and my age is {age}'</span>)  <span class="com"># f-string — the modern way</span></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Object.method()</div>
+  <p>Methods are functions <em>belonging to an object</em> — <code class="inline">s.upper()</code> acts on the string itself. This object-method shape is exactly what you'll see again in Module 09 with <code class="inline">model.fit(X_train, y_train)</code>.</p>
+</div>
+
+<h2 class="section"><span class="num">5</span>Lists</h2>
+<p class="section-intro">Ordered, indexable, and <strong>mutable</strong> — the workhorse sequence.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">04-lists.ipynb</span></div>
+  <div class="code-body">num_list = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+mix_list = [<span class="str">'A'</span>, <span class="num">2</span>, <span class="num">3.7</span>]           <span class="com"># mixed types allowed</span>
+
+num_list[<span class="num">1</span>] += <span class="num">4</span>                     <span class="com"># mutable — element changes</span>
+num_list.<span class="fn">append</span>(<span class="num">3.5</span>)               <span class="com"># add to the end</span>
+num_list.<span class="fn">pop</span>()                        <span class="com"># remove last (default -1)</span>
+num_list.<span class="fn">remove</span>(<span class="num">3</span>)                  <span class="com"># remove by value</span>
+num_list.<span class="fn">sort</span>(); num_list.<span class="fn">reverse</span>()</div>
+</div>
+
+<div class="card-grid">
+  <div class="card"><h4>Methods mutating in place</h4><p><code class="inline">sort()</code>, <code class="inline">reverse()</code>, <code class="inline">append()</code> change the list itself — contrast <code class="inline">sorted(lst)</code>, which returns a new list.</p></div>
+  <div class="card"><h4>String ↔ list</h4><p><code class="inline">'Hello Python!'.split()</code> → list; <code class="inline">''.join(msg_lst)</code> → string; <code class="inline">list('ABC')</code> → <code class="inline">['A','B','C']</code>.</p></div>
+</div>
+
+<h3 class="sub">Aliasing vs. cloning</h3>
+<div class="compare">
+  <div class="col bad">
+    <h4>Aliasing — dangerous</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">aliasing</span></div>
+      <div class="code-body">hot = warm        <span class="com"># both names, one list</span>
+hot.<span class="fn">append</span>(<span class="str">'pink'</span>)
+warm              <span class="com"># now has 'pink' too!</span></div>
+    </div>
+  </div>
+  <div class="col good">
+    <h4>Cloning — safe</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">cloning</span></div>
+      <div class="code-body">cool = warm.<span class="fn">copy</span>()  <span class="com"># a brand-new list</span>
+cool.<span class="fn">append</span>(<span class="str">'black'</span>)
+warm              <span class="com"># unchanged</span></div>
+    </div>
+  </div>
+</div>
+<p>You can also nest lists to build matrices (<code class="inline">matrix = [lst_1, lst_2, lst_3]</code>)
+and unpack an unknown number of inputs with a starred name:
+<code class="inline">a, *other = input('Numbers: ').split(',')</code>.</p>
+
+<h2 class="section"><span class="num">6</span>Tuples</h2>
+<p class="section-intro">Ordered, indexable, and <strong>immutable</strong> — for things that must not change.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">05-tuples.ipynb</span></div>
+  <div class="code-body">t = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
+t.<span class="fn">append</span>(<span class="num">2</span>)     <span class="com"># AttributeError — no append on a tuple</span>
+t[<span class="num">1</span>] = <span class="num">7</span>        <span class="com"># TypeError — no item assignment</span>
+
+t + (<span class="num">4</span>,)       <span class="com"># (1, 2, 3, 4) — new tuple; note the trailing comma</span>
+
+<span class="com"># Unpacking &amp; swapping</span>
+x, y, z = (<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>)
+y, x = x, y   <span class="com"># swap — no temp variable needed</span></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Why tuples?</div>
+  <p>Use a tuple when the structure shouldn't change — e.g. a coordinate, a date, or a MLIST of things that are fixed. Code that expects immutability is easier to reason about.</p>
+</div>
+
+<h2 class="section"><span class="num">7</span>Dictionaries</h2>
+<p class="section-intro">Mappings of key → value, accessed by key, not position.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">06-dictionary.ipynb</span></div>
+  <div class="code-body">ages = {<span class="str">"Muhammad"</span>: <span class="num">24</span>, <span class="str">"Maryam"</span>: <span class="num">42</span>, <span class="str">"Anas"</span>: <span class="num">58</span>}
+ages[<span class="str">"Anas"</span>]          <span class="com"># 58</span>
+ages.<span class="fn">keys</span>();   ages.<span class="fn">values</span>()
+ages[<span class="str">'Ahmad'</span>] = <span class="num">31</span>   <span class="com"># add a new entry</span>
+
+mydict[<span class="str">'Fruits'</span>] = [<span class="str">'Apple'</span>, <span class="str">'Orange'</span>, <span class="str">'Banana'</span>]  <span class="com"># values can be lists</span>
+
+<span class="com"># chained lookup puzzle</span>
+primes = {<span class="num">1</span>: <span class="num">2</span>, <span class="num">2</span>: <span class="num">3</span>, <span class="num">4</span>: <span class="num">7</span>, <span class="num">7</span>: <span class="num">17</span>}
+<span class="fn">print</span>(primes[primes[<span class="num">4</span>]])    <span class="com"># 17</span></div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>del and pop</h4><p><code class="inline">del d[key]</code> removes by key; <code class="inline">d.pop(key, default)</code> removes and returns the value — with a safe default if the key is missing.</p></div>
+  <div class="card"><h4>No positional indexing</h4><p><code class="inline">ages[1]</code> raises <code class="inline">KeyError</code> — a dict is <em>not</em> a sequence.</p></div>
+</div>
+<div class="callout warn">
+  <div class="ti">+= doesn't merge dicts</div>
+  <p><code class="inline">ages += {'Ahmad': 31}</code> raises <code class="inline">TypeError</code>. Use <code class="inline">ages['Ahmad'] = 31</code> or <code class="inline">.update()</code> instead.</p>
+</div>
+
+<h2 class="section"><span class="num">8</span>Sets</h2>
+<p class="section-intro">Unordered collections of <strong>unique</strong> elements.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">07-set.ipynb</span></div>
+  <div class="code-body">y = {<span class="num">3</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">3</span>, <span class="num">3</span>}     <span class="com"># {3, 4, 5} — duplicates removed</span>
+y[<span class="num">0</span>]                       <span class="com"># TypeError — not subscriptable</span>
+
+<span class="com"># de-dupe a list</span>
+<span class="fn">set</span>([<span class="num">1</span>,<span class="num">1</span>,<span class="num">2</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>,<span class="num">1</span>,<span class="num">1</span>])   <span class="com"># {1, 2, 3, 4, 5, 6}</span>
+
+set1.<span class="fn">union</span>(set2)          <span class="com"># everything</span>
+set1.<span class="fn">intersection</span>(set2)   <span class="com"># shared</span>
+set1.<span class="fn">difference</span>(set2)    <span class="com"># in set1 only</span>
+set1.<span class="fn">issuperset</span>(set2)    <span class="com"># subset/superset tests</span></div>
+</div>
+<div class="callout tip">
+  <div class="ti">Sets in the real bootcamp</div>
+  <p>This is the end of the course's "Part 1" (data structures). Sets become genuinely useful later — e.g. faster membership checks than lists, and de-duplicating rows during preprocessing.</p>
+</div>
+
+<h2 class="section"><span class="num">9</span>If / elif / else</h2>
+<p class="section-intro">Part 2 begins: control flow — deciding what to do.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">08-if_condition.ipynb</span></div>
+  <div class="code-body">num = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">'Enter an integer number: '</span>))
+<span class="kw">if</span> num >= <span class="num">10</span>:
+    <span class="kw">if</span> num &lt;= <span class="num">100</span>:            <span class="com"># nested if</span>
+        <span class="fn">print</span>(<span class="str">"Between 10 and 100"</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">'More than 100'</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">'Less than 10'</span>)</div>
+</div>
+<p>The equivalent "flattened" version using <code class="inline">and</code>:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">flattened with and</span></div>
+  <div class="code-body"><span class="kw">if</span> (num >= <span class="num">10</span> <span class="kw">and</span> num &lt;= <span class="num">100</span>):   <span class="com"># same result as the nested version</span>
+    <span class="fn">print</span>(<span class="str">"Between 10 and 100"</span>)
+<span class="kw">elif</span> num > <span class="num">100</span>:
+    <span class="fn">print</span>(<span class="str">'More than 100'</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">'Less than 10'</span>)</div>
+</div>
+<p>Indentation defines code blocks in Python — this is a language rule, not a style preference.
+The course's demo builds a simple calculator with an <code class="inline">elif</code> chain over a string operator
+(<code class="inline">'+'</code>, <code class="inline">'-'</code>, <code class="inline">'*'</code>, <code class="inline">'/'</code>),
+which you'll rewrite as a loop (Section 10) and again as a function (Section 13).</p>
+
+<h2 class="section"><span class="num">10</span>While loop</h2>
+<p class="section-intro">Repeat an action based on a check.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">09-while_loop.ipynb</span></div>
+  <div class="code-body">num = <span class="num">1</span>    <span class="com"># counter</span>
+<span class="kw">while</span> num &lt;= <span class="num">10</span>:
+    <span class="fn">print</span>(num)
+    num += <span class="num">1</span>   <span class="com"># very important — without it, infinite loop</span>
+
+<span class="kw">while</span> <span class="kw">True</span>:            <span class="com"># loop-and-break pattern for menus</span>
+    <span class="com"># ... run the calculator ...</span>
+    repeat = <span class="fn">input</span>(<span class="str">' Enter "y" for another operation or another key to break: '</span>)
+    <span class="kw">if</span> repeat == <span class="str">'y'</span>:
+        <span class="kw">continue</span>
+    <span class="kw">else</span>:
+        <span class="kw">break</span></div>
+</div>
+
+<div class="card-grid three">
+  <div class="card"><h4>break</h4><p>Breaks out of the closest enclosing loop.</p></div>
+  <div class="card"><h4>continue</h4><p>Goes back to the top of the closest enclosing loop (skipping the rest of the body).</p></div>
+  <div class="card"><h4>pass</h4><p>Does nothing at all — a placeholder for "implement this later."</p></div>
+</div>
+
+<h2 class="section"><span class="num">11</span>For loop &amp; range</h2>
+<p class="section-intro">Iterate over any sequence — and loop over indices when you need them.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">10-for_loop.ipynb</span></div>
+  <div class="code-body">words = [<span class="str">"hello"</span>, <span class="str">"hi"</span>, <span class="str">"good morning"</span>, <span class="str">"good night"</span>, <span class="num">1</span>]
+<span class="kw">for</span> word <span class="kw">in</span> words:
+    <span class="fn">print</span>(word)               <span class="com"># iterate directly</span>
+
+<span class="kw">for</span> index <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="fn">len</span>(words)):
+    <span class="fn">print</span>(words[index])       <span class="com"># or iterate over indices. range(start, stop, step)</span>
+
+<span class="kw">for</span> k, v <span class="kw">in</span> dic.<span class="fn">items</span>():      <span class="com"># dict iteration is hottest in practice</span>
+    <span class="fn">print</span>(<span class="str">'{} &gt;&gt; {}'</span>.<span class="fn">format</span>(k, v))</div>
+</div>
+<p>Iteration works over any sequence — strings (<code class="inline">for _ in 'Hello'</code>), lists, tuples,
+and dictionaries (<code class="inline">.keys()</code>, <code class="inline">.values()</code>, <code class="inline">.items()</code>).
+The section closes with the classic <strong>FizzBuzz</strong> exercise (1–100, "Fizz" for multiples of three,
+"Buzz" for multiples of five, "FizzBuzz" for both).</p>
+
+<h2 class="section"><span class="num">12</span>List comprehension &amp; enumerate</h2>
+<p class="section-intro">Two idioms that make Python code shorter and more readable.</p>
+<p>List comprehension builds a list in one expression instead of a loop + <code class="inline">append</code>:</p>
+<div class="compare">
+  <div class="col">
+    <h4>The long way</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">loop + append</span></div>
+      <div class="code-body">lst = []
+<span class="kw">for</span> num <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">11</span>):
+    lst.<span class="fn">append</span>(num**<span class="num">2</span>)</div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>Comprehension</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">one line</span></div>
+      <div class="code-body">[num**<span class="num">2</span> <span class="kw">for</span> num <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">11</span>)]
+[num**<span class="num">2</span> <span class="kw">for</span> num <span class="kw">in</span> <span class="fn">range</span>(<span class="num">11</span>) <span class="kw">if</span> num % <span class="num">2</span> == <span class="num">0</span>]</div>
+    </div>
+  </div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">celsius → fahrenheit</span></div>
+  <div class="code-body">celsius = <span class="fn">range</span>(<span class="num">10</span>)
+fahrenheit = [((<span class="num">9</span>/<span class="num">5</span>)*temp + <span class="num">32</span>) <span class="kw">for</span> temp <span class="kw">in</span> celsius]</div>
+</div>
+<p><code class="inline">enumerate()</code> returns the index <em>and</em> the value during iteration:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">12-enumerate.ipynb</span></div>
+  <div class="code-body"><span class="kw">for</span> i, letter <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="str">'Hello'</span>):
+    <span class="fn">print</span>(<span class="str">"index {}: {}"</span>.<span class="fn">format</span>(i, letter))
+
+<span class="com"># build an index dict — note duplicate 'l' overwrites its earlier index</span>
+dic = {}
+<span class="kw">for</span> i, letter <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="str">'Hello'</span>):
+    dic[letter] = i
+dic   <span class="com"># {'H': 0, 'e': 1, 'l': 3, 'o': 4}</span></div>
+</div>
+
+<h2 class="section"><span class="num">13</span>Functions</h2>
+<p class="section-intro">Part 3 begins: a block of code that is used more than once.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">13-functions.ipynb</span></div>
+  <div class="code-body"><span class="kw">def</span> <span class="fn">circle_area</span>(radius, PI = <span class="num">3.14</span>):   <span class="com"># default parameter</span>
+    <span class="str">"""
+    Function circle_area : calculates the area of circle
+    Input: radius: the radius of circle
+    Return: the area of circle
+    """</span>
+    <span class="kw">return</span> PI * (radius**<span class="num">2</span>)
+
+<span class="fn">circle_area</span>(<span class="num">10</span>)   <span class="com"># 314.0</span>
+<span class="fn">print</span>(circle_area.__doc__)   <span class="com"># docstrings are introspectable</span></div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>Function vs. method</h4><p><code class="inline">sorted(l)</code> is a free function; <code class="inline">l.sort()</code> is a method owned by the list object. Both exist, subtly different.</p></div>
+  <div class="card"><h4>Parameter vs. argument</h4><p>The <em>parameter</em> is the name in the definition (<code class="inline">radius</code>); the <em>argument</em> is the value passed at the call (<code class="inline">10</code>).</p></div>
+  <div class="card"><h4>Default values</h4><p><code class="inline">PI = 3.14</code> gives a default, still overridable: <code class="inline">circle_area(10, 3)</code>.</p></div>
+  <div class="card"><h4>Docstrings</h4><p>The triple-quoted block documents the function — and Python exposes it via <code class="inline">.__doc__</code>.</p></div>
+</div>
+
+<h2 class="section"><span class="num">14</span>*args &amp; **kwargs</h2>
+<p class="section-intro">Functions that accept an undefined number of arguments.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">14-args_and_kwargs.ipynb</span></div>
+  <div class="code-body"><span class="kw">def</span> <span class="fn">mean</span>(*nums):        <span class="com"># *args → tuple of positional args</span>
+    <span class="kw">return</span> <span class="fn">sum</span>(nums)/<span class="fn">len</span>(nums)
+
+<span class="fn">mean</span>(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>)      <span class="com"># 3.0</span>
+<span class="fn">mean</span>(*(<span class="fn">range</span>(<span class="num">100</span>)))   <span class="com"># 49.5 — splat/unpack a range into 100 args</span>
+
+<span class="kw">def</span> <span class="fn">data</span>(**user):        <span class="com"># **kwargs → dict of keyword args</span>
+    <span class="kw">return</span> user[<span class="str">'hope'</span>]
+
+<span class="fn">data</span>(name=<span class="str">'ahmed'</span>, age=<span class="num">31</span>, address=<span class="str">'ABC'</span>, hope=<span class="str">'football'</span>)  <span class="com"># 'football'</span></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Why this matters later</div>
+  <p>Scikit-learn's estimators are full of defaults and optional keyword arguments. Understanding <code class="inline">**kwargs</code> is how you'll read <code class="inline">RandomForestClassifier(n_estimators=100, random_state=42)</code>.</p>
+</div>
+
+<h2 class="section"><span class="num">15</span>Scope &amp; modules</h2>
+<p class="section-intro">Where a variable lives decides who can see it — and modules organize reusable code.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Local — doesn't change the global</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">scope</span></div>
+      <div class="code-body">x = <span class="num">5</span>
+<span class="kw">def</span> <span class="fn">foo</span>():
+    x = <span class="num">10</span>        <span class="com"># local x</span>
+foo(); <span class="fn">print</span>(x)  <span class="com"># 5 — global untouched</span></div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>global keyword — modifies it</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">global</span></div>
+      <div class="code-body">v = <span class="num">5</span>
+<span class="kw">def</span> <span class="fn">change_v</span>(n):
+    <span class="kw">global</span> v
+    v = n        <span class="com"># global v is changed</span>
+<span class="fn">change_v</span>(<span class="num">50</span>); <span class="fn">print</span>(v)  <span class="com"># 50</span></div>
+    </div>
+  </div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">15-scope_and_modules.ipynb</span></div>
+  <div class="code-body"><span class="kw">import</span> My_Module
+<span class="kw">from</span> My_Module <span class="kw">import</span> f1, f3     <span class="com"># import just specific names</span>
+
+<span class="kw">import</span> math                  <span class="com"># built-in modules</span>
+math.<span class="fn">sqrt</span>(<span class="num">9</span>)    <span class="com"># 3.0</span>
+math.pi          <span class="com"># 3.141592653589793</span></div>
+</div>
+
+<h2 class="section"><span class="num">16</span>Recursion</h2>
+<p class="section-intro">Part 4 begins: defining something in terms of itself — and the base case that stops it.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Iterative — loop</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">for loop</span></div>
+      <div class="code-body">fact = <span class="num">1</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):
+    fact = fact * i   <span class="com"># 120</span></div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>Recursive — call itself</h4>
+    <div class="code-block">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">factorial</span></div>
+      <div class="code-body"><span class="kw">def</span> <span class="fn">factorial</span>(x):
+    <span class="kw">if</span> x == <span class="num">1</span>:    <span class="com"># Base case</span>
+        <span class="kw">return</span> <span class="num">1</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> (x * <span class="fn">factorial</span>(x-<span class="num">1</span>))</div>
+    </div>
+  </div>
+</div>
+<p>The math that drives it: <code class="inline">n! = n × (n-1)!</code>. The <strong>base case</strong>
+(<code class="inline">x == 1</code>) is what prevents infinite recursion — every recursive function must
+eventually reach one.</p>
+
+<h2 class="section"><span class="num">17</span>Fruitful functions: zip, lambda, filter, map, reduce</h2>
+<p class="section-intro">Functional-style utilities that show up constantly in data work.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">17-fruitful_functions.ipynb</span></div>
+  <div class="code-body"><span class="com"># zip: pair up iterables element by element</span>
+<span class="fn">list</span>(<span class="fn">zip</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>], [<span class="str">'one'</span>, <span class="str">'two'</span>, <span class="str">'three'</span>]))  <span class="com"># [(1,'one'), (2,'two'), (3,'three')]</span>
+
+<span class="com"># lambda: an anonymous one-line function</span>
+double = <span class="kw">lambda</span> x: x*<span class="num">2</span>
+double(<span class="num">3</span>)   <span class="com"># 6</span>
+
+<span class="com"># filter: keep elements that pass the test</span>
+<span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: (x%<span class="num">2</span> == <span class="num">0</span>), [<span class="num">1</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">6</span>, <span class="num">8</span>, <span class="num">11</span>, <span class="num">3</span>, <span class="num">12</span>]))</div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">map &amp; reduce</span></div>
+  <div class="code-body"><span class="kw">from</span> functools <span class="kw">import</span> reduce
+
+<span class="com"># map: apply a function to every element</span>
+<span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x * <span class="num">2</span>, [<span class="num">1</span>, <span class="num">5</span>, <span class="num">4</span>, <span class="num">6</span>]))   <span class="com"># [2, 10, 8, 12]</span>
+<span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, nums))                <span class="com"># convert string input to ints</span>
+
+<span class="com"># reduce: collapse a list to one value</span>
+<span class="fn">reduce</span>(<span class="kw">lambda</span> x, y: x+y, [<span class="num">1</span>, <span class="num">5</span>, <span class="num">10</span>, <span class="num">20</span>])   <span class="com"># 36</span>
+<span class="fn">reduce</span>(<span class="kw">lambda</span> x, y: x <span class="kw">if</span> x&gt;y <span class="kw">else</span> y, nums)  <span class="com"># max: 20</span></div>
+</div>
+
+<h2 class="section"><span class="num">18</span>Files handling</h2>
+<p class="section-intro">Reading, writing, and appending text files — with context managers.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">18-files_handling.ipynb</span></div>
+  <div class="code-body"><span class="com"># read the whole file, then reset the cursor</span>
+my_file = <span class="fn">open</span>(<span class="str">'test.txt'</span>)
+<span class="fn">print</span>(my_file.<span class="fn">read</span>())
+my_file.<span class="fn">seek</span>(<span class="num">0</span>)     <span class="com"># cursor back to position 0 — read() again</span>
+
+<span class="com"># readline() — one line at a time; readlines() — all lines into a list</span>
+<span class="com"># close() — always remember to close what you open</span>
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'test.txt'</span>) <span class="kw">as</span> my_file:   <span class="com"># context manager — auto-closes</span>
+    lines = my_file.<span class="fn">readlines</span>()
+
+<span class="com"># writing and appending</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"test.txt"</span>, mode = <span class="str">'w'</span>) <span class="kw">as</span> my_file:   <span class="com"># 'w' = write (overwrites)</span>
+    my_file.<span class="fn">write</span>(<span class="str">"I am HAPPY!"</span>)
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"test.txt"</span>, mode = <span class="str">'a'</span>) <span class="kw">as</span> my_file:   <span class="com"># 'a' = append</span>
+    my_file.<span class="fn">write</span>(<span class="str">"\nI am HAPPY! again"</span>)</div>
+</div>
+<div class="callout tip">
+  <div class="ti">Use the with statement</div>
+  <p><code class="inline">with open(...) as f:</code> guarantees the file is closed even if an error occurs. Later modules read CSVs this way constantly.</p>
+</div>
+
+<h2 class="section"><span class="num">19</span>Exceptions handling</h2>
+<p class="section-intro">The built-in exceptions, and the <code class="inline">try</code>/<code class="inline">except</code>/<code class="inline">else</code>/<code class="inline">finally</code> ladder.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">19-exceptions_handling.ipynb</span></div>
+  <div class="code-body"><span class="com"># The usual suspects</span>
+<span class="fn">print</span>(<span class="str">'hello'</span> + n)     <span class="com"># NameError</span>
+<span class="num">100</span>/<span class="num">0</span>                  <span class="com"># ZeroDivisionError</span>
+<span class="num">1</span> + <span class="str">'2'</span>                <span class="com"># TypeError</span>
+k[<span class="str">'address'</span>]            <span class="com"># KeyError</span>
+l[<span class="num">5</span>]                    <span class="com"># IndexError</span></div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">guarding user input</span></div>
+  <div class="code-body">tries = <span class="num">0</span>
+<span class="kw">while</span> <span class="kw">True</span>:
+    <span class="kw">try</span>:
+        age = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter your age: "</span>))
+        save = <span class="num">100</span>/age
+    <span class="kw">except</span> ZeroDivisionError:
+        <span class="fn">print</span>(<span class="str">"enter age greater than 0"</span>); <span class="kw">continue</span>
+    <span class="kw">except</span> ValueError:
+        <span class="fn">print</span>(<span class="str">"Please enter a no."</span>); <span class="kw">continue</span>
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">f"thank you, and your age is {age}"</span>); <span class="kw">break</span>
+    <span class="kw">finally</span>:
+        tries += <span class="num">1</span>
+        <span class="fn">print</span>(<span class="str">f"Tries : {tries}"</span>)</div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>try / except</h4><p>Attempt the risky code; catch specific exceptions and react.</p></div>
+  <div class="card"><h4>else</h4><p>Runs <em>only</em> when no exception occurred.</p></div>
+  <div class="card"><h4>finally</h4><p>Always runs — cleanup code, regardless of what happened.</p></div>
+  <div class="card"><h4>assert</h4><p><code class="inline">assert x &gt; 0, 'NO'</code> raises <code class="inline">AssertionError</code> if the condition is false — a quick sanity check.</p></div>
+</div>
+
+<h2 class="section"><span class="num">20</span>What is OOP?</h2>
+<p class="section-intro">Python is an object-oriented language — everything is an object.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">20-oop_what_is_oop.ipynb</span></div>
+  <div class="code-body">a = <span class="num">10</span>;  b = <span class="num">3.25</span>;  c = <span class="str">"hi"</span>;  d = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">5</span>]
+<span class="fn">print</span>(<span class="fn">type</span>(a))  <span class="com"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(d))  <span class="com"># &lt;class 'list'&gt;</span>
+
+s1 = <span class="str">'hi'</span>;  s2 = <span class="str">'bye'</span>
+<span class="fn">print</span>(s1.<span class="fn">upper</span>())  <span class="com"># same method works on every instance of a class</span>
+<span class="fn">print</span>(s2.<span class="fn">upper</span>())</div>
+</div>
+<div class="card-grid three">
+  <div class="card"><h4>Classes are blueprints</h4><p>Predefined data types — <code class="inline">int</code>, <code class="inline">str</code>, <code class="inline">list</code> — are classes you already use.</p></div>
+  <div class="card"><h4>Instances</h4><p><code class="inline">a = 10</code> is an <em>instance</em> of the <code class="inline">int</code> class.</p></div>
+  <div class="card"><h4>Methods belong to classes</h4><p>Every instance of a class shares its methods — the class decides what "doing things" means.</p></div>
+</div>
+<div class="callout insight">
+  <div class="ti">From built-ins to your own</div>
+  <p>The whole point: pre-defined classes cover the basics, but <em>you may need your own data type</em> — that's what class definitions are for.</p>
+</div>
+
+<h2 class="section"><span class="num">21</span>Class anatomy: __init__, attributes, methods</h2>
+<p class="section-intro">The structure of a class — the blueprint for an object.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">21-oop_class_anatomy.ipynb</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Customer</span>:    <span class="com"># blueprint for an object</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, age):  <span class="com"># constructor — runs automatically</span>
+        self.name = name      <span class="com"># instance variable (property)</span>
+        self.age = age        <span class="com"># self = the instance being created</span>
+
+    <span class="kw">def</span> <span class="fn">place_order</span>(self):       <span class="com"># instance method (behavior)</span>
+        <span class="fn">print</span>(<span class="str">f"{self.name} have placed an order"</span>)
+
+    <span class="kw">def</span> <span class="fn">cancel_order</span>(self):
+        <span class="fn">print</span>(<span class="str">f"{self.name} have cancelled an order"</span>)
+
+c1 = <span class="fn">Customer</span>(<span class="str">"Mohamed"</span>, <span class="num">30</span>)
+c1.<span class="fn">place_order</span>()          <span class="com"># Mohamed have placed an order</span>
+<span class="fn">isinstance</span>(c1, Customer)   <span class="com"># True</span></div>
+</div>
+<div class="card-grid three">
+  <div class="card"><h4>Attributes</h4><p>Properties → variables the object carries (<code class="inline">name</code>, <code class="inline">age</code>).</p></div>
+  <div class="card"><h4>Methods</h4><p>Behaviors → functions the object can perform (<code class="inline">place_order</code>).</p></div>
+  <div class="card"><h4>self</h4><p>Refers to the instance that will be created later — <code class="inline">c1 = Customer(...)</code> passes <code class="inline">c1</code> as <code class="inline">self</code>.</p></div>
+</div>
+
+<h2 class="section"><span class="num">22</span>The four OOP principles</h2>
+<p class="section-intro">Why use OOP at all — and the four pillars (abstraction, encapsulation, inheritance, polymorphism).</p>
+<div class="compare">
+  <div class="col">
+    <h4>Procedural</h4>
+    <p>Code as a sequence of steps. Great for data analysis and scripts.</p>
+  </div>
+  <div class="col">
+    <h4>Object-oriented</h4>
+    <p>Code as interactions of objects. Great for frameworks and tools — maintainable, reusable code.</p>
+  </div>
+</div>
+
+<h3 class="sub">Abstraction &amp; encapsulation</h3>
+<p>The user calls a method and gets a result — without needing to know the internal logic:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">22-oop_principles.ipynb</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Employee</span>():
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, salary):
+        self.name = name
+        self.salary = salary
+
+    <span class="kw">def</span> <span class="fn">annual_raise</span>(self, kpi_1, kpi_2, kpi_3):
+        new_salary = self.salary + kpi_1 * <span class="num">500</span> + kpi_2 * <span class="num">1.5</span> + kpi_3 / <span class="num">10</span>
+        <span class="kw">if</span> new_salary &gt; <span class="num">20000</span>:
+            tax = new_salary * <span class="num">0.2</span>
+        <span class="kw">else</span>:
+            tax = new_salary * <span class="num">0.15</span>
+        <span class="com"># many details may be here</span>
+        medical_insurance = new_salary * <span class="num">0.10</span>
+        social_insurance = new_salary * <span class="num">0.15</span>
+        self.salary = new_salary - (medical_insurance + social_insurance + tax)
+        <span class="kw">return</span> self.salary
+
+emp1 = <span class="fn">Employee</span>(<span class="str">'Anas'</span>, <span class="num">10000</span>)
+emp1.<span class="fn">annual_raise</span>(<span class="num">25</span>, <span class="num">120</span>, <span class="num">150</span>)   <span class="com"># one call — the details stay inside</span></div>
+</div>
+
+<h3 class="sub">Inheritance</h3>
+<p>Child classes inherit methods and attributes from a parent class — and can override them:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">inheritance</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Manager</span>(Employee):       <span class="com"># inherits everything from Employee</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, salary):
+        self.name = name
+        self.salary = salary
+
+m1 = <span class="fn">Manager</span>(<span class="str">"Ali"</span>, <span class="num">40000</span>)
+m1.<span class="fn">annual_raise</span>(<span class="num">50</span>, <span class="num">120</span>, <span class="num">150</span>)   <span class="com"># inherited from Employee, unchanged</span>
+
+<span class="kw">class</span> <span class="fn">Accountant</span>(Employee):
+    access_class = <span class="str">'B'</span>            <span class="com"># class attribute</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, salary):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name, salary)   <span class="com"># call the parent's constructor</span>
+    <span class="kw">def</span> <span class="fn">annual_raise</span>(self, kpi_1, kpi_2, kpi_3):   <span class="com"># override with different logic</span>
+        <span class="com"># different tax/insurance rates than Employee</span>
+        ...</div>
+</div>
+<div class="callout tip">
+  <div class="ti">Override</div>
+  <p>Create a method in a child class with the same name as the parent's and it takes precedence — the child may behave completely differently.</p>
+</div>
+
+<h3 class="sub">Polymorphism</h3>
+<p>"Same name, different behavior" — different classes expose a common method, each implementing
+it their own way:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">polymorphism</span></div>
+  <div class="code-body"><span class="kw">class</span> <span class="fn">Football_Player</span>():
+    <span class="kw">def</span> <span class="fn">shoot</span>(self): <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="fn">Tennis_Player</span>():
+    <span class="kw">def</span> <span class="fn">shoot</span>(self): <span class="kw">pass</span>
+
+<span class="com"># p1.shoot(), p2.shoot() — same name, different behavior</span></div>
+</div>
+
+<h2 class="section"><span class="num">23</span>The ML example — sklearn is just OOP</h2>
+<p class="section-intro">The payoff: everything you'll do in Modules 09–12 is calling methods on class instances.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">23-oop_ml_example.ipynb</span></div>
+  <div class="code-body"><span class="kw">from</span> sklearn.datasets <span class="kw">import</span> fetch_california_housing
+housing = <span class="fn">fetch_california_housing</span>()
+features = housing.data
+target = housing.target
+
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+(X_train, X_test), (y_train, y_test) = <span class="fn">train_test_split</span>(features, target)
+
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression    <span class="com"># import the Class</span>
+reg1 = <span class="fn">LinearRegression</span>()                            <span class="com"># make an instance</span>
+reg1.<span class="fn">fit</span>(X_train, y_train)                           <span class="com"># fitting method</span>
+reg1.<span class="fn">predict</span>(X_test)                                <span class="com"># prediction method</span>
+reg1.<span class="fn">score</span>(X_test, y_test)                           <span class="com"># scoring method</span>
+
+<span class="com"># Swap the class, keep the interface — DecisionTreeRegressor has the same methods</span>
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeRegressor
+reg2 = <span class="fn">DecisionTreeRegressor</span>()
+reg2.<span class="fn">fit</span>(X_train, y_train)
+reg2.<span class="fn">predict</span>(X_test)</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The full circle</div>
+  <p><code class="inline">LinearRegression</code> is a <em>class</em>. <code class="inline">reg1</code> and
+  <code class="inline">reg2</code> are <em>instances</em>. <code class="inline">fit</code>/
+  <code class="inline">predict</code>/<code class="inline">score</code> are <em>methods</em> — and both
+  models share the same interface even though they behave differently (that's polymorphism). Everything
+  in Module 09 builds on this exact pattern.</p>
+</div>
+
+<div class="callout warn">
+  <div class="ti">Before you move on — common beginner traps</div>
+  <p><strong>Confusing = and ==:</strong> assignment vs. comparison.</p>
+  <p><strong>Aliasing instead of cloning:</strong> <code class="inline">hot = warm</code> makes them the <em>same</em> list; use <code class="inline">.copy()</code> or slicing when you need independence.</p>
+  <p><strong>Forgetting the mutating methods:</strong> <code class="inline">s.upper()</code> returns a new string — it does not change <code class="inline">s</code>. Strings are immutable; if you ignore the return value, "nothing happens."</p>
+  <p><strong>Infinite while loops:</strong> an <code class="inline">while True</code> without a <code class="inline">break</code> (or a condition that never becomes false) never ends. Always ask: how does this loop terminate?</p>
+  <p><strong>Unread file cursors:</strong> after <code class="inline">my_file.read()</code>, the cursor is at the end — call <code class="inline">seek(0)</code> before reading again, or use <code class="inline">readlines()</code>.</p>
+</div>
+
+<div class="callout recap">
+  <div class="ti">Next: Module 03</div>
+  <p>Python Projects — take what you just learned and build seven working programs: a word-guess game, a weather API app, an ATM, book scraping, and more.</p>
+</div>
+
+<div class="day-nav">
+  <a class="day-nav-link prev" href="../01-intro_to_ai_and_data_science/01_reading.html">
+    <span class="dn-label">&larr; Previous</span>
+    <span class="dn-title">Module 01 &middot; Intro to AI &amp; Data Science</span>
+  </a>
+  <a class="day-nav-link next" href="../03-python_projects/03_reading.html">
+    <span class="dn-label">Next &rarr;</span>
+    <span class="dn-title">Module 03 &middot; Python Projects</span>
+  </a>
+</div>
+
+<footer>Module 02 · Python Foundations · self-paced</footer>
+</div>
+<script>
+(function(){
+  var sidebar = document.querySelector('.site-sidebar');
+  var toggle = document.querySelector('.sidebar-toggle');
+  var backdrop = document.querySelector('.sidebar-backdrop');
+  if(!sidebar || !toggle || !backdrop) return;
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
+    if (sidebar.classList.contains('open')) close(); else openMenu();
+  });
+  backdrop.addEventListener('click', close);
+})();
+</script>
+<script>
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if(!btn) return;
+  function currentTheme(){
+    var attr = document.documentElement.getAttribute('data-theme');
+    if(attr === 'dark' || attr === 'light') return attr;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  btn.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
+</script>
+</body></html>
