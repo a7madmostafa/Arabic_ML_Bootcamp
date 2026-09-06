@@ -29,12 +29,26 @@ A structured machine learning bootcamp covering AI fundamentals, Python, data an
 
 **Total:** 184 videos | ~27 hours
 
+## Reading the course as a website
+
+The repo ships a static companion site (GitHub Pages) that presents the whole course as readable
+web pages — open `index.html` in any browser to start:
+
+- `index.html` — the landing page: sidebar navigation across all 12 modules, dark/light theme, and
+  a card per module linking to its reading page and GitHub folder.
+- Each module has a self-contained `NN_reading.html` (e.g. `01_reading.html`) that turns that
+  module's lecture topics into written concepts, diagrams, and worked examples — open directly in
+  a browser, no server needed.
+- The original per-module files (notebooks, PDFs, datasets, READMEs) are untouched and stay the
+  source of truth — the reading pages link out to them.
+
 ## How to Use This Repo
 
 Each module folder contains:
 - **README.md** — Topic table with video links, PDFs, and code
 - **PDFs/** — Theory notes and slides (where available)
 - **CODE/** — Jupyter notebooks and project code (where available)
+- **NN_reading.html** — the site layer's written-concepts page for that module
 
 Navigate to any module, find a topic, and access the video, notes, and code directly from the table.
 

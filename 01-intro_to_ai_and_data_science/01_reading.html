@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Intro to AI &amp; Data Science</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('theme');
+    if(saved === 'dark' || saved === 'light'){
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141414; --blue:#2F63E8; --blue-dark:#1E4BC4; --gray:#5B6472; --gray-muted:#9CA3AF;
+  --border:#E5E7EB; --panel:#F3F4F6; --white:#FFFFFF; --paper:#FAFBFC; --card-bg:#FFFFFF;
+  --code-bg:#1E1E1E; --code-default:#D4D4D4; --code-kw:#569CD6; --code-fn:#DCDCAA;
+  --code-str:#CE9178; --code-com:#6A9955;
+  --insight-bg:#E8F5E9; --insight-bd:#1E8449; --insight-ti:#1E5631;
+  --tip-bg:#EEF6FF; --tip-bd:#2E6FB5; --tip-ti:#1F4E82;
+  --warn-bg:#FDECEA; --warn-bd:#C0392B; --warn-ti:#7B1F14;
+  --annotations-bg:#FAFBFD; --divider:#EEF2F7;
+  --recap-bg:#FFF8E1; --recap-bd:#B45309; --recap-ti:#8A4B00;
+}
+:root[data-theme="dark"]{
+  --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
+  --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
+  --annotations-bg:#14171C; --divider:#242830;
+  --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
+  --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
+  --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
+  --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E9EC; --blue:#4C8DFF; --blue-dark:#9DBBFF; --gray:#A6ADB8; --gray-muted:#767D89;
+    --border:#2A2E37; --panel:#191C22; --white:#FFFFFF; --paper:#101216; --card-bg:#1A1D23;
+    --annotations-bg:#14171C; --divider:#242830;
+    --insight-bg:#152A1B; --insight-bd:#3D9964; --insight-ti:#6FDB98;
+    --tip-bg:#141E2E; --tip-bd:#5B9AE6; --tip-ti:#8FC2FF;
+    --warn-bg:#2A1614; --warn-bd:#E0574A; --warn-ti:#FF9086;
+    --recap-bg:#241D0C; --recap-bd:#D98A3D; --recap-ti:#F0B36B;
+  }
+}
+body{transition:background-color .15s ease,color .15s ease}
+.theme-toggle{position:fixed;top:14px;right:20px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);display:flex;align-items:center;justify-content:center}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.theme-toggle .icon-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-moon{display:block}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon{display:block}
+}
+:root[data-theme="light"] .theme-toggle .icon-sun{display:block}
+:root[data-theme="light"] .theme-toggle .icon-moon{display:none}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;line-height:1.7;font-size:16px}
+.page{max-width:920px;margin:0 auto;padding:56px 48px 90px}
+.crumb{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
+h1.title{font-family:'Bricolage Grotesque',Georgia,serif;font-size:42px;line-height:1.12;color:var(--ink);margin:0 0 12px;font-weight:800}
+.subtitle{font-size:19px;color:var(--gray);margin:0 0 30px}
+.objectives{background:var(--panel);border-left:4px solid var(--blue);border-radius:4px;padding:20px 24px;margin:24px 0 36px}
+.objectives h2{font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin:0 0 10px;font-weight:700}
+.objectives ul{margin:0;padding-left:20px}.objectives li{font-size:15px;margin-bottom:6px}
+h2.section{font-family:'Bricolage Grotesque',Georgia,serif;font-size:26px;color:var(--ink);margin:52px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink);font-weight:700}
+h2.section .num{color:var(--blue);margin-right:10px}
+.section-intro{font-size:16.5px;color:var(--gray);margin:0 0 20px}
+h3.sub{font-size:17.5px;color:var(--ink);margin:30px 0 10px;font-weight:700}
+p{margin:0 0 15px} p.lead{font-size:18px;color:var(--ink);font-weight:600}
+strong{color:var(--ink);font-weight:700}
+code.inline{font-family:'IBM Plex Mono',monospace;font-size:.88em;background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--blue-dark)}
+table.api{width:100%;border-collapse:collapse;margin:14px 0 22px;background:var(--card-bg);font-size:14px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+table.api th,table.api td{padding:10px 13px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+table.api thead th{background:var(--panel);color:var(--ink);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em}
+table.api tbody tr:last-child td{border-bottom:none}
+
+.callout{margin:22px 0 26px;border-radius:6px;padding:15px 20px 17px;border-left:4px solid}
+.callout .ti{font-family:'IBM Plex Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:7px}
+.callout p{font-size:15px;margin:0 0 6px}.callout p:last-child{margin-bottom:0}
+.callout.tip{background:var(--tip-bg);border-color:var(--tip-bd)}.callout.tip .ti{color:var(--tip-ti)}
+.callout.insight{background:var(--insight-bg);border-color:var(--insight-bd)}.callout.insight .ti{color:var(--insight-ti)}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn-bd)}.callout.warn .ti{color:var(--warn-ti)}
+.callout.recap{background:var(--recap-bg);border-color:var(--recap-bd)}.callout.recap .ti{color:var(--recap-ti)}
+
+.code-block{margin:18px 0 8px;border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(20,20,30,.12)}
+.code-header{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#161616}
+.code-header .dot{width:10px;height:10px;border-radius:50%}
+.code-header .dot.r{background:#FF5F56}.code-header .dot.y{background:#FFBD2E}.code-header .dot.g{background:#27C93F}
+.code-header .fname{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9C9C9C;margin-left:6px}
+.code-body{background:var(--code-bg);color:var(--code-default);padding:16px 20px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.code-body .kw{color:var(--code-kw)}.code-body .fn{color:var(--code-fn)}
+.code-body .str{color:var(--code-str)}.code-body .com{color:var(--code-com);font-style:italic}
+.code-body .def{color:var(--code-default)}
+.annotations{background:var(--annotations-bg);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px 20px 14px;margin-bottom:28px}
+.annotation{padding:11px 0;border-top:1px solid var(--divider)}
+.annotation:first-child{border-top:0}
+.annotation b{color:var(--blue);font-size:14px}
+.annotation p{margin:3px 0 0;font-size:14.5px;color:var(--ink)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 26px}
+.compare .col{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:17px 19px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
+.compare .col h4{margin:0 0 8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
+.compare .col p,.compare .col li{font-size:14.5px}
+.compare .col ul{margin:6px 0 0;padding-left:18px}
+
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0 26px}
+.card-grid.three{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:16px 18px;box-shadow:0 2px 8px rgba(20,20,30,.05)}
+.card h4{margin:0 0 7px;color:var(--ink);font-size:16px;font-weight:700}
+.card p{font-size:14.5px;margin:0 0 6px;color:var(--gray)}
+.card p:last-child{margin-bottom:0}
+.card code.inline{font-size:.82em}
+
+figure{margin:24px 0 8px;text-align:center;background:linear-gradient(180deg,#fff,#FAFBFD);border:1px solid var(--border);border-radius:10px;padding:26px 14px 18px}
+figcaption{font-size:13.5px;color:var(--gray);margin-top:12px;font-style:italic}
+.diagram-label{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;color:var(--blue);text-align:left;margin:0 0 4px}
+.diagram-group{margin-bottom:28px}
+.diagram-group:last-child{margin-bottom:0}
+
+.pk{color:var(--blue-dark);font-weight:700}
+
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);color:var(--gray-muted);font-size:12px;text-align:center;font-family:'IBM Plex Mono',monospace}
+@media(max-width:760px){.page{padding:32px 22px}h1.title{font-size:30px}.card-grid,.card-grid.three,.compare{grid-template-columns:1fr}}
+.site-sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--panel);border-right:1px solid var(--border);padding:22px 0;overflow-y:auto;z-index:1000}
+.site-sidebar .brand{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;font-size:14.5px;color:var(--ink);padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;line-height:1.3}
+.site-sidebar a{display:block;padding:9px 20px;font-family:'Nunito Sans',-apple-system,'Segoe UI',sans-serif;font-size:14px;color:var(--gray);text-decoration:none;border-left:3px solid transparent}
+.site-sidebar a:hover{background:var(--card-bg);color:var(--blue)}
+.site-sidebar a.active{background:var(--card-bg);color:var(--blue);font-weight:700;border-left-color:var(--blue)}
+.site-sidebar .daynum{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--gray-muted);display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
+.site-sidebar a.active .daynum{color:var(--blue)}
+body{margin-left:220px;background:var(--paper)}
+.sidebar-toggle{display:none;position:fixed;top:14px;left:14px;z-index:1200;width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(20,20,30,.08);align-items:center;justify-content:center}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900}
+@media(max-width:900px){
+.site-sidebar{width:250px;transform:translateX(-100%);transition:transform .25s ease;box-shadow:2px 0 16px rgba(0,0,0,.18)}
+.site-sidebar.open{transform:translateX(0)}
+.sidebar-toggle{display:flex}
+.sidebar-backdrop.open{display:block}
+body{margin-left:0}
+}
+.day-links{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 28px}
+.day-links a{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;text-decoration:none;color:var(--blue-dark);background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 11px;display:inline-flex;align-items:center}
+.day-links a:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.day-links a.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.day-links a.primary:hover{background:var(--blue-dark)}
+.dl-icon{width:11px;height:11px;margin-right:5px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.day-nav{display:flex;gap:16px;margin:40px 0 0;flex-wrap:wrap}
+.day-nav-link{flex:1 1 260px;max-width:340px;display:flex;flex-direction:column;gap:4px;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:border-color .15s,background .15s}
+.day-nav-link:hover{background:var(--card-bg);border-color:var(--blue)}
+.day-nav-link.next{margin-left:auto;text-align:right;align-items:flex-end}
+.day-nav-link .dn-label{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700}
+.day-nav-link .dn-title{font-size:14.5px;color:var(--ink);font-weight:600}
+@media(max-width:520px){.day-nav-link{flex:1 1 100%;max-width:none}.day-nav-link.next{text-align:left;align-items:flex-start;margin-left:0}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+<button class="theme-toggle" aria-label="Toggle dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+</button>
+<div class="sidebar-backdrop"></div>
+<nav class="site-sidebar">
+<div class="brand">Arabic ML Bootcamp</div>
+<a href="../index.html" class="home-entry">Home</a>
+<a href="../01-intro_to_ai_and_data_science/01_reading.html" class="active"><span class="daynum">Module 01</span>Intro to AI &amp; Data Science</a>
+<a href="../02-python_foundations/02_reading.html"><span class="daynum">Module 02</span>Python Foundations</a>
+<a href="../03-python_projects/03_reading.html"><span class="daynum">Module 03</span>Python Projects</a>
+<a href="../04-python_web_scraping/04_reading.html"><span class="daynum">Module 04</span>Python Web Scraping</a>
+<a href="../05-git_and_github/05_reading.html"><span class="daynum">Module 05</span>Git &amp; GitHub</a>
+<a href="../06-python_data_analysis/06_reading.html"><span class="daynum">Module 06</span>Python Data Analysis</a>
+<a href="../07-streamlit/07_reading.html"><span class="daynum">Module 07</span>Streamlit</a>
+<a href="../08-data_preprocessing_and_feature_engineering/08_reading.html"><span class="daynum">Module 08</span>Preprocessing &amp; Feature Eng.</a>
+<a href="../09-machine_learning/09_reading.html"><span class="daynum">Module 09</span>Machine Learning</a>
+<a href="../10-intro_to_deep_learning/10_reading.html"><span class="daynum">Module 10</span>Intro to Deep Learning</a>
+<a href="../11-intro_to_computer_vision/11_reading.html"><span class="daynum">Module 11</span>Intro to Computer Vision</a>
+<a href="../12-intro_to_nlp/12_reading.html"><span class="daynum">Module 12</span>Intro to NLP</a>
+</nav>
+<div class="page">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="erd-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+      <path d="M 18 0 L 0 0 0 18" fill="none" stroke="#e6edf3" stroke-width="1"/>
+    </pattern>
+    <symbol id="icon-download" viewBox="0 0 16 16">
+      <path d="M8 2v7M4.5 6.5L8 10l3.5-3.5M2.5 12.5h11"/>
+    </symbol>
+    <symbol id="icon-external" viewBox="0 0 16 16">
+      <path d="M6.5 2.5h7v7M13.5 2.5L6 10M4 4H2.5v9.5H12V12"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="crumb">Module 01 of 12 · Intro to AI &amp; Data Science</div>
+<h1 class="title">Intro to AI &amp; Data Science</h1>
+<p class="subtitle">Why AI matters, what it actually is, how machine learning fits in, and the landscape of roles that train and deploy models. Your theory foundation for everything that follows.</p>
+
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Explain why AI is often called "the new electricity" and why the world's most valuable resource became <em>data</em>.</li>
+    <li>Define AI, and tell <strong>Narrow AI</strong> apart from <strong>General AI</strong> (and <strong>Super AI</strong>).</li>
+    <li>Trace the history of AI's "booms" and the two AI winters, and name the converging forces behind today's surge.</li>
+    <li>Define machine learning, and contrast it with traditional programming.</li>
+    <li>Place AI, ML, deep learning, data science, and big data in relation to each other.</li>
+    <li>Walk the data science lifecycle end-to-end.</li>
+    <li>Distinguish supervised, unsupervised, and reinforcement learning.</li>
+    <li>Recognize common ML applications and the job roles that build them.</li>
+  </ul>
+</div>
+
+<div class="day-links">
+  <a class="primary" href="01_reading.html">Reading</a>
+  <a href="README.md">Module Notes</a>
+  <a href="Intro%20to%20AI.pdf" download><svg class="dl-icon"><use href="#icon-download"/></svg>PDF Notes</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/01-intro_to_ai_and_data_science" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>This is a theory-only module — nothing to install. Open the <a href="README.md">module README</a> for the full lecture table with YouTube links, then read this page before or alongside the videos. It mirrors the lecture order, so you can jump between them freely.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>Why learn AI?</h2>
+<p class="section-intro">The case for treating AI as a foundational skill, not a passing trend.</p>
+
+<blockquote class="callout insight">
+  <div class="ti">AI is the new electricity</div>
+  <p>"Artificial intelligence is everywhere! Just as electricity revolutionized lives 100 years ago, AI is changing our lives completely today." — <strong>Andrew Ng</strong></p>
+</blockquote>
+
+<p>Start with the motivation behind the whole bootcamp. In 2017, <em>The Economist</em> declared that
+"the world's most valuable resource is no longer oil, but data." That single shift — from a
+physical commodity to an informational one — reordered entire industries. Companies that once
+competed on factories or distribution now compete on how well they can turn raw data into
+decisions, recommendations, and predictions.</p>
+
+<p>That's where you come in. AI and machine learning are the tools that <em>extract value from
+data</em>, and the people who can wield those tools are in demand across every sector — not just
+tech. If you're learning this now, you're positioning yourself on the right side of a change that
+is already reshaping work, in the same way electricity reshaped the 20th century.</p>
+
+<h2 class="section"><span class="num">2</span>What is AI?</h2>
+<p class="section-intro">Toward a working definition before we split it into flavors.</p>
+
+<blockquote class="callout insight">
+  <div class="ti">Can machines think?</div>
+  <p>The question that started the field, posed by <strong>Alan Turing</strong> (1912–1954). Almost everything we'll cover traces back to this one idea.</p>
+</blockquote>
+
+<p>Formal definitions vary, but they all orbit the same center. Three useful ones:</p>
+<div class="card-grid three">
+  <div class="card"><h4>Informal</h4><p>The <strong>simulation of natural intelligence</strong> to mimic human actions — a machine behaving the way a person would.</p></div>
+  <div class="card"><h4>Britannica 1</h4><p>The ability of a digital computer or computer-controlled robot to perform tasks <strong>commonly associated with intelligent beings</strong>.</p></div>
+  <div class="card"><h4>Britannica 2</h4><p>The ability to <strong>reason</strong>, <strong>discover meaning</strong>, <strong>generalize</strong>, or <strong>learn from past experience</strong>.</p></div>
+</div>
+
+<div class="callout tip">
+  <div class="ti">The four verbs that matter</div>
+  <p>The last definition is the most useful for a practitioner. Every AI system you'll build is really exercising one (or more) of four capabilities: <strong>reasoning</strong>, <strong>discovering meaning</strong>, <strong>generalizing</strong>, or <strong>learning from experience</strong>. Keep these four in your head — they recur in every module.</p>
+</div>
+
+<h2 class="section"><span class="num">3</span>Narrow vs. General AI</h2>
+<p class="section-intro">Not all AI is created equal — scale "intelligence" along a spectrum.</p>
+
+<div class="compare">
+  <div class="col">
+    <h4>Narrow AI (Weak)</h4>
+    <p>Machines that perform <strong>specific</strong> tasks with human intelligence — or better. Every AI system in production today is narrow.</p>
+    <ul><li>Image classifiers</li><li>Speech recognition</li><li>Recommendation engines</li></ul>
+  </div>
+  <div class="col">
+    <h4>General AI (Strong)</h4>
+    <p>Machines that perform <strong>general</strong> tasks with human intelligence — any cognitive task a person can do, across domains, without retraining per task.</p>
+    <ul><li>Does not yet exist</li><li>Research frontier</li></ul>
+  </div>
+</div>
+
+<div class="card-grid three">
+  <div class="card"><h4>Narrow AI</h4><p>A model that recognizes cats in photos is brilliant at that one thing and useless at everything else. Today's AI is overwhelmingly narrow.</p></div>
+  <div class="card"><h4>General AI</h4><p>A system that could reason about an image, write a song, drive a car, and hold a conversation — with the same flexible intelligence a person has.</p></div>
+  <div class="card"><h4>Super AI</h4><p>Machines performing general tasks <strong>better than human intelligence</strong> — outperforming us outright. The most speculative tier, and one many researchers think may never arrive.</p></div>
+</div>
+<p>Super AI is the source of most dystopian sci-fi — and most hype. The practical reality of your
+career will be Narrow AI: models that do one thing very well, built and deployed carefully. That's
+what the rest of this bootcamp teaches you how to do.</p>
+
+<h2 class="section"><span class="num">4</span>Why is AI booming now? Just a trend?</h2>
+<p class="section-intro">AI has seen false dawns before — the "AI winters." What's different this time?</p>
+
+<p>AI is not new, and this is not its first wave of excitement. The field has already gone through
+two <strong>AI winters</strong> — periods when hype outran results and funding collapsed:</p>
+<div class="card-grid">
+  <div class="card"><h4>First AI winter (1974–1980)</h4><p>A severe shortage of government funding for AI research after early excitement failed to match reality. Public interest in AI plummeted.</p></div>
+  <div class="card"><h4>Second AI winter (1987–1993)</h4><p>Investors and governments again pulled funding — the "expert systems" of the era were expensive to build but under-delivered. Business drives research: when there's no obvious return, money dries up.</p></div>
+</div>
+
+<p>So why is the current boom different from 1974 or 1987? Because this time the pieces arrived
+<em>at the same time</em>: cheap, massive computing power; huge quantities of digitized data; and
+practical algorithms (especially deep learning) that finally scale. The earlier winters had the
+ideas but not yet the hardware or the data to make them pay off.</p>
+
+<figure>
+<svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" style="max-width:100%">
+  <rect x="0" y="0" width="720" height="200" fill="#ffffff"/>
+  <rect x="0" y="0" width="720" height="200" fill="url(#erd-grid)"/>
+  <text x="360" y="34" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f6fb2">Three forces converging (now)</text>
+  <rect x="40" y="60" width="200" height="90" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+  <rect x="40" y="60" width="200" height="30" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+  <text x="140" y="80" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="14">Data</text>
+  <text x="140" y="110" text-anchor="middle" font-size="12.5" fill="#333">More digital data than</text>
+  <text x="140" y="128" text-anchor="middle" font-size="12.5" fill="#333">ever before — it never</text>
+  <text x="140" y="146" text-anchor="middle" font-size="12.5" fill="#333">stops being generated.</text>
+  <rect x="260" y="60" width="200" height="90" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+  <rect x="260" y="60" width="200" height="30" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+  <text x="360" y="80" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="14">Compute</text>
+  <text x="360" y="110" text-anchor="middle" font-size="12.5" fill="#333">Cheap, parallel hardware</text>
+  <text x="360" y="128" text-anchor="middle" font-size="12.5" fill="#333">(GPUs) makes training</text>
+  <text x="360" y="146" text-anchor="middle" font-size="12.5" fill="#333">large models possible.</text>
+  <rect x="480" y="60" width="200" height="90" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+  <rect x="480" y="60" width="200" height="30" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+  <text x="580" y="80" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="14">Algorithms</text>
+  <text x="580" y="110" text-anchor="middle" font-size="12.5" fill="#333">Deep learning finally</text>
+  <text x="580" y="128" text-anchor="middle" font-size="12.5" fill="#333">scales — the techniques</text>
+  <text x="580" y="146" text-anchor="middle" font-size="12.5" fill="#333">that actually work.</text>
+  <line x1="240" y1="105" x2="260" y2="105" stroke="#333" stroke-width="1.6"/>
+  <line x1="460" y1="105" x2="480" y2="105" stroke="#333" stroke-width="1.6"/>
+</svg>
+<figcaption>None of these alone triggered the boom — their convergence did. Earlier "winters" had ideas but lacked the data and compute to make them profitable.</figcaption>
+</figure>
+
+<div class="callout insight">
+  <div class="ti">Why the winters never became permanent</div>
+  <p>Both winters had a common pattern: research advanced faster than <em>business value</em>. Business drives research — when companies can't see "what's in it for me," funding stops. What's different now is that the value is demonstrable: recommendation systems, fraud detection, and ad targeting pay for themselves. That's what sustains the current boom.</p>
+</div>
+
+<h2 class="section"><span class="num">5</span>Data never sleeps</h2>
+<p class="section-intro">The raw material feeding every model you'll train.</p>
+<p>Everything you'll do in this bootcamp starts with data, and the reason AI is booming is that
+data is now being generated at a scale that never existed before. Behind the convenience of
+everyday apps lie staggering numbers of inputs every single minute — searches, messages, videos
+watched, transactions, sensor readings. This constant stream is <strong>the</strong> fuel. No data,
+no learning — a model is only as good as the data it trains on.</p>
+<div class="card-grid three">
+  <div class="card"><h4>Data is the new oil</h4><p>The Economist's framing — the raw material that drives the modern economy, and the companies that refine it win.</p></div>
+  <div class="card"><h4>Everything generates it</h4><p>Every click, purchase, search, and social post is a data point. It never stops.</p></div>
+  <div class="card"><h4>More data, better models</h4><p>Modern deep learning literally improves as you feed it more examples — one reason scale matters.</p></div>
+</div>
+<div class="callout tip">
+  <div class="ti">A career built on data</div>
+  <p>When you hear "data never sleeps," that's your job security. Someone has to collect, clean, analyze, model, and interpret all of that data — that's the role this bootcamp trains you for.</p>
+</div>
+
+<h2 class="section"><span class="num">6</span>What is machine learning?</h2>
+<p class="section-intro">The core definition that will anchor the next several modules.</p>
+
+<blockquote class="callout insight">
+  <div class="ti">Learn without being explicitly programmed</div>
+  <p>"Field of study that gives computers the ability to learn without being explicitly programmed." — <strong>Arthur Samuel</strong>, 1959</p>
+</blockquote>
+
+<p>Arthur Samuel wrote the first important machine-learning program in 1959 — a checkers player
+that improved simply by playing <em>tens of thousands of games against itself</em>, discovering
+over time which board positions were good and which were bad. It wasn't told the rules of good
+play; it <strong>learned by experience</strong>. That's the essence of ML: instead of writing
+every rule by hand, you give a computer data and let it find the patterns.</p>
+
+<blockquote class="callout insight">
+  <div class="ti">The formal definition</div>
+  <p>"A computer program is said to learn from experience (E) with respect to some task (T) and some performance measure (P), if its performance at T, as measured by P, improves with experience E." — <strong>Tom Mitchell</strong>, 1997</p>
+</blockquote>
+
+<p>Tom Mitchell's definition is worth memorizing because it gives you a template for thinking
+about <em>any</em> ML problem: <strong>what task (T)</strong> are we improving? <strong>What
+experience (E)</strong> is it learning from? <strong>How do we measure performance (P)</strong>?
+Answer those three questions and you've framed the problem — before you write a single line of
+code.</p>
+
+<div class="card-grid three">
+  <div class="card"><h4>Learning by experience</h4><p>The model improves as it sees more examples — no one hand-writes the rules.</p></div>
+  <div class="card"><h4>Learning from data</h4><p>The data is the curriculum. Feed it good data and it learns good patterns.</p></div>
+  <div class="card"><h4>Pattern recognition</h4><p>At its core, ML is finding and exploiting regularities in data.</p></div>
+</div>
+
+<h2 class="section"><span class="num">7</span>ML vs. traditional programming</h2>
+<p class="section-intro">The fundamental inversion of roles.</p>
+
+<p>In traditional programming, <strong>you</strong> write the rules and feed in data the computer
+turns into answers:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">traditional_programming</span></div>
+  <div class="code-body">data <span class="kw">+</span> <span class="str">rules</span>  <span class="kw">→</span>  <span class="fn">answers</span>
+
+<span class="com"># You write the rules by hand.
+# Example: "if email contains 'lottery', mark as spam"</span></div>
+</div>
+
+<p>In machine learning, the roles flip — <strong>you</strong> supply the data and the answers (the
+correct labels), and the computer <em>derives the rules</em>:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">machine_learning</span></div>
+  <div class="code-body">data <span class="kw">+</span> <span class="str">answers</span>  <span class="kw">→</span>  <span class="fn">rules</span>
+
+<span class="com"># The computer finds the rules by itself.</span>
+<span class="com"># Example: show it 10,000 spam + 10,000 real emails with labels,</span>
+<span class="com"># and let it learn what separates them.</span></div>
+</div>
+
+<div class="compare">
+  <div class="col">
+    <h4>Traditional programming</h4>
+    <p>You write the rules; the computer applies them to data and produces answers. Good when the rules are <em>known and stable</em>.</p>
+    <ul><li>Calculating a bank balance</li><li>Sorting a list</li><li>Checking a password</li></ul>
+  </div>
+  <div class="col">
+    <h4>Machine learning</h4>
+    <p>You supply data and answers; the computer learns the rules. Good when the rules are <em>hard to articulate</em>, or change with the data.</p>
+    <ul><li>Recognizing spam</li><li>Detecting fraud</li><li>Naming objects in a photo</li></ul>
+  </div>
+</div>
+<div class="callout tip">
+  <div class="ti">Which to use?</div>
+  <p>If you can write down the rules precisely — do it, no ML needed. ML earns its keep exactly when you <em>can't</em> articulate the rule ("what makes a photo a cat?") — but you have lots of examples. That rule is the ML model.</p>
+</div>
+
+<h2 class="section"><span class="num">8</span>AI vs. ML vs. DL vs. DS vs. Big Data</h2>
+<p class="section-intro">A family tree, not synonyms.</p>
+
+<figure>
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" style="max-width:100%">
+  <rect x="0" y="0" width="720" height="320" fill="#ffffff"/>
+  <rect x="0" y="0" width="720" height="320" fill="url(#erd-grid)"/>
+  <rect x="60" y="20" width="600" height="56" fill="#ffffff" stroke="#333" stroke-width="1.6"/>
+  <text x="360" y="53" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="16">Artificial Intelligence</text>
+  <text x="360" y="72" text-anchor="middle" font-size="12" fill="#666">the broad field: machines doing intelligent things</text>
+  <rect x="190" y="120" width="340" height="56" fill="#ffffff" stroke="#333" stroke-width="1.6"/>
+  <text x="360" y="153" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="16">Machine Learning</text>
+  <text x="360" y="172" text-anchor="middle" font-size="12" fill="#666">a subfield: learning patterns from data</text>
+  <rect x="290" y="220" width="140" height="56" fill="#ffffff" stroke="#333" stroke-width="1.6"/>
+  <text x="360" y="253" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="16">Deep Learning</text>
+  <text x="360" y="272" text-anchor="middle" font-size="12" fill="#666">multi-layer neural nets</text>
+  <line x1="360" y1="76" x2="360" y2="116" stroke="#333" stroke-width="1.4"/>
+  <line x1="360" y1="176" x2="360" y2="216" stroke="#333" stroke-width="1.4"/>
+  <line x1="90" y1="105" x2="90" y2="105" stroke="#333" stroke-width="0"/>
+  <text x="60" y="132" text-anchor="start" font-size="12" fill="#666">Data Science — the broader practice</text>
+  <text x="60" y="149" text-anchor="start" font-size="12" fill="#666">(statistics + ML + domain + communication)</text>
+  <text x="470" y="132" text-anchor="start" font-size="12" fill="#666">Big Data — the scale problem</text>
+  <text x="470" y="149" text-anchor="start" font-size="12" fill="#666">(data too big for one machine)</text>
+</svg>
+<figcaption>AI is the umbrella. ML is the subfield that learns from data. Deep learning is a technique within ML using deep neural networks. Data science is the broader practice that uses ML among many tools. Big data is a scale problem that overlaps all of them.</figcaption>
+</figure>
+
+<div class="card-grid">
+  <div class="card"><h4>AI — the umbrella</h4><p>The broad field of making machines do intelligent things. Not all AI learns from data (early rule-based systems didn't). ML is one (dominant) branch of AI.</p></div>
+  <div class="card"><h4>ML — a subfield of AI</h4><p>Learning patterns from data. <strong>Everything in this bootcamp from Module 08 onward is ML.</strong></p></div>
+  <div class="card"><h4>Deep learning — a technique within ML</h4><p>Multi-layer neural networks that learn hierarchical features. Modules 10–12 focus here.</p></div>
+  <div class="card"><h4>Data science — the broader practice</h4><p>Statistics, machine learning, domain knowledge, and communication — turning data into decisions. ML is a tool inside the data science toolkit.</p></div>
+  <div class="card"><h4>Big data — a scale problem</h4><p>Data so large it can't fit in one machine's memory or be processed conventionally. Overlaps all the above.</p></div>
+</div>
+<div class="callout recap">
+  <div class="ti">Takeaway</div>
+  <p>You'll use these labels loosely in conversation, but precisely in your work: a <strong>data scientist</strong> is not the same thing as a <strong>deep learning engineer</strong>, and the distinction starts with this family tree.</p>
+</div>
+
+<h2 class="section"><span class="num">9</span>The data science lifecycle</h2>
+<p class="section-intro">The step-by-step pipeline behind every data project.</p>
+
+<figure>
+<svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" style="max-width:100%">
+  <rect x="0" y="0" width="720" height="240" fill="#ffffff"/>
+  <rect x="0" y="0" width="720" height="240" fill="url(#erd-grid)"/>
+  <g>
+    <rect x="30" y="80" width="110" height="80" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+    <rect x="30" y="80" width="110" height="28" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+    <text x="85" y="99" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="11.5">1</text>
+    <text x="85" y="140" text-anchor="middle" font-size="12" fill="#333">Business &amp;</text>
+    <text x="85" y="156" text-anchor="middle" font-size="12" fill="#333">Data</text>
+    <text x="85" y="172" text-anchor="middle" font-size="12" fill="#333">Understanding</text>
+    <rect x="168" y="80" width="110" height="80" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+    <rect x="168" y="80" width="110" height="28" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+    <text x="223" y="99" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="11.5">2</text>
+    <text x="223" y="140" text-anchor="middle" font-size="12" fill="#333">Data</text>
+    <text x="223" y="156" text-anchor="middle" font-size="12" fill="#333">Preprocessing</text>
+    <rect x="306" y="80" width="110" height="80" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+    <rect x="306" y="80" width="110" height="28" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+    <text x="361" y="99" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="11.5">3</text>
+    <text x="361" y="140" text-anchor="middle" font-size="12" fill="#333">Data</text>
+    <text x="361" y="156" text-anchor="middle" font-size="12" fill="#333">Analysis</text>
+    <rect x="444" y="80" width="110" height="80" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+    <rect x="444" y="80" width="110" height="28" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+    <text x="499" y="99" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="11.5">4</text>
+    <text x="499" y="140" text-anchor="middle" font-size="12" fill="#333">Modelling</text>
+    <rect x="582" y="80" width="110" height="80" fill="#ffffff" stroke="#333" stroke-width="1.4"/>
+    <rect x="582" y="80" width="110" height="28" fill="#dfe3e8" stroke="#333" stroke-width="1.4"/>
+    <text x="637" y="99" text-anchor="middle" fill="#1f6fb2" font-weight="bold" font-size="11.5">5</text>
+    <text x="637" y="140" text-anchor="middle" font-size="12" fill="#333">Deployment</text>
+    <line x1="140" y1="120" x2="168" y2="120" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <line x1="278" y1="120" x2="306" y2="120" stroke="#333" stroke-width="1.6"/>
+    <line x1="416" y1="120" x2="444" y2="120" stroke="#333" stroke-width="1.6"/>
+    <line x1="554" y1="120" x2="582" y2="120" stroke="#333" stroke-width="1.6"/>
+    <path d="M 637 160 L 637 200 L 85 200 L 85 160" fill="none" stroke="#1f6fb2" stroke-width="1.4" stroke-dasharray="5,3"/>
+    <text x="361" y="222" text-anchor="middle" font-size="11.5" fill="#1f6fb2">feedback loop — insights feed the next question</text>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#333" stroke-width="1.4"/></marker>
+  </defs>
+</svg>
+<figcaption>The five-stage data science lifecycle. It's not a straight line — deployment reveals new business questions that send you back to stage 1.</figcaption>
+</figure>
+
+<div class="card-grid">
+  <div class="card"><h4>1 · Business &amp; Data Understanding</h4><p>What question are we answering? What data do we have (or need)? Frame the problem before touching code.</p></div>
+  <div class="card"><h4>2 · Data Preprocessing</h4><p>Clean, handle missing values and outliers, transform, and structure the data — the step that often takes the most time.</p></div>
+  <div class="card"><h4>3 · Data Analysis</h4><p>Explore and visualize the cleaned data to understand it deeply before modelling — EDA.</p></div>
+  <div class="card"><h4>4 · Modelling</h4><p>Train machine learning models, evaluate, and tune them against the business objective.</p></div>
+  <div class="card"><h4>5 · Deployment</h4><p>Ship the model so it produces value — an API, a dashboard, an app — and monitor it in the wild.</p></div>
+</div>
+<div class="callout tip">
+  <div class="ti">The bootcamp maps to this</div>
+  <p>The modules mirror the lifecycle: Modules 02–05 build your Python coding toolbelt, 06–07 do data analysis and app-building, 08 is data preprocessing, and 09–12 are modelling. Everything you learn slots into one of these five boxes.</p>
+</div>
+
+<h2 class="section"><span class="num">10</span>Types of machine learning</h2>
+<p class="section-intro">Three families of problems — differ by what the training data contains.</p>
+
+<div class="compare">
+  <div class="col">
+    <h4>Supervised</h4>
+    <p>Training data has <strong>both input and the correct answer</strong> (labels). The model learns the mapping to predict labels on new, unseen inputs.</p>
+    <ul><li>Regression — predict a number</li><li>Classification — predict a category</li></ul>
+  </div>
+  <div class="col">
+    <h4>Unsupervised</h4>
+    <p>Training data has <strong>only inputs, no labels</strong>. The model finds hidden structure or groupings on its own.</p>
+    <ul><li>Clustering — group similar items</li><li>Dimensionality reduction</li></ul>
+  </div>
+</div>
+
+<div class="card-grid three">
+  <div class="card"><h4>Supervised</h4><p>Data has answers. Two flavors: <strong>regression</strong> predicts a continuous number (price), <strong>classification</strong> predicts a discrete category (spam / not spam).</p></div>
+  <div class="card"><h4>Unsupervised</h4><p>Data has no answers — the model discovers patterns itself. <strong>Clustering</strong> groups similar rows together (customer segments).</p></div>
+  <div class="card"><h4>Reinforcement</h4><p>The model (an agent) learns by <em>trial and error</em> in an environment, maximizing a reward signal over time — no explicit labels, feedback comes from consequences.</p></div>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Examples you'll meet</div>
+  <p><strong>Regression:</strong> car price prediction, bike-sharing demand. <strong>Classification:</strong> ad-click prediction, dogs-vs-cats image classification. <strong>Clustering:</strong> mall-customer segmentation. These exact examples recur throughout the bootcamp — look for them in Module 09.</p>
+</div>
+
+<h2 class="section"><span class="num">11</span>Applications of machine learning</h2>
+<p class="section-intro">Where ML shows up in the real world.</p>
+
+<div class="card-grid">
+  <div class="card"><h4>Predicting a number</h4><p>Car prices, house prices, demand forecasting, revenue projections — regression problems, everywhere a "how much" question needs an answer.</p></div>
+  <div class="card"><h4>Deciding a category</h4><p>Spam detection, fraud detection, image classification, disease diagnosis, credit approval — classification problems, everywhere a "which bucket" question needs an answer.</p></div>
+  <div class="card"><h4>Segmenting people &amp; things</h4><p>Customer segmentation, market basket analysis, anomaly detection, grouping documents — clustering problems, everywhere you need to find groups without labels.</p></div>
+  <div class="card"><h4>Recommendation</h4><p>What to watch, what to buy, what to read — recommendation engines drive a huge share of modern consumer software, and blend classification and collaborative filtering.</p></div>
+</div>
+
+<h2 class="section"><span class="num">12</span>Job roles in AI &amp; data</h2>
+<p class="section-intro">Different titles, same lifecycle — where you might fit.</p>
+
+<p>Different organizations use these titles differently (and some blur them together), but a useful
+mental model maps roles onto the data science lifecycle:</p>
+<table class="api">
+  <thead>
+    <tr><th>Role</th><th>Core focus</th><th>Lifecycle stage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Data Analyst</strong></td><td>Explore, visualize, and report on data to answer business questions.</td><td>Understanding → Analysis</td></tr>
+    <tr><td><strong>Data Scientist</strong></td><td>The full pipeline — framing problems, preprocessing, modelling, communicating results.</td><td>Understanding → Modelling</td></tr>
+    <tr><td><strong>Machine Learning Engineer</strong></td><td>Building, deploying, and scaling ML models in production, at speed.</td><td>Modelling → Deployment</td></tr>
+    <tr><td><strong>Data Engineer</strong></td><td>Building and maintaining the data pipelines, storage, and infrastructure that feed everyone else.</td><td>Data plumbing</td></tr>
+    <tr><td><strong>Deep Learning Engineer</strong></td><td>Designing and training deep neural networks for specialized tasks (vision, NLP).</td><td>Modelling (DL)</td></tr>
+    <tr><td><strong>AI Researcher</strong></td><td>Advancing the methods themselves — new algorithms, new architectures.</td><td>R&amp;D</td></tr>
+  </tbody>
+</table>
+
+<div class="callout recap">
+  <div class="ti">Where you start</div>
+  <p>Most people enter through <strong>data analysis</strong> or <strong>data science</strong>, then specialize toward ML engineering as they deepen their modelling and deployment skills. This bootcamp's progression — Python → analysis → preprocessing → modelling → deep learning — is exactly the ladder that carries you from analyst toward ML/DL engineer.</p>
+</div>
+
+<div class="callout warn">
+  <div class="ti">Before you move on — common beginner traps</div>
+  <p><strong>Conflating AI and ML:</strong> ML is a subfield of AI; saying "AI" when you mean "a trained model" blurs an important distinction.</p>
+  <p><strong>Assuming "AI winter" can't repeat:</strong> it absolutely can, if the value stops materializing. What protects this boom is demonstrable business return, not hype.</p>
+  <p><strong>Leaping to modelling:</strong> the most common beginner mistake is jumping straight to "let's train a model" while skipping data understanding and preprocessing — the stages where most real-world projects actually live.</p>
+</div>
+
+<div class="callout recap">
+  <div class="ti">Next: Module 02</div>
+  <p>Python Foundations — data types, control flow, functions, and object-oriented programming. From "what ML is" to the language you'll write it in.</p>
+</div>
+
+<div class="day-nav">
+  <a class="day-nav-link prev" href="../index.html">
+    <span class="dn-label">&larr; Back to</span>
+    <span class="dn-title">Course Home</span>
+  </a>
+  <a class="day-nav-link next" href="../02-python_foundations/02_reading.html">
+    <span class="dn-label">Next &rarr;</span>
+    <span class="dn-title">Module 02 &middot; Python Foundations</span>
+  </a>
+</div>
+
+<footer>Module 01 · Intro to AI &amp; Data Science · self-paced</footer>
+</div>
+<script>
+(function(){
+  var sidebar = document.querySelector('.site-sidebar');
+  var toggle = document.querySelector('.sidebar-toggle');
+  var backdrop = document.querySelector('.sidebar-backdrop');
+  if(!sidebar || !toggle || !backdrop) return;
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
+    if (sidebar.classList.contains('open')) close(); else openMenu();
+  });
+  backdrop.addEventListener('click', close);
+})();
+</script>
+<script>
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if(!btn) return;
+  function currentTheme(){
+    var attr = document.documentElement.getAttribute('data-theme');
+    if(attr === 'dark' || attr === 'light') return attr;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  btn.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
+</script>
+</body></html>
