@@ -60,22 +60,170 @@
 
 <div class="crumb">Module 09 of 12 · Machine Learning</div>
 <h1 class="title">Machine Learning</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">The largest module: 41 videos across regression, classification, trees, ensembles, dimension reduction, and clustering — every algorithm paired with theory PDFs and runnable notebooks.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 09 · Machine Learning</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the 14 end-to-end project folders in <code class="inline">CODE/</code> in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Run an end-to-end ML project: data → pipeline → trained model → saved artifact → deployed app.</li>
+    <li>Fit and read linear models — linear, polynomial, and regularized regression.</li>
+    <li>Classify with logistic regression and judge models with proper classification metrics.</li>
+    <li>Use KNN, SVMs, decision trees, and ensembles — and say when each shines.</li>
+    <li>Compress features with PCA, from theory to from-scratch code to practice.</li>
+    <li>Cluster unlabeled data with K-means and hierarchical methods.</li>
+    <li>Ship a used-car price predictor as a web app.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/09-machine_learning" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="09_reading.html">Reading</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/09-machine_learning/CODE" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>All Notebooks (GitHub)</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Modules 06 (pandas) and 08 (preprocessing pipelines) are assumed — every model below eats the output of Module 08. Install scikit-learn alongside the Module 06 stack. Each section names its theory PDF and its notebook export; the notebooks live under <code class="inline">notebooks/</code> mirroring <code class="inline">CODE/</code>.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>The pattern every section follows</h2>
+<p class="section-intro">One rhythm for all 41 videos: split, fit, predict, evaluate.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the scikit-learn loop</span></div>
+  <div class="code-body"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(X, y)
+model.<span class="fn">fit</span>(X_train, y_train)      <span class="com"># learn from training data</span>
+model.<span class="fn">score</span>(X_test, y_test)      <span class="com"># prove it on unseen data</span></div>
+</div>
+<figure>
+  <div class="diagram-label">The ML loop</div>
+  <svg width="680" height="130" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="680" height="130" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="130" fill="url(#erd-grid)"/>
+    <rect x="15" y="45" width="110" height="48" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="70" y="65" text-anchor="middle" font-size="12" font-weight="700">data</text>
+    <text x="70" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">train / test</text>
+    <rect x="150" y="45" width="110" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="205" y="65" text-anchor="middle" font-size="12" font-weight="700">fit</text>
+    <text x="205" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">learn params</text>
+    <rect x="285" y="45" width="110" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="340" y="65" text-anchor="middle" font-size="12" font-weight="700">predict</text>
+    <text x="340" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">on test set</text>
+    <rect x="420" y="45" width="110" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="475" y="65" text-anchor="middle" font-size="12" font-weight="700">evaluate</text>
+    <text x="475" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">metrics (§4)</text>
+    <rect x="555" y="45" width="110" height="48" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="610" y="65" text-anchor="middle" font-size="12" font-weight="700">improve</text>
+    <text x="610" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">tune, repeat</text>
+    <line x1="125" y1="69" x2="150" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr9)"/>
+    <line x1="260" y1="69" x2="285" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr9)"/>
+    <line x1="395" y1="69" x2="420" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr9)"/>
+    <line x1="530" y1="69" x2="555" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr9)"/>
+  </svg>
+  <figcaption>never evaluate on training data — the test set is the exam, not the textbook.</figcaption>
+</figure>
+<div class="callout insight">
+  <div class="ti">Why the split matters</div>
+  <p>A model that memorizes training rows scores perfectly and predicts terribly. <code class="inline">train_test_split</code> holds back unseen data so <code class="inline">score</code> measures learning, not memory.</p>
+</div>
+
+<h2 class="section"><span class="num">2</span>End-to-end project</h2>
+<p class="section-intro">The full arc on the 50 Startups dataset — then the same arc, bigger, in §11's extra projects.</p>
+<p>Four videos walk one project from raw CSV to deployed artifact: explore, build a preprocessing pipeline (Module 08 skills, reused), train, evaluate, then <strong>save everything that matters</strong> — <code class="inline">app.py</code>, <code class="inline">full_pipeline.pkl</code>, <code class="inline">lin_reg.pkl</code> — so the app serves the exact pipeline that was validated.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/01-%20End-to-End%20Project/First%20E2E%20ML%20Project.html">First E2E ML Project.ipynb</a></span></div>
+  <div class="code-body">explore  -->  pipeline  -->  train  -->  evaluate  -->  pickle  -->  app.py</div>
+</div>
+
+<h2 class="section"><span class="num">3</span>Regression</h2>
+<p class="section-intro">Predicting numbers: lines, curves, penalties — then two real datasets.</p>
+<p>Theory (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/02-%20Linear%20Regression/Linear%20Regression.pdf" target="_blank" rel="noopener">Linear Regression PDF</a>) moves from plain linear regression through polynomial curves to regularized variants that punish over-complicated fits. Then it gets applied twice:</p>
+<div class="card-grid">
+  <div class="card"><h4>Applied Linear Regression</h4><p>The technique on a worked dataset, start to finish. <a href="notebooks/02-%20Applied%20Linear%20Regression/Applied%20Linear%20Regression.html">Open notebook</a></p></div>
+  <div class="card"><h4>CO₂ Emission Prediction</h4><p>Fuel-consumption data in, emissions out — regression with a climate flavor. <a href="notebooks/03-%20CO2%20Emission%20Prediction/CO2%20Emission%20Prediction.html">Open notebook</a></p></div>
+</div>
+
+<h2 class="section"><span class="num">4</span>Classification I — logistic regression</h2>
+<p class="section-intro">The name says regression; the job is classification.</p>
+<p>Theory (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/03-%20Logistic%20Regression/Logistic%20Regression.pdf" target="_blank" rel="noopener">Logistic Regression PDF</a>) covers the binary case, the applied walkthrough, and the multiclass extension — one-vs-rest thinking for more than two labels. The applied notebook puts it to work:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/05-%20Applied%20Logistic%20Regression/Applied%20Logistic%20Regression.html">Applied Logistic Regression.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+
+model = <span class="fn">LogisticRegression</span>()  <span class="com"># classifier, despite the name</span></div>
+</div>
+
+<h2 class="section"><span class="num">5</span>Classification metrics</h2>
+<p class="section-intro">Accuracy lies — learn what to read instead.</p>
+<p>Two videos plus the <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/04-%20Classification%20Metrics/Classification%20Metrics.pdf" target="_blank" rel="noopener">Classification Metrics PDF</a> build the full scorecard (precision, recall, F1, confusion matrix, ROC thinking) and the habit of choosing the metric that matches the cost of being wrong. Worked in <a href="notebooks/06-%20Classification%20Metrics/Classification%20Metrics.html">the metrics notebook</a>.</p>
+<div class="callout warn">
+  <div class="ti">99% accuracy can be worthless</div>
+  <p>On a 99-to-1 imbalanced problem, a model that always answers "no" scores 99% and learns nothing. Metrics exist to catch exactly that — always ask what the errors cost before celebrating a score.</p>
+</div>
+
+<h2 class="section"><span class="num">6</span>K-nearest neighbors</h2>
+<p class="section-intro">The laziest learner: don't train, just ask the neighbors.</p>
+<p>Theory (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/05-%20K-Nearest%20Neighbors/K%20Nearest%20Neighbors.pdf" target="_blank" rel="noopener">KNN PDF</a>) plus two notebooks — <a href="notebooks/07-%20K-Nearest%20Neighbors/Knn%20Classifier.html">classifier</a> and <a href="notebooks/07-%20K-Nearest%20Neighbors/Knn%20Regressor.html">regressor</a> (diabetes and bike-sharing data) — show both halves: vote among neighbors for labels, average them for numbers. Remember §5 of Module 08 here: distance-based means <strong>scale first</strong>.</p>
+
+<h2 class="section"><span class="num">7</span>Support vector machines</h2>
+<p class="section-intro">Draw the widest safe street between the classes.</p>
+<p>Theory (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/06-%20Support%20Vector%20Machines/Support%20Vector%20Machines.pdf" target="_blank" rel="noopener">SVM PDF</a>) across four notebooks: <a href="notebooks/08-%20Support%20Vector%20Machines/Linear%20SVC.html">linear classifier</a>, <a href="notebooks/08-%20Support%20Vector%20Machines/Nonlinear%20SVC.html">nonlinear classifier</a>, <a href="notebooks/08-%20Support%20Vector%20Machines/SVC%20from%20Scratch.html">built from scratch</a> (the mechanism with no library magic), and <a href="notebooks/08-%20Support%20Vector%20Machines/SVR.html">SVR</a> for regression targets.</p>
+
+<h2 class="section"><span class="num">8</span>Decision trees and ensembles</h2>
+<p class="section-intro">Ask the best question, then ask a forest.</p>
+<p>Theory (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/07-%20Decision%20Trees/Decision%20Trees.pdf" target="_blank" rel="noopener">Decision Trees PDF</a>) spends three videos on the heart of it — choosing the best question for categorical and numerical splits — then applies both halves: <a href="notebooks/11-%20Decision%20Trees/Decision%20Tree%20Classifier.html">classifier</a> and <a href="notebooks/11-%20Decision%20Trees/Decision%20Tree%20Regressor.html">regressor</a>. Ensembles (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/08-%20Ensemble%20Methods/Ensemble%20Methods.pdf" target="_blank" rel="noopener">Ensemble PDF</a>, <a href="notebooks/12-%20Ensemble%20Methods/Ensemble%20Methods.html">notebook</a>) combine many trees so individual overfitting cancels out.</p>
+<div class="callout insight">
+  <div class="ti">Trees → forest in one breath</div>
+  <p>One deep tree memorizes (high variance); many trees trained differently and averaged stay honest. If trees are the engine, ensembles are the suspension.</p>
+</div>
+
+<h2 class="section"><span class="num">9</span>Dimension reduction and PCA</h2>
+<p class="section-intro">Fewer columns, same signal.</p>
+<p>Theory plus notes (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/09-%20Dimension%20Reduction/Dimension%20Reduction_Notes.pdf" target="_blank" rel="noopener">Dimension Reduction Notes</a>) move intro → PCA theory → <a href="notebooks/13-%20Dimension%20Reduction/PCA%20from%20Scratch.html">from-scratch build</a> → <a href="notebooks/13-%20Dimension%20Reduction/PCA.html">practice</a>, with an <a href="notebooks/13-%20Dimension%20Reduction/Images%20Dimensions%20Reduction.html">images notebook</a> showing reduction on real pixels.</p>
+
+<h2 class="section"><span class="num">10</span>Clustering</h2>
+<p class="section-intro">No labels? Find the groups anyway.</p>
+<p>Theory (<a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/09-machine_learning/PDFs/10-%20Clustering/Clustering.pdf" target="_blank" rel="noopener">Clustering PDF</a>) covers K-means across four algorithm videos plus agglomerative (hierarchical) clustering — worked in <a href="notebooks/14-%20Clustering/clustering-k-means.html">K-means</a>, <a href="notebooks/14-%20Clustering/clustering-hierarchical.html">hierarchical</a>, and a <a href="notebooks/14-%20Clustering/clustering-k-means-hierarchical.html">combined</a> notebook.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Supervised (§§3–8)</h4>
+    <p>Labeled data: the teacher shows answers, the exam checks predictions. Regression and classification live here.</p>
+  </div>
+  <div class="col">
+    <h4>Unsupervised (§§9–10)</h4>
+    <p>No labels: compress the data (PCA) or discover its groups (clustering) — structure first, questions later.</p>
+  </div>
+</div>
+
+<h2 class="section"><span class="num">11</span>Extra projects</h2>
+<p class="section-intro">Three full builds reusing everything above.</p>
+<div class="card-grid">
+  <div class="card"><h4>Used Cars Price Prediction</h4><p>The Module 08 dataset graduates to a deployed app — notebook, <code class="inline">app.py</code>, saved model and preprocessor pickles. <a href="notebooks/04-%20Used%20Cars%20Price%20Prediction/Used%20Cars%20Price%20Prediction.html">Open notebook</a></p></div>
+  <div class="card"><h4>Home Loan Approval</h4><p>Loan sanction data, a classification build, plus a profiling report. <a href="notebooks/09-%20Home%20Loan%20Approval/Home_Loan_Approval_Prediction.html">Open notebook</a></p></div>
+  <div class="card"><h4>Walmart Store Sales</h4><p>Three notebooks comparing approaches on retail sales. <a href="notebooks/10-%20Walmart%20Store%20Sales%20Prediction/walmart-sales-prediction.html">Open notebook</a></p></div>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — ML in one breath</h2>
+<p class="section-intro">The module compresses into a single loop.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">preprocessed data  --split-->  fit  -->  predict  -->  metrics
+  --tune / ensemble-->  pickle  -->  app.py  -->  decisions</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Machine learning is the §1 loop run with ten different engines: regressors predict numbers, classifiers predict labels, metrics keep scores honest, trees and ensembles trade memorization for generalization, PCA and clustering handle the unlabeled world — and pickled pipelines plus <code class="inline">app.py</code> turn the winner into software.</p>
 </div>
 
 <div class="day-nav">
   <a class="day-nav-link prev" href="../08-data_preprocessing_and_feature_engineering/08_reading.html">
     <span class="dn-label">&larr; Previous</span>
-    <span class="dn-title">Module 08 &middot; Data Preprocessing &amp; Feature Engineering</span>
+    <span class="dn-title">Module 08 &middot; Preprocessing &amp; Feature Eng.</span>
   </a>
   <a class="day-nav-link next" href="../10-intro_to_deep_learning/10_reading.html">
     <span class="dn-label">Next &rarr;</span>
@@ -85,35 +233,34 @@
 
 <footer>Module 09 · Machine Learning · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
