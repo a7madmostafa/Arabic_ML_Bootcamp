@@ -60,16 +60,125 @@
 
 <div class="crumb">Module 11 of 12 · Intro to Computer Vision</div>
 <h1 class="title">Intro to Computer Vision</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">Teaching machines to see — from pixels-as-numbers through classic models and MLPs to convolutional networks, augmentation, and transfer learning.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 11 · Intro to Computer Vision</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the image-classification notebooks in <code class="inline">CODE/</code> in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Represent images as numbers and prepare them for ML.</li>
+    <li>Classify images with classic ML and fully connected networks (CIFAR10).</li>
+    <li>Explain what makes a convolutional network convolutional.</li>
+    <li>Load and organize image data from Kaggle, Colab, or your own folders.</li>
+    <li>Train a cats-vs-dogs CNN and measure what augmentation adds.</li>
+    <li>Reuse pretrained models with transfer learning.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/11-intro_to_computer_vision" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="11_reading.html">Reading</a>
+  <a href="notebooks/Image%20Classification%20with%20Classic%20ML%20and%20MLP.html">Classic ML + MLP</a>
+  <a href="notebooks/Image%20Classification%20with%20CNN.html">CNN Classifier</a>
+  <a href="notebooks/image-classification-for-beginners-step-by-step.html">Step-by-Step Guide</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Module 10 (neural nets, Keras, training discipline) is assumed — this module spends it on images. Theory: <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/11-intro_to_computer_vision/PDFs/Computer%20Vision%20with%20Deep%20Learning.pdf" target="_blank" rel="noopener">Computer Vision with Deep Learning PDF</a>. Image datasets are heavy — the notebooks download CIFAR10 and Kaggle archives as they go, so run them somewhere with disk space.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>Images are numbers</h2>
+<p class="section-intro">Everything starts by seeing a picture the way a model does.</p>
+<p>A color image is a 3-D array — height × width × three color channels — and every pixel is just a number. The module's running example is <strong>CIFAR10</strong>: 60,000 small color images in 10 classes, 6,000 per class. "Reading" an image means loading that array; "preparing" it means scaling pixel values and shaping batches the network accepts.</p>
+<figure>
+  <div class="diagram-label">The vision pipeline</div>
+  <svg width="680" height="130" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="680" height="130" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="130" fill="url(#erd-grid)"/>
+    <rect x="15" y="45" width="105" height="48" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="67" y="65" text-anchor="middle" font-size="12" font-weight="700">pixels</text>
+    <text x="67" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">arrays</text>
+    <rect x="145" y="45" width="105" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="197" y="65" text-anchor="middle" font-size="12" font-weight="700">prepare</text>
+    <text x="197" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">scale, batch</text>
+    <rect x="275" y="45" width="105" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="327" y="65" text-anchor="middle" font-size="12" font-weight="700">features</text>
+    <text x="327" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">conv layers</text>
+    <rect x="405" y="45" width="105" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="457" y="65" text-anchor="middle" font-size="12" font-weight="700">decide</text>
+    <text x="457" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">dense + label</text>
+    <rect x="535" y="45" width="130" height="48" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="600" y="65" text-anchor="middle" font-size="12" font-weight="700">augment</text>
+    <text x="600" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">more from less</text>
+    <line x1="120" y1="69" x2="145" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr11)"/>
+    <line x1="250" y1="69" x2="275" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr11)"/>
+    <line x1="380" y1="69" x2="405" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr11)"/>
+  </svg>
+  <figcaption>arrays in, labels out — every section below owns one box.</figcaption>
+</figure>
+
+<h2 class="section"><span class="num">2</span>First attempts: classic ML and MLP</h2>
+<p class="section-intro">Baselines before brilliance (Module 10's rule, reused).</p>
+<p>The <a href="notebooks/Image%20Classification%20with%20Classic%20ML%20and%20MLP.html">first notebook</a> downloads and prepares CIFAR10, then tries two ladders: <strong>classic ML</strong> on flattened pixels, and a <strong>fully connected (MLP) network</strong> from Module 10's toolkit. Neither sees spatial structure — pixels are just long vectors — which is exactly why their ceiling motivates §3.</p>
+<div class="callout insight">
+  <div class="ti">Why start weak on purpose?</div>
+  <p>A CNN that scores 80% means nothing until you know flattened pixels score far less. Baselines turn "it works" into "it works <em>because of the convolutions</em>."</p>
+</div>
+
+<h2 class="section"><span class="num">3</span>Convolutional networks</h2>
+<p class="section-intro">Layers that look at neighborhoods, not just lists.</p>
+<p>Two theory lectures introduce the CNN (slides in the module PDF), and the <a href="notebooks/Image%20Classification%20with%20CNN.html">CNN notebook</a> makes it concrete: a first application, then a full <strong>cats-vs-dogs classifier</strong> trained on real photos. Convolutional layers learn local patterns (edges → textures → parts) wherever they appear in the frame — the spatial structure §2 threw away.</p>
+<div class="compare">
+  <div class="col">
+    <h4>MLP (§2)</h4>
+    <p>Every pixel connects to every neuron — position means nothing, parameters explode, translation breaks it.</p>
+  </div>
+  <div class="col">
+    <h4>CNN (§3)</h4>
+    <p>Small filters slide across the image, reusing weights everywhere — fewer parameters, translation-tolerant, hierarchy for free.</p>
+  </div>
+</div>
+
+<h2 class="section"><span class="num">4</span>Reading and preparing images</h2>
+<p class="section-intro">The unglamorous half, three ways.</p>
+<p>Three videos cover the same workflow on three platforms — Kaggle, Colab, and your own machine — all following the <a href="notebooks/image-classification-for-beginners-step-by-step.html">step-by-step notebook</a>: import, unzip the training archive, visualize samples, create organized directories, and stream images with a generator that rescales on the fly:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/image-classification-for-beginners-step-by-step.html">image-classification-for-beginners-step-by-step.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">from</span> tensorflow.keras.preprocessing.image <span class="kw">import</span> ImageDataGenerator
+
+datagen = <span class="fn">ImageDataGenerator</span>(rescale=<span class="str">1./255</span>)  <span class="com"># pixels 0-255 → 0-1</span>
+train = datagen.<span class="fn">flow_from_directory</span>(...)        <span class="com"># folders = labels</span></div>
+</div>
+<div class="callout tip">
+  <div class="ti">Folders are labels</div>
+  <p><code class="inline">flow_from_directory</code> reads the class straight from the folder name — <code class="inline">train/cats/</code> vs <code class="inline">train/dogs/</code>. Organize directories once, and labeling handles itself.</p>
+</div>
+
+<h2 class="section"><span class="num">5</span>Augmentation and transfer learning</h2>
+<p class="section-intro">Two answers to "we don't have enough images."</p>
+<h3 class="sub">5.1 Data augmentation</h3>
+<p>Artificially multiply the training set with modified copies — flips, rotations, zooms applied on the fly during training. The CNN notebook trains with and without it, so the <strong>effect of augmentation is measured, not preached</strong>: same model, same data, the gap is the technique's value. Bigger variants add layers, batch normalization, and dropout (Module 10's §4, reused).</p>
+<h3 class="sub">5.2 Transfer learning</h3>
+<p>High-accuracy training needs massive data (think ImageNet scale) — so reuse knowledge learned elsewhere: take a pretrained model and apply it to your related task, from direct prediction down to feature extraction. The step-by-step notebook closes on exactly this, with concrete pretrained examples.</p>
+<div class="callout insight">
+  <div class="ti">The practitioner's order</div>
+  <p>Baseline (§2) → plain CNN (§3) → augmented CNN (§5.1) → pretrained transfer (§5.2). Each step answers "was the last one the bottleneck?" — stop climbing when the score stops moving.</p>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — vision in one breath</h2>
+<p class="section-intro">The module compresses into a single pipeline.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">pixel arrays  -->  organize + rescale  -->  baseline (MLP)  -->  CNN
+  -->  augment  -->  transfer  -->  labels</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Computer vision is Module 10's networks pointed at pixel arrays: prepare and rescale the images, baseline with classic models, let convolutions learn spatial structure, multiply data with augmentation, and borrow pretrained knowledge when your own dataset runs out.</p>
 </div>
 
 <div class="day-nav">
@@ -85,35 +194,34 @@
 
 <footer>Module 11 · Intro to Computer Vision · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
