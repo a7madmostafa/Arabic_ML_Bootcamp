@@ -60,16 +60,159 @@
 
 <div class="crumb">Module 08 of 12 · Data Preprocessing &amp; Feature Engineering</div>
 <h1 class="title">Data Preprocessing &amp; Feature Engineering</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">From raw data to model-ready features — explored on a used-car dataset across 8 notebooks: explore, clean, impute, de-outlier, scale, transform, encode, then pipeline it all.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 08 · Data Preprocessing &amp; Feature Engineering</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the 8 preprocessing notebooks in <code class="inline">CODE/</code> in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Explore a new dataset and turn observations into a per-feature preprocessing plan.</li>
+    <li>Clean text columns and engineer features from domain patterns (brand/model splits, EV mileage rules).</li>
+    <li>Handle missing values four ways — drop, simple/KNN/iterative imputation, and custom domain imputers.</li>
+    <li>Detect outliers visually, with IQR, and with z-scores — then remove or winsorize.</li>
+    <li>Choose Min-Max vs. standardization vs. robust scaling based on the model and the outliers.</li>
+    <li>Reshape skewed features with log, Box-Cox, binning, and polynomial expansions.</li>
+    <li>Encode any categorical column — one-hot, ordinal, frequency, target, or binary.</li>
+    <li>Assemble numeric/categorical pipelines into one reproducible preprocessing pipeline.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/08-data_preprocessing_and_feature_engineering" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="08_reading.html">Reading</a>
+  <a href="notebooks/01-%20Data%20Exploration.html">01 Exploration</a>
+  <a href="notebooks/02-%20Data%20Cleaning%20%26%20Feature%20Engineering.html">02 Cleaning</a>
+  <a href="notebooks/03-%20Missing%20Values%20Handling.html">03 Missing</a>
+  <a href="notebooks/04-%20Outliers%20Handling.html">04 Outliers</a>
+  <a href="notebooks/05-%20Numerical%20Features%20Scaling.html">05 Scaling</a>
+  <a href="notebooks/06-%20Numerical%20Feature%20Transformations.html">06 Transforms</a>
+  <a href="notebooks/07-%20Categorical%20Features%20Handling.html">07 Encoding</a>
+  <a href="notebooks/08-%20Full%20Preprocessing%20Pipeline.html">08 Pipeline</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Modules 06 (pandas) and basic scikit-learn are assumed. The running example is a <strong>used-car listings</strong> dataset (<code class="inline">data/train-data.csv</code> → <code class="inline">semi_cleaned_data.csv</code> → <code class="inline">cleaned_data.csv</code> as it matures). Each section below follows its notebook — open it alongside.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>Exploration first, opinions later</h2>
+<p class="section-intro">Look before you clean — then write the plan down per feature.</p>
+<p>The module opens with a full exploration of the car data, ending not with code but with <strong>observations and a planned approach per feature</strong>: which columns need cleaning, which need flags, which need encoding. That written plan drives every later notebook — preprocessing without it is just guessing.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/01-%20Data%20Exploration.html">01- Data Exploration.ipynb</a></span></div>
+  <div class="code-body">df.<span class="fn">head</span>() / df.<span class="fn">info</span>() / df.<span class="fn">describe</span>()   <span class="com"># §4 of Module 06, now with intent</span>
+df.<span class="fn">isnull</span>().<span class="fn">sum</span>()                        <span class="com"># where are the holes?</span></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Explore → plan → execute</div>
+  <p>The exploration notebook's real output is a checklist ("handle missing values, outliers, scaling, categorical encoding"). Every section below ticks one box. Steal this habit for every dataset you'll ever meet.</p>
+</div>
+
+<h2 class="section"><span class="num">2</span>Cleaning and feature engineering</h2>
+<p class="section-intro">Domain knowledge beats generic code — the car dataset proves it twice.</p>
+<p>Two moves carry the cleaning notebook: the <code class="inline">Name</code> column hides a pattern (brand first, model second — split it into two columns), and missing <code class="inline">Mileage</code> on electric cars isn't missing at all (impute EV mileage as 0 <strong>plus</strong> a <code class="inline">mileage_missing</code> flag, so the model learns the difference between "zero" and "unknown"). Only 4 rows get removed outright; the analysis section then confirms the cleanup worked.</p>
+<div class="annotations">
+  <div class="annotation"><b>split, don't drop</b><p>A compound column (<code class="inline">Brand Model</code>) is two features wearing a trench coat — separate them before encoding.</p></div>
+  <div class="annotation"><b>flag the fill</b><p>Whenever you impute, add a missing-indicator column. "Was absent" is itself information a model can use.</p></div>
+  <div class="annotation"><b>high-cardinality preview</b><p><code class="inline">Brand</code>/<code class="inline">Model</code> end up nominal with too many values for one-hot — the notebook reaches for binary encoding (§7's territory).</p></div>
+</div>
+
+<h2 class="section"><span class="num">3</span>Missing values</h2>
+<p class="section-intro">Most algorithms can't handle holes — four rungs of fixes, simplest first.</p>
+<p>Missing data is simply the absence of values, and most ML algorithms refuse it. The ladder, from the notebook:</p>
+<div class="card-grid">
+  <div class="card"><h4>Drop</h4><p>Complete-case analysis: delete rows with holes. Honest, but NULL-heavy columns will eat your dataset.</p></div>
+  <div class="card"><h4>SimpleImputer</h4><p>One fixed statistic per column — mean/median for numbers, most-frequent for categories.</p></div>
+  <div class="card"><h4>KNNImputer</h4><p>Fill from the <strong>k most similar rows</strong> by other features — neighbors vote on the missing value.</p></div>
+  <div class="card"><h4>Iterative (MICE-like)</h4><p>Model each gappy feature as a function of the others, round-robin, until the fills stabilize.</p></div>
+</div>
+<p>Then the advanced rung: <strong>custom domain imputers</strong> — a plain function, then a class, then a scikit-learn-style estimator — because no generic imputer knows that electric cars have no mileage. General tools first, domain rules where they pay.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/03-%20Missing%20Values%20Handling.html">03- Missing Values Handling.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer, KNNImputer, IterativeImputer
+
+SimpleImputer(strategy=<span class="str">'median'</span>)  <span class="com"># numbers: median beats mean on skew</span>
+KNNImputer(n_neighbors=<span class="str">5</span>)            <span class="com"># borrow from similar rows</span></div>
+</div>
+
+<h2 class="section"><span class="num">4</span>Outliers</h2>
+<p class="section-intro">Extreme observations that deviate from the majority — find them three ways, then decide.</p>
+<h3 class="sub">4.1 Detect: eyes, IQR, z-score</h3>
+<p>Boxplots of <code class="inline">Kilometers</code>, <code class="inline">Power</code>, and <code class="inline">Engine</code> show the suspects; the IQR rule (<code class="inline">Q1 − 1.5·IQR</code> … <code class="inline">Q3 + 1.5·IQR</code>) and z-scores confirm them numerically.</p>
+<div class="callout warn">
+  <div class="ti">The NaN trap in handmade IQR</div>
+  <p><code class="inline">np.percentile()</code> propagates NaNs — one missing value makes Q1/Q3 (and hence both bounds) NaN, and every comparison silently returns False. Handle missing values <strong>before</strong> outlier detection, or use NaN-aware functions.</p>
+</div>
+<h3 class="sub">4.2 Handle: remove or winsorize</h3>
+<p>Three strategies, escalating gentleness: <strong>remove</strong> obvious errors, <strong>cap (winsorize)</strong> extremes at chosen percentiles, or <strong>transform</strong> (§6) so the tail stops mattering. The notebook's takeaway is blunt: with extreme outliers distorting everything, winsorizing with the module's <code class="inline">OutlierHandler</code> often beats fancier fixes.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/04-%20Outliers%20Handling.html">04- Outliers Handling.ipynb</a></span></div>
+  <div class="code-body">lower = Q1 - <span class="str">1.5</span> * IQR   <span class="com"># below this: suspect</span>
+upper = Q3 + <span class="str">1.5</span> * IQR   <span class="com"># above this: suspect</span></div>
+</div>
+
+<h2 class="section"><span class="num">5</span>Scaling numeric features</h2>
+<p class="section-intro">Same numbers, comparable magnitudes — but only when the model cares.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Must scale</h4>
+    <p>KNN, SVM, linear/logistic regression, neural nets, PCA, K-means — anything using <strong>distances or gradient steps</strong>.</p>
+  </div>
+  <div class="col">
+    <h4>Mostly needn't</h4>
+    <p>Tree-based models split one feature at a time — magnitude never enters the comparison.</p>
+  </div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>Min-Max</h4><p>Squashes to a fixed range, usually [0, 1]. Preserves distribution shape but lets one outlier compress everything.</p></div>
+  <div class="card"><h4>Standardization</h4><p>Mean 0, std 1 (z-scores). The default when features look roughly normal.</p></div>
+  <div class="card"><h4>Robust</h4><p>Median and IQR instead of mean and std — the scaler that shrugs at outliers.</p></div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/05-%20Numerical%20Features%20Scaling.html">05- Numerical Features Scaling.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> MinMaxScaler, StandardScaler, RobustScaler
+
+RobustScaler()  <span class="com"># outliers present? start here</span></div>
+</div>
+
+<h2 class="section"><span class="num">6</span>Transforming numeric features</h2>
+<p class="section-intro">Change the shape, not just the scale.</p>
+<div class="card-grid">
+  <div class="card"><h4>Log</h4><p>Tames <strong>positive skew</strong> (long right tail) toward normal — the classic fix for prices and counts.</p></div>
+  <div class="card"><h4>Box-Cox / power</h4><p>Reduce skew <strong>and</strong> stabilize variance; more normal-like input, better model behavior.</p></div>
+  <div class="card"><h4>Binning</h4><p>Continuous → categories: less noise, and a way to hand linear models <strong>non-linear</strong> effects.</p></div>
+  <div class="card"><h4>Polynomial</h4><p>Expand features into combinations so <strong>linear models can learn curves</strong>.</p></div>
+</div>
+
+<h2 class="section"><span class="num">7</span>Encoding categorical features</h2>
+<p class="section-intro">Five tools, one decision: how many categories, and are they ordered?</p>
+<div class="card-grid">
+  <div class="card"><h4>One-hot</h4><p>Binary column per category. Perfect for low-cardinality nominal features; explodes on high-cardinality ones.</p></div>
+  <div class="card"><h4>Ordinal</h4><p>Ordered categories → integers that respect the order (<code class="inline">Low &lt; Medium &lt; High</code>).</p></div>
+  <div class="card"><h4>Frequency</h4><p>Replace each category with how often it appears — one column, no explosion.</p></div>
+  <div class="card"><h4>Target</h4><p>Replace each category with the <strong>mean target</strong> for it — leaks signal directly, handle with cross-validation care.</p></div>
+  <div class="card"><h4>Binary</h4><p>High-cardinality nominals (hello, <code class="inline">Brand</code>/<code class="inline">Model</code>) → compact binary columns.</p></div>
+</div>
+<p>The notebook's summary table compares every method's use case, pros, and cons side by side — bookmark it.</p>
+
+<h2 class="section"><span class="num">8</span>The full pipeline</h2>
+<p class="section-intro">Everything above, reproducible in one object.</p>
+<p>The finale routes each column family through its own pipeline — <strong>numeric</strong>, <strong>year</strong>, and <strong>categorical</strong> — inside a single scikit-learn pipeline that outputs model-ready features. Same steps as §§2–7, but fitted once, applied identically to train and future data, and immune to "it worked in my notebook" drift.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/08-%20Full%20Preprocessing%20Pipeline.html">08- Full Preprocessing Pipeline.ipynb</a></span></div>
+  <div class="code-body">numeric → impute → scale → transform
+categorical → impute → encode
+all → one pipeline → model-ready matrix</div>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — preprocessing in one breath</h2>
+<p class="section-intro">The module compresses into a single pipeline.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">explore + plan  -->  clean + engineer  -->  impute holes  -->  tame outliers
+  -->  scale + transform  -->  encode categories  -->  ONE pipeline  -->  model-ready</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Preprocessing turns raw tables into model food: explore first and plan per feature, fix holes and extremes with domain sense, put numbers on comparable reshaped scales, encode categories by cardinality and order — then lock it all in a pipeline so train and production get identical treatment. Module 09's models assume every bit of this.</p>
 </div>
 
 <div class="day-nav">
@@ -85,35 +228,34 @@
 
 <footer>Module 08 · Data Preprocessing &amp; Feature Engineering · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
