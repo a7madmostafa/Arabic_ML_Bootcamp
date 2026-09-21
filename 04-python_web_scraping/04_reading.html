@@ -78,7 +78,6 @@
 
 <div class="day-links">
   <a class="primary" href="04_reading.html">Reading</a>
-  <a href="Intro_to_Web_Scraping_Notes.html">Study Notes (HTML)</a>
   <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/README.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Module Notes</a>
   <a href="notebooks/Web_Scraping_01.html">Notebook 01</a>
   <a href="notebooks/Web_Scraping_02.html">Notebook 02</a>
@@ -90,10 +89,10 @@
     <tr><th>#</th><th>Lecture</th><th>Duration</th><th>YouTube</th><th>Notes</th><th>CODE</th></tr>
   </thead>
   <tbody>
-    <tr><td>01</td><td>Web Scraping Intro</td><td>6:36</td><td><a href="https://www.youtube.com/watch?v=rvpEEOHLa6s" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td>—</td></tr>
-    <tr><td>02</td><td>Web Scraping Coding 01</td><td>11:59</td><td><a href="https://www.youtube.com/watch?v=RRYjWKFdDxA" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td><a href="notebooks/Web_Scraping_01.html"><code class="inline">Web_Scraping_01.ipynb</code></a></td></tr>
-    <tr><td>03</td><td>Web Scraping Coding 02</td><td>9:10</td><td><a href="https://www.youtube.com/watch?v=dZUbIa_y3pE" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td><a href="notebooks/Web_Scraping_02.html"><code class="inline">Web_Scraping_02.ipynb</code></a></td></tr>
-    <tr><td>04</td><td>Web Scraping Coding 03</td><td>5:47</td><td><a href="https://www.youtube.com/watch?v=NEdRM4eadpI" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/scrap_jobs.py" target="_blank" rel="noopener"><code class="inline">scrap_jobs.py</code></a></td></tr>
+    <tr><td>01</td><td>Web Scraping Intro</td><td>6:36</td><td><a href="https://www.youtube.com/watch?v=rvpEEOHLa6s" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#theory">notes</a></td><td>—</td></tr>
+    <tr><td>02</td><td>Web Scraping Coding 01</td><td>11:59</td><td><a href="https://www.youtube.com/watch?v=RRYjWKFdDxA" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-01">notes</a></td><td><a href="notebooks/Web_Scraping_01.html"><code class="inline">Web_Scraping_01.ipynb</code></a></td></tr>
+    <tr><td>03</td><td>Web Scraping Coding 02</td><td>9:10</td><td><a href="https://www.youtube.com/watch?v=dZUbIa_y3pE" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-02">notes</a></td><td><a href="notebooks/Web_Scraping_02.html"><code class="inline">Web_Scraping_02.ipynb</code></a></td></tr>
+    <tr><td>04</td><td>Web Scraping Coding 03</td><td>5:47</td><td><a href="https://www.youtube.com/watch?v=NEdRM4eadpI" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-03">notes</a></td><td><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/scrap_jobs.py" target="_blank" rel="noopener"><code class="inline">scrap_jobs.py</code></a></td></tr>
   </tbody>
 </table>
 
@@ -109,7 +108,7 @@ pip install pandas</div>
   <p>The module scrapes the <strong>Wuzzuf</strong> job board (<code class="inline">wuzzuf.net/search/jobs/</code>) — pick a query like <code class="inline">machine+learning</code>. Keep in mind that real job-board markup changes over time, so the CSS classes in the code may need re-finding if Wuzzuf re-designs its pages.</p>
 </div>
 
-<h2 class="section"><span class="num">1</span>Web scraping intro — the theory</h2>
+<h2 class="section" id="theory"><span class="num">1</span>Web scraping intro — the theory</h2>
 <p class="section-intro">Understanding scraping as the browser's request minus the browser's rendering.</p>
 
 <div class="compare">
@@ -172,6 +171,11 @@ pip install pandas</div>
   </svg>
   <figcaption>one root, two branches, and the content elements nested inside.</figcaption>
 </figure>
+<div class="annotations">
+  <div class="annotation"><b>&lt;html&gt;</b><p>The root element of every page.</p></div>
+  <div class="annotation"><b>&lt;head&gt;</b><p>Stores page metadata, including the title.</p></div>
+  <div class="annotation"><b>&lt;body&gt;</b><p>Contains the visible page content — headings and paragraphs nested inside.</p></div>
+</div>
 
 <h3 class="sub">1.3 Classes identify many, IDs identify one</h3>
 <div class="card-grid">
@@ -223,7 +227,30 @@ pip install pandas</div>
   </ol>
 </div>
 
-<h2 class="section"><span class="num">2</span>Coding 01 — your first scrape</h2>
+<h3 class="sub">1.5 Actual response vs. visual browser output</h3>
+<p>The server's answer and what the browser paints are related — but not the same thing. Your scraper only ever sees the tree of tags; the browser interprets that same tree into a rendered page.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Server response</h4>
+    <p>The server returns <strong>source code</strong> such as HTML. Here's a real snippet in the shape this module scrapes:</p>
+    <div class="code-body">&lt;div class=<span class="str">"css-example"</span>&gt;
+    &lt;h2 class=<span class="str">"job-title"</span>&gt;
+        &lt;a href=<span class="str">"/jobs/machine-learning-engineer"</span>&gt;
+            Machine Learning Engineer
+        &lt;/a&gt;
+    &lt;/h2&gt;
+    &lt;div class=<span class="str">"company"</span>&gt;
+        &lt;a href=<span class="str">"https://example.com/company"</span>&gt;Edentech&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+  </div>
+  <div class="col">
+    <h4>Browser output</h4>
+    <p>The browser interprets the HTML, CSS, and JavaScript, then displays a rendered page — a job card with a clickable title and company name — where your scraper only sees the tags above.</p>
+  </div>
+</div>
+
+<h2 class="section" id="coding-01"><span class="num">2</span>Coding 01 — your first scrape</h2>
 <p class="section-intro">Fetch the Wuzzuf machine-learning job board and pull every job title, link, company and spec off it.</p>
 
 <div class="code-block">
@@ -293,7 +320,7 @@ df.to_csv(<span class="str">'mljobs.csv'</span>, index=<span class="kw">False</s
   <p>A <code class="inline">pandas</code> DataFrame is a dict of columns — so building <code class="inline">scraped_data</code> as <code class="inline">{'ColumnName': [row, row, ...]}</code> maps one-to-one onto <code class="inline">pd.DataFrame(scraped_data)</code>. Five equal-length lists become a 5-column table.</p>
 </div>
 
-<h2 class="section"><span class="num">3</span>Coding 02 — pagination &amp; helper functions</h2>
+<h2 class="section" id="coding-02"><span class="num">3</span>Coding 02 — pagination &amp; helper functions</h2>
 <p class="section-intro">One page of results is a toy; this lecture turns the notebook into a reusable helper module that walks every page of a query.</p>
 
 <div class="code-block">
@@ -367,7 +394,7 @@ pages = math.ceil(jobs / <span class="num">15</span>)   <span class="com"># 13</
   <p>The notebook previews specs like <code class="inline">"Full Time · 2 – 3 Years · ..."</code> — the pieces are separated by the <code class="inline">·</code> character. A quick loop printing <code class="inline">len(spec.text.split(' · '))</code> per spec verifies every row splits into the same number of fields before you build the DataFrame.</p>
 </div>
 
-<h2 class="section"><span class="num">4</span>Coding 03 — the production script</h2>
+<h2 class="section" id="coding-03"><span class="num">4</span>Coding 03 — the production script</h2>
 <p class="section-intro">The finished, runnable version: one function that scrapes, packages, and saves — guarded so it only runs when executed directly.</p>
 <div class="code-block">
   <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/scrap_jobs.py" target="_blank" rel="noopener">scrap_jobs.py</a></span></div>
@@ -428,8 +455,6 @@ pages = math.ceil(jobs / <span class="num">15</span>)   <span class="com"># 13</
   <div class="ti">The one-sentence version</div>
   <p>Scraping is the browser's request with no rendering: <code class="inline">requests</code> brings back the page's HTML, <code class="inline">BeautifulSoup</code> parses it into a tree you can search with <code class="inline">find</code>/<code class="inline">find_all</code>, and list comprehensions translate every matching element into the columns of a <code class="inline">pandas</code> DataFrame.</p>
 </div>
-<p class="section-intro">This module's deep-dive reference — the full theory line-by-line — lives in the <a href="Intro_to_Web_Scraping_Notes.html">Intro to Web Scraping study notes</a>, converted from <code class="inline">Intro_to_Web_Scraping_Complete_Notes.md</code>.</p>
-
 <div class="day-nav">
   <a class="day-nav-link prev" href="../03-python_projects/03_reading.html">
     <span class="dn-label">&larr; Previous</span>
