@@ -79,8 +79,8 @@
 <div class="day-links">
   <a class="primary" href="04_reading.html">Reading</a>
   <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/README.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Module Notes</a>
-  <a href="notebooks/Web_Scraping_01.html">Notebook 01</a>
-  <a href="notebooks/Web_Scraping_02.html">Notebook 02</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/Web_Scraping_01.ipynb" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Notebook 01</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/Web_Scraping_02.ipynb" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Notebook 02</a>
   <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/04-python_web_scraping" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
 </div>
 
@@ -90,8 +90,8 @@
   </thead>
   <tbody>
     <tr><td>01</td><td>Web Scraping Intro</td><td>6:36</td><td><a href="https://www.youtube.com/watch?v=rvpEEOHLa6s" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#theory">notes</a></td><td>—</td></tr>
-    <tr><td>02</td><td>Web Scraping Coding 01</td><td>11:59</td><td><a href="https://www.youtube.com/watch?v=RRYjWKFdDxA" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-01">notes</a></td><td><a href="notebooks/Web_Scraping_01.html"><code class="inline">Web_Scraping_01.ipynb</code></a></td></tr>
-    <tr><td>03</td><td>Web Scraping Coding 02</td><td>9:10</td><td><a href="https://www.youtube.com/watch?v=dZUbIa_y3pE" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-02">notes</a></td><td><a href="notebooks/Web_Scraping_02.html"><code class="inline">Web_Scraping_02.ipynb</code></a></td></tr>
+    <tr><td>02</td><td>Web Scraping Coding 01</td><td>11:59</td><td><a href="https://www.youtube.com/watch?v=RRYjWKFdDxA" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-01">notes</a></td><td><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/Web_Scraping_01.ipynb" target="_blank" rel="noopener"><code class="inline">Web_Scraping_01.ipynb</code></a></td></tr>
+    <tr><td>03</td><td>Web Scraping Coding 02</td><td>9:10</td><td><a href="https://www.youtube.com/watch?v=dZUbIa_y3pE" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-02">notes</a></td><td><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/Web_Scraping_02.ipynb" target="_blank" rel="noopener"><code class="inline">Web_Scraping_02.ipynb</code></a></td></tr>
     <tr><td>04</td><td>Web Scraping Coding 03</td><td>5:47</td><td><a href="https://www.youtube.com/watch?v=NEdRM4eadpI" target="_blank" rel="noopener">watch</a></td><td><a href="04_reading.html#coding-03">notes</a></td><td><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/scrap_jobs.py" target="_blank" rel="noopener"><code class="inline">scrap_jobs.py</code></a></td></tr>
   </tbody>
 </table>
@@ -254,7 +254,7 @@ pip install pandas</div>
 <p class="section-intro">Fetch the Wuzzuf machine-learning job board and pull every job title, link, company and spec off it.</p>
 
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Web_Scraping_01.html">Web_Scraping_01.ipynb</a></span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/Web_Scraping_01.ipynb" target="_blank" rel="noopener">Web_Scraping_01.ipynb</a></span></div>
   <div class="code-body"><span class="kw">import</span> requests
 <span class="kw">from</span> bs4 <span class="kw">import</span> BeautifulSoup
 
@@ -324,7 +324,7 @@ df.to_csv(<span class="str">'mljobs.csv'</span>, index=<span class="kw">False</s
 <p class="section-intro">One page of results is a toy; this lecture turns the notebook into a reusable helper module that walks every page of a query.</p>
 
 <div class="code-block">
-  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Web_Scraping_02.html">Web_Scraping_02.ipynb</a></span></div>
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/Web_Scraping_02.ipynb" target="_blank" rel="noopener">Web_Scraping_02.ipynb</a></span></div>
   <div class="code-body"><span class="kw">import</span> requests, math
 <span class="kw">from</span> bs4 <span class="kw">import</span> BeautifulSoup
 
