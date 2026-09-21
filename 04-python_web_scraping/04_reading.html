@@ -140,7 +140,22 @@ pip install pandas</div>
 </table>
 
 <h3 class="sub">1.2 HTML is a tree</h3>
-<p>HTML documents nest elements inside each other like a tree. The root element is <code class="inline">&lt;html&gt;</code>, it branches into <code class="inline">&lt;head&gt;</code> (metadata — the title) and <code class="inline">&lt;body&gt;</code> (the visible content), and headings and paragraphs nest further inside the body.</p>
+<p>HTML documents nest elements inside each other like a tree. The root element is <code class="inline">&lt;html&gt;</code>, it branches into <code class="inline">&lt;head&gt;</code> (metadata — the title) and <code class="inline">&lt;body&gt;</code> (the visible content), and headings and paragraphs nest further inside the body. Here is the skeleton from the notes:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">page skeleton</span></div>
+  <div class="code-body">&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Page Title&lt;/title&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;h1&gt;Heading 1&lt;/h1&gt;
+        &lt;p&gt;Paragraph 1&lt;/p&gt;
+        &lt;p&gt;Paragraph 2&lt;/p&gt;
+        &lt;p&gt;Paragraph 3&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</div>
+</div>
 <figure>
   <div class="diagram-label">HTML document tree</div>
   <svg width="520" height="230" viewBox="0 0 520 230" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
@@ -189,7 +204,13 @@ pip install pandas</div>
 </div>
 
 <h3 class="sub">1.4 How scraping actually works</h3>
-<p>Your code does the same thing a browser does — it sends a server request with a specific URL and asks the server to return the <strong>code for that page</strong>. The difference: the browser interprets HTML/CSS/JS and paints a visual page; your scraper filters the source code looking for the elements you specified, and extracts whatever content it wants.</p>
+<p>Your code does the same thing a browser does — it sends a server request with a specific URL and asks the server to return the <strong>code for that page</strong>. The difference: the browser interprets HTML/CSS/JS and paints a visual page; your scraper filters the source code looking for the elements you specified, and extracts whatever content it wants. Step by step, that exchange is:</p>
+<ol>
+  <li>The client sends a request to a server.</li>
+  <li>The request includes a specific URL.</li>
+  <li>The server processes the request.</li>
+  <li>The server returns a response containing the page code.</li>
+</ol>
 <figure>
   <div class="diagram-label">Request / response cycle</div>
   <svg width="680" height="150" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
