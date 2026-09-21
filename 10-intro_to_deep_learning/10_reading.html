@@ -60,16 +60,119 @@
 
 <div class="crumb">Module 10 of 12 · Intro to Deep Learning</div>
 <h1 class="title">Intro to Deep Learning</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">From one artificial neuron to trained Keras networks — backpropagation without tears, networks from scratch in NumPy, MNIST classifiers, training tips, and a tuned bike-sharing project.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 10 · Intro to Deep Learning</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the Keras and from-scratch notebooks in <code class="inline">CODE/</code> in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Explain a neuron, a layer, and how backpropagation assigns blame for errors.</li>
+    <li>Build a neural network from scratch in NumPy — single neuron, layer, full network.</li>
+    <li>Train MNIST and Fashion-MNIST classifiers with Keras: layers, callbacks, history, save/load.</li>
+    <li>Choose activations, optimizers, losses, and regularization (L1/L2, dropout, early stopping).</li>
+    <li>Stabilize training with batch normalization and checkpointing.</li>
+    <li>Run a regression project end to end, tuned with Keras Tuner.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/10-intro_to_deep_learning" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="10_reading.html">Reading</a>
+  <a href="notebooks/Neural%20Network%20from%20Scratch.html">From Scratch</a>
+  <a href="notebooks/Neural%20Network%20from%20Scratch%28Multi-layer%29.html">Multi-layer</a>
+  <a href="notebooks/Mnist%20with%20keras.html">MNIST + Keras</a>
+  <a href="notebooks/Fashion%20Mnist%20with%20keras.html">Fashion-MNIST</a>
+  <a href="notebooks/Practical%20Tips.html">Practical Tips</a>
+  <a href="notebooks/DL%20Project%201_Bike%20Sharing/Bikes%20Sharing%20.html">Bike Project</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Module 09 (train/evaluate thinking) is assumed, plus the NumPy fluency of Module 06 — the from-scratch notebooks are pure NumPy. Install <code class="inline">tensorflow</code> for the Keras sections. Theory boards and slides: <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/10-intro_to_deep_learning/PDFs/Intro%20to%20Deep%20Learning%20(Board).pdf" target="_blank" rel="noopener">Board PDF</a>, <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/10-intro_to_deep_learning/PDFs/Intro%20to%20Deep%20Learning(Slides).pdf" target="_blank" rel="noopener">Slides PDF</a>.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>The neuron</h2>
+<p class="section-intro">One unit that weighs inputs, sums them, and decides.</p>
+<p>A neuron multiplies each input by a weight, adds a bias, and passes the sum through an activation function. Stack neurons into layers, layers into a network — and learning means nudging every weight so the final error shrinks. <strong>Backpropagation</strong> is that blame assignment: gradients flow backward from the error, telling each weight which way to move, exactly as the board lectures derive step by step.</p>
+<figure>
+  <div class="diagram-label">One artificial neuron</div>
+  <svg width="560" height="170" viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="560" height="170" fill="#fff"/>
+    <rect x="0" y="0" width="560" height="170" fill="url(#erd-grid)"/>
+    <text x="60" y="45" text-anchor="middle" font-size="12.5" font-weight="700">x1 · w1</text>
+    <text x="60" y="90" text-anchor="middle" font-size="12.5" font-weight="700">x2 · w2</text>
+    <text x="60" y="135" text-anchor="middle" font-size="12.5" font-weight="700">x3 · w3</text>
+    <line x1="110" y1="45" x2="240" y2="85" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="110" y1="90" x2="240" y2="85" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="110" y1="135" x2="240" y2="85" stroke="#9aa4b2" stroke-width="1.5"/>
+    <circle cx="300" cy="85" r="52" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="2"/>
+    <text x="300" y="80" text-anchor="middle" font-size="12.5" font-weight="700">Σ + bias</text>
+    <text x="300" y="99" text-anchor="middle" font-size="12" fill="#5B6472">activation</text>
+    <line x1="352" y1="85" x2="430" y2="85" stroke="#1f6fb2" stroke-width="2"/>
+    <text x="480" y="90" text-anchor="middle" font-size="13" font-weight="700">ŷ</text>
+    <text x="300" y="158" text-anchor="middle" font-size="11.5" fill="#5B6472">output = activation( Σ w·x + b )</text>
+  </svg>
+  <figcaption>weigh, sum, activate — everything deeper is repetition at scale.</figcaption>
+</figure>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Neural%20Network%20from%20Scratch.html">Neural Network from Scratch.ipynb</a></span></div>
+  <div class="code-body">output = <span class="fn">activation</span>(np.<span class="fn">dot</span>(w, x) + b)   <span class="com"># one neuron, NumPy only</span></div>
+</div>
+
+<h2 class="section"><span class="num">2</span>Networks from scratch</h2>
+<p class="section-intro">No libraries, no magic — earn every abstraction.</p>
+<p>Two notebooks build the machinery by hand: basic neuron → layer of neurons → full network, first as a <a href="notebooks/Neural%20Network%20from%20Scratch.html">single learning unit</a> with regression and classification examples, then as a <a href="notebooks/Neural%20Network%20from%20Scratch%28Multi-layer%29.html">multi-layer network</a>. Slow on purpose — after this, Keras calls feel like shortcuts you understand instead of spells you memorize.</p>
+<div class="callout insight">
+  <div class="ti">Why suffer through scratch first?</div>
+  <p>Frameworks hide exactly three things: the forward sum, the backward gradient, and the weight update. Having written all three by hand, every Keras option in §3–§4 maps to a line you once debugged yourself.</p>
+</div>
+
+<h2 class="section"><span class="num">3</span>First networks with Keras</h2>
+<p class="section-intro">The same ideas, at real speed, on real image data.</p>
+<p>The <a href="notebooks/Mnist%20with%20keras.html">MNIST</a> notebook builds the first classifier — data loading, a <code class="inline">Sequential</code> stack of layers, model summary, an alternative building style, training with a history object — and the <a href="notebooks/Fashion%20Mnist%20with%20keras.html">Fashion-MNIST</a> notebook repeats the arc on harder images while adding the professional toolkit: initializers, regularizers, callbacks, early stopping, model checkpointing, predictions, and save/load.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the Keras rhythm</span></div>
+  <div class="code-body">model = keras.<span class="fn">Sequential</span>([...layers...])   <span class="com"># stack it</span>
+model.<span class="fn">compile</span>(optimizer=..., loss=...)     <span class="com"># choose how it learns</span>
+history = model.<span class="fn">fit</span>(X_train, y_train, epochs=...)  <span class="com"># train, keep the history</span>
+model.<span class="fn">save</span>(<span class="str">'model.keras'</span>)                    <span class="com"># keep the winner</span></div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>history</b><p>The returned object plots loss/accuracy per epoch — the training diary you read before touching any knob in §4.</p></div>
+  <div class="annotation"><b>save / load</b><p>A trained model is a file. Save it, reload it, predict without retraining — deployment starts here.</p></div>
+  <div class="annotation"><b>callbacks</b><p>Early stopping and checkpoints watch training <em>while</em> it runs — automation for the discipline §4 teaches.</p></div>
+</div>
+
+<h2 class="section"><span class="num">4</span>Practical tips for training</h2>
+<p class="section-intro">Three lectures of things that actually move the loss curve.</p>
+<p>The <a href="notebooks/Practical%20Tips.html">tips notebook</a> collects the practitioner's checklist: activation functions, batch normalization, optimizers, losses, L1/L2 regularization, dropout, early stopping, and model checkpointing.</p>
+<div class="compare">
+  <div class="col">
+    <h4>When training stalls</h4>
+    <p>Suspect the optimizer, the learning rate, and unnormalized inputs first — batch normalization and a better optimizer fix more runs than any architecture tweak.</p>
+  </div>
+  <div class="col">
+    <h4>When training overfits</h4>
+    <p>The gap between train and validation curves is the diagnosis; L1/L2, dropout, early stopping, and more data are the treatment — in that order of cheapness.</p>
+  </div>
+</div>
+
+<h2 class="section"><span class="num">5</span>Project: bike sharing</h2>
+<p class="section-intro">Regression, tuned properly.</p>
+<p>The capstone <a href="notebooks/DL%20Project%201_Bike%20Sharing/Bikes%20Sharing%20.html">bike-sharing notebook</a> runs the full arc on rental-demand data: quick exploration, preprocessing, classic ML baselines first (always know what "simple" scores before going deep), then the deep model — with <strong>Keras Tuner</strong> searching hyperparameters instead of hand-guessing them.</p>
+<div class="callout tip">
+  <div class="ti">Baselines before brilliance</div>
+  <p>The notebook tries classic models before any neural net — if a tuned forest nearly matches the network, ship the simpler thing. Deep learning has to <em>earn</em> its complexity on every project.</p>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — deep learning in one breath</h2>
+<p class="section-intro">The module compresses into a single loop.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">neuron (w·x+b)  -->  layers  -->  backprop gradients  -->  Keras stack
+  -->  fit + history  -->  tips (until curves behave)  -->  tune  -->  save</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Deep learning is Module 09's fit/predict loop with learned features: neurons sum and activate, backpropagation assigns the blame, Keras stacks the layers, training tips tame the curves, tuning finds the knobs — and Modules 11 and 12 spend the payoff on images and text.</p>
 </div>
 
 <div class="day-nav">
@@ -85,35 +188,34 @@
 
 <footer>Module 10 · Intro to Deep Learning · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
