@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 04 — Python Web Scraping</title>
+<script>
+(function(){
+  try{
+    var saved = localStorage.getItem('theme');
+    if(saved === 'dark' || saved === 'light'){
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+<button class="theme-toggle" aria-label="Toggle dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+</button>
+<div class="sidebar-backdrop"></div>
+<nav class="site-sidebar">
+<div class="brand">Arabic ML Bootcamp</div>
+<a href="../index.html" class="home-entry">Home</a>
+<a href="../01-intro_to_ai_and_data_science/01_reading.html"><span class="daynum">Module 01</span>Intro to AI &amp; Data Science</a>
+<a href="../02-python_foundations/02_reading.html"><span class="daynum">Module 02</span>Python Foundations</a>
+<a href="../03-python_projects/03_reading.html"><span class="daynum">Module 03</span>Python Projects</a>
+<a href="../04-python_web_scraping/04_reading.html" class="active"><span class="daynum">Module 04</span>Python Web Scraping</a>
+<a href="../05-git_and_github/05_reading.html"><span class="daynum">Module 05</span>Git &amp; GitHub</a>
+<a href="../06-python_data_analysis/06_reading.html"><span class="daynum">Module 06</span>Python Data Analysis</a>
+<a href="../07-streamlit/07_reading.html"><span class="daynum">Module 07</span>Streamlit</a>
+<a href="../08-data_preprocessing_and_feature_engineering/08_reading.html"><span class="daynum">Module 08</span>Preprocessing &amp; Feature Eng.</a>
+<a href="../09-machine_learning/09_reading.html"><span class="daynum">Module 09</span>Machine Learning</a>
+<a href="../10-intro_to_deep_learning/10_reading.html"><span class="daynum">Module 10</span>Intro to Deep Learning</a>
+<a href="../11-intro_to_computer_vision/11_reading.html"><span class="daynum">Module 11</span>Intro to Computer Vision</a>
+<a href="../12-intro_to_nlp/12_reading.html"><span class="daynum">Module 12</span>Intro to NLP</a>
+</nav>
+<div class="page">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="erd-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+      <path d="M 18 0 L 0 0 0 18" fill="none" stroke="#e6edf3" stroke-width="1"/>
+    </pattern>
+    <symbol id="icon-download" viewBox="0 0 16 16">
+      <path d="M8 2v7M4.5 6.5L8 10l3.5-3.5M2.5 12.5h11"/>
+    </symbol>
+    <symbol id="icon-external" viewBox="0 0 16 16">
+      <path d="M6.5 2.5h7v7M13.5 2.5L6 10M4 4H2.5v9.5H12V12"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="crumb">Module 04 of 12 · Python Web Scraping</div>
+<h1 class="title">Python Web Scraping</h1>
+<p class="subtitle">Four lectures that take you from "what is scraping?" to a production scraper — <code class="inline">requests</code> to fetch pages, <code class="inline">BeautifulSoup</code> to parse them, and a real job-board example that ends in a CSV.</p>
+
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Explain web scraping as "the same request the browser makes, without the visual rendering".</li>
+    <li>Describe a page's anatomy — <code class="inline">HTML</code> structure, <code class="inline">CSS</code> classes/IDs, and JavaScript behavior — well enough to pick a target element.</li>
+    <li>Fetch raw page source with <code class="inline">requests.get(url)</code> and parse it with <code class="inline">BeautifulSoup(response.content, 'lxml')</code>.</li>
+    <li>Drill into the parsed tree with <code class="inline">find()</code> vs. <code class="inline">find_all()</code>, walking tag attributes like <code class="inline">title.a['href']</code>.</li>
+    <li>Extract text lists for titles, links, companies and specs, clean them, and pack everything into a <code class="inline">pandas</code> DataFrame.</li>
+    <li>Handle pagination — read the total job count off the page, round up to pages with <code class="inline">math.ceil()</code>, then loop over <code class="inline">&amp;start=</code>.</li>
+    <li>Refactor a one-off scraping notebook into reusable helper functions and a runnable <code class="inline">scrap_jobs.py</code>.</li>
+    <li>Keep the ethics of scraping in mind: terms of service, and the server resources every request costs.</li>
+  </ul>
+</div>
+
+<div class="day-links">
+  <a class="primary" href="04_reading.html">Reading</a>
+  <a href="Intro_to_Web_Scraping_Notes.html">Study Notes (HTML)</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/README.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Module Notes</a>
+  <a href="notebooks/Web_Scraping_01.html">Notebook 01</a>
+  <a href="notebooks/Web_Scraping_02.html">Notebook 02</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/04-python_web_scraping" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+</div>
+
+<table class="api">
+  <thead>
+    <tr><th>#</th><th>Lecture</th><th>Duration</th><th>YouTube</th><th>Notes</th><th>CODE</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>01</td><td>Web Scraping Intro</td><td>6:36</td><td><a href="https://www.youtube.com/watch?v=rvpEEOHLa6s" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td>—</td></tr>
+    <tr><td>02</td><td>Web Scraping Coding 01</td><td>11:59</td><td><a href="https://www.youtube.com/watch?v=RRYjWKFdDxA" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td><a href="notebooks/Web_Scraping_01.html"><code class="inline">Web_Scraping_01.ipynb</code></a></td></tr>
+    <tr><td>03</td><td>Web Scraping Coding 02</td><td>9:10</td><td><a href="https://www.youtube.com/watch?v=dZUbIa_y3pE" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td><a href="notebooks/Web_Scraping_02.html"><code class="inline">Web_Scraping_02.ipynb</code></a></td></tr>
+    <tr><td>04</td><td>Web Scraping Coding 03</td><td>5:47</td><td><a href="https://www.youtube.com/watch?v=NEdRM4eadpI" target="_blank" rel="noopener">watch</a></td><td><a href="Intro_to_Web_Scraping_Notes.html">notes</a></td><td><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/scrap_jobs.py" target="_blank" rel="noopener"><code class="inline">scrap_jobs.py</code></a></td></tr>
+  </tbody>
+</table>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Install two libraries plus a fast HTML parser and the data tool you already know:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+    <div class="code-body">pip install requests
+pip install bs4 lxml
+pip install pandas</div>
+  </div>
+  <p>The module scrapes the <strong>Wuzzuf</strong> job board (<code class="inline">wuzzuf.net/search/jobs/</code>) — pick a query like <code class="inline">machine+learning</code>. Keep in mind that real job-board markup changes over time, so the CSS classes in the code may need re-finding if Wuzzuf re-designs its pages.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>Web scraping intro — the theory</h2>
+<p class="section-intro">Understanding scraping as the browser's request minus the browser's rendering.</p>
+
+<div class="compare">
+  <div class="col">
+    <h4>What it is</h4>
+    <p>Web scraping is a technique to <strong>access and extract information from a website</strong> — pulling the source code out of a page and grabbing specific parts of it.</p>
+  </div>
+  <div class="col">
+    <h4>Why use it</h4>
+    <ul class="tight">
+      <li>Collect data <strong>not available through an API</strong>.</li>
+      <li><strong>Automate</strong> data collection — save time and effort.</li>
+      <li>Collect data that is <strong>updated dynamically</strong>, over and over.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout warn">
+  <div class="ti">Is scraping legal?</div>
+  <p>Guidance from the lecture, not legal advice: scraping is legal <strong>as long as you're not violating the website's terms of service</strong>. If the site has no terms of service, you should be fine. One concrete cost either way: every request consumes <strong>server resources</strong> for the host website — scrape politely.</p>
+</div>
+
+<h3 class="sub">1.1 A web page is three languages</h3>
+<table class="api">
+  <thead><tr><th>Component</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><strong>HTML</strong></td><td>The markup language that defines the <strong>structure</strong> of the page.</td></tr>
+    <tr><td><strong>CSS</strong></td><td>The language that defines the <strong>style</strong> of the page.</td></tr>
+    <tr><td><strong>JavaScript</strong></td><td>The language that defines the <strong>behavior</strong> of the page.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sub">1.2 HTML is a tree</h3>
+<p>HTML documents nest elements inside each other like a tree. The root element is <code class="inline">&lt;html&gt;</code>, it branches into <code class="inline">&lt;head&gt;</code> (metadata — the title) and <code class="inline">&lt;body&gt;</code> (the visible content), and headings and paragraphs nest further inside the body.</p>
+<figure>
+  <div class="diagram-label">HTML document tree</div>
+  <svg width="520" height="230" viewBox="0 0 520 230" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="520" height="230" fill="#fff"/>
+    <rect x="0" y="0" width="520" height="230" fill="url(#erd-grid)"/>
+    <rect x="200" y="15" width="120" height="34" rx="8" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="260" y="37" text-anchor="middle" font-size="14" font-weight="700">&lt;html&gt;</text>
+    <line x1="240" y1="49" x2="140" y2="78" stroke="#1f6fb2" stroke-width="1.5"/>
+    <line x1="280" y1="49" x2="380" y2="78" stroke="#1f6fb2" stroke-width="1.5"/>
+    <rect x="70" y="80" width="140" height="34" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="140" y="102" text-anchor="middle" font-size="13.5" font-weight="700">&lt;head&gt;</text>
+    <rect x="310" y="80" width="140" height="34" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="380" y="102" text-anchor="middle" font-size="13.5" font-weight="700">&lt;body&gt;</text>
+    <line x1="130" y1="114" x2="140" y2="146" stroke="#9aa4b2" stroke-width="1.5"/>
+    <rect x="65" y="148" width="150" height="34" rx="8" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="140" y="170" text-anchor="middle" font-size="12.5">&lt;title&gt;Page Title&lt;/title&gt;</text>
+    <line x1="360" y1="114" x2="420" y2="146" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="390" y1="114" x2="320" y2="146" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="410" y1="114" x2="440" y2="146" stroke="#9aa4b2" stroke-width="1.5"/>
+    <rect x="300" y="148" width="90" height="28" rx="6" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="345" y="167" text-anchor="middle" font-size="12">&lt;h1&gt;</text>
+    <rect x="396" y="148" width="90" height="28" rx="6" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="441" y="167" text-anchor="middle" font-size="12">&lt;p&gt;</text>
+    <rect x="88" y="186" width="90" height="28" rx="6" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="133" y="205" text-anchor="middle" font-size="12">&lt;p&gt;</text>
+  </svg>
+  <figcaption>one root, two branches, and the content elements nested inside.</figcaption>
+</figure>
+
+<h3 class="sub">1.3 Classes identify many, IDs identify one</h3>
+<div class="card-grid">
+  <div class="card"><h4>CSS class</h4><p>Identifies <strong>multiple</strong> elements that should look or behave the same — two different tags can share <code class="inline">class="card"</code>.</p></div>
+  <div class="card"><h4>CSS ID</h4><p>Identifies a <strong>single</strong> unique element — <code class="inline">id="search"</code> should appear at most once per page.</p></div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">selectors in raw HTML</span></div>
+  <div class="code-body">&lt;p  class=<span class="str">"card"</span>&gt;Paragraph 1&lt;/p&gt;   <span class="com"># both use the same class</span>
+&lt;h2 class=<span class="str">"card"</span>&gt;Heading 2&lt;/h2&gt;
+
+&lt;p id=<span class="str">"first"</span>&gt;Paragraph 1&lt;/p&gt;        <span class="com"># one element, one id</span></div>
+</div>
+
+<h3 class="sub">1.4 How scraping actually works</h3>
+<p>Your code does the same thing a browser does — it sends a server request with a specific URL and asks the server to return the <strong>code for that page</strong>. The difference: the browser interprets HTML/CSS/JS and paints a visual page; your scraper filters the source code looking for the elements you specified, and extracts whatever content it wants.</p>
+<figure>
+  <div class="diagram-label">Request / response cycle</div>
+  <svg width="680" height="150" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="680" height="150" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="150" fill="url(#erd-grid)"/>
+    <rect x="30" y="55" width="150" height="52" rx="8" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="105" y="78" text-anchor="middle" font-size="13.5" font-weight="700">Client</text>
+    <text x="105" y="96" text-anchor="middle" font-size="12" fill="#5B6472">your scraper</text>
+    <line x1="180" y1="70" x2="295" y2="70" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr4)"/>
+    <text x="238" y="55" text-anchor="middle" font-size="12" fill="#1f6fb2" font-weight="600">GET url</text>
+    <rect x="300" y="55" width="150" height="52" rx="8" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="375" y="78" text-anchor="middle" font-size="13.5" font-weight="700">Server</text>
+    <text x="375" y="96" text-anchor="middle" font-size="12" fill="#5B6472">hosts wuzzuf.net</text>
+    <line x1="450" y1="84" x2="565" y2="84" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr4)"/>
+    <text x="508" y="70" text-anchor="middle" font-size="12" fill="#1f6fb2" font-weight="600">HTML source</text>
+    <rect x="570" y="55" width="90" height="52" rx="8" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="615" y="86" text-anchor="middle" font-size="13" font-weight="700">Parse &amp; extract</text>
+  </svg>
+  <figcaption>scraping reuses the browser's request; parsing replaces the browser's rendering.</figcaption>
+</figure>
+<div class="objectives">
+  <h2>The four-step workflow</h2>
+  <ol>
+    <li>Choose a web page URL.</li>
+    <li>Send a request — the server returns the page's source code, usually HTML.</li>
+    <li>Parse the HTML into a searchable tree.</li>
+    <li>Locate the target elements and extract the required data.</li>
+  </ol>
+</div>
+
+<h2 class="section"><span class="num">2</span>Coding 01 — your first scrape</h2>
+<p class="section-intro">Fetch the Wuzzuf machine-learning job board and pull every job title, link, company and spec off it.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Web_Scraping_01.html">Web_Scraping_01.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">import</span> requests
+<span class="kw">from</span> bs4 <span class="kw">import</span> BeautifulSoup
+
+response = requests.get(<span class="str">'https://wuzzuf.net/search/jobs/?q=machine+learning&a=hpb'</span>)
+soup = BeautifulSoup(response.content, <span class="str">'lxml'</span>)</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>requests</b><p>Does the GET — the same server request a browser would make. <code class="inline">response.content</code> holds the raw HTML bytes.</p></div>
+  <div class="annotation"><b>BeautifulSoup</b><p>Parses those bytes into a navigable tree. The <code class="inline">'lxml'</code> parser is fast and permissive with messy real-world HTML.</p></div>
+  <div class="annotation"><b>soup</b><p>Inspecting <code class="inline">soup</code> in the notebook shows the entire page source, nicely indented — that's what you'll be searching through.</p></div>
+</div>
+
+<h3 class="sub">2.1 find() vs. find_all()</h3>
+<p><code class="inline">find()</code> returns the <strong>first</strong> match; <code class="inline">find_all()</code> returns a <strong>list</strong> of every match. You'll typically <code class="inline">find()</code> to probe one element, then switch to <code class="inline">find_all()</code> to collect the whole batch. Note the double-quoted attribute dictionary.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">first vs. all</span></div>
+  <div class="code-body">title = soup.find(<span class="str">"h2"</span>, {<span class="str">'class'</span>: <span class="str">'css-m604qf'</span>})   <span class="com"># first job title element</span>
+<span class="fn">print</span>(title.a.text)                  <span class="com"># the text of its one &lt;a&gt; child</span>
+
+titles = soup.find_all(<span class="str">"h2"</span>, {<span class="str">'class'</span>: <span class="str">'css-m604qf'</span>})  <span class="com"># all titles</span>
+<span class="fn">print</span>(titles[<span class="num">0</span>].text)</div>
+</div>
+
+<h3 class="sub">2.2 Building the five parallel lists</h3>
+<p>Each <code class="inline">&lt;a&gt;</code> inside a title <code class="inline">&lt;h2&gt;</code> carries a relative URL, so full links are assembled by prepending the origin. Companies and occupation specifiers are separate elements with their own classes, extracted the same way.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">titles, links, occupations, companies, specs</span></div>
+  <div class="code-body">titles_lst = [title.a.text <span class="kw">for</span> title <span class="kw">in</span> titles]
+
+links = [<span class="str">'https://wuzzuf.net'</span> + title.a[<span class="str">'href'</span>] <span class="kw">for</span> title <span class="kw">in</span> titles]
+
+occupations = soup.find_all(<span class="str">"div"</span>, {<span class="str">'class'</span>: <span class="str">'css-1lh32fc'</span>})
+occupations_lst = [occupation.text <span class="kw">for</span> occupation <span class="kw">in</span> occupations]
+
+companies = soup.find_all(<span class="str">"a"</span>, {<span class="str">'class'</span>: <span class="str">'css-17s97q8'</span>})
+companies_lst = [company.text.replace(<span class="str">' -'</span>, <span class="str">''</span>) <span class="kw">for</span> company <span class="kw">in</span> companies]
+
+specs = soup.find_all(<span class="str">"div"</span>, {<span class="str">'class'</span>: <span class="str">'css-y4udm8'</span>})
+specs_lst = [spec.text <span class="kw">for</span> spec <span class="kw">in</span> specs]</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>title.a['href']</b><p>Attribute access: <code class="inline">tag['attr']</code>. Job links on Wuzzuf are relative, so each is prefixed with the origin.</p></div>
+  <div class="annotation"><b>.text vs .a.text</b><p><code class="inline">title.text</code> would include nested whitespace; going straight for <code class="inline">title.a.text</code> grabs only the anchor's text.</p></div>
+  <div class="annotation"><b>.replace(' -', '')</b><p>Company names print with a trailing <code class="inline"> -</code>; a tiny cleanup makes the list DataFrame-ready.</p></div>
+</div>
+
+<h3 class="sub">2.3 From dict to DataFrame to CSV</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">packaging the results</span></div>
+  <div class="code-body">scraped_data = {}
+scraped_data[<span class="str">'Title'</span>] = titles_lst
+scraped_data[<span class="str">'Link'</span>] = links
+scraped_data[<span class="str">'Occupation'</span>] = occupations_lst
+scraped_data[<span class="str">'Company'</span>] = companies_lst
+scraped_data[<span class="str">'Specs'</span>] = specs_lst
+
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+df = pd.DataFrame(scraped_data)
+df.to_csv(<span class="str">'mljobs.csv'</span>, index=<span class="kw">False</span>)</div>
+</div>
+<div class="callout insight">
+  <div class="ti">Why a dict of equal lists?</div>
+  <p>A <code class="inline">pandas</code> DataFrame is a dict of columns — so building <code class="inline">scraped_data</code> as <code class="inline">{'ColumnName': [row, row, ...]}</code> maps one-to-one onto <code class="inline">pd.DataFrame(scraped_data)</code>. Five equal-length lists become a 5-column table.</p>
+</div>
+
+<h2 class="section"><span class="num">3</span>Coding 02 — pagination &amp; helper functions</h2>
+<p class="section-intro">One page of results is a toy; this lecture turns the notebook into a reusable helper module that walks every page of a query.</p>
+
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Web_Scraping_02.html">Web_Scraping_02.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">import</span> requests, math
+<span class="kw">from</span> bs4 <span class="kw">import</span> BeautifulSoup
+
+query = <span class="str">'data scientist'</span>
+query = query.replace(<span class="str">' '</span>, <span class="str">'%20'</span>)
+url = <span class="str">'https://wuzzuf.net/search/jobs/?q='</span> + query + <span class="str">'&a=hpb'</span>
+
+response = requests.get(url)
+soup = BeautifulSoup(response.content, <span class="str">'lxml'</span>)</div>
+</div>
+
+<h3 class="sub">3.1 Reading the total job count</h3>
+<p>Wuzzuf prints something like <code class="inline">"1–15 of 189 Jobs"</code> in a <code class="inline">&lt;li&gt;</code> element. Splitting on <code class="inline">'of '</code> isolates the number, and dividing by the 15-jobs-per-page gives the number of pages — rounded up with <code class="inline">math.ceil()</code>, because a partial last page still needs fetching.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">jobs → pages</span></div>
+  <div class="code-body">s = soup.find(<span class="str">"li"</span>, {<span class="str">'class'</span>: <span class="str">'css-8neukt'</span>}).text
+<span class="fn">print</span>(s)              <span class="com"># 1–15 of 189 Jobs</span>
+jobs = int(s.split(<span class="str">'of '</span>)[<span class="num">1</span>])
+<span class="fn">print</span>(jobs)            <span class="com"># 189</span>
+
+<span class="kw">import</span> math
+pages = math.ceil(jobs / <span class="num">15</span>)   <span class="com"># 13</span></div>
+</div>
+
+<h3 class="sub">3.2 Looping over pages with <code class="inline">&amp;start=</code></h3>
+<p>Wuzzuf's URL accepts a <code class="inline">start</code> parameter — page 0, page 1, page 2 … Re-scraping the same five lists per page and concatenating with <code class="inline">+=</code> collects all results into one big dataset.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">paginated scrape</span></div>
+  <div class="code-body">titles_lst, links_lst = [], []
+<span class="kw">for</span> pageNo <span class="kw">in</span> <span class="fn">range</span>(pages):
+    page = requests.get(
+        <span class="str">'https://wuzzuf.net/search/jobs/?q='</span> + query +
+        <span class="str">'&start='</span> + <span class="fn">str</span>(pageNo)
+    )
+    soup = BeautifulSoup(page.content, <span class="str">'lxml'</span>)
+
+    titles = soup.find_all(<span class="str">"h2"</span>, {<span class="str">'class'</span>: <span class="str">'css-m604qf'</span>})
+    titles_lst += [title.a.text <span class="kw">for</span> title <span class="kw">in</span> titles]
+    links_lst += [<span class="str">'https://wuzzuf.net'</span> + title.a[<span class="str">'href'</span>]
+                  <span class="kw">for</span> title <span class="kw">in</span> titles]
+    <span class="com"># ...occupations, companies, and specs the same way</span></div>
+</div>
+
+<h3 class="sub">3.3 The helper module</h3>
+<p>Everything gets refactored into <code class="inline">scrap_helper.py</code>: <code class="inline">find_no_of_jobs()</code> returns the count and page count, <code class="inline">scrap_pages()</code> returns <code class="inline">(scraped_data, df)</code> for one query, and two combiners merge results from several queries.</p>
+<div class="compare">
+  <div class="col">
+    <h4>combine_dfs</h4>
+    <div class="code-body"><span class="kw">def</span> <span class="fn">combine_dfs</span>(dfs):
+    df = pd.concat(dfs)
+    df = df.drop_duplicates()
+    <span class="kw">return</span> df</div>
+  </div>
+  <div class="col">
+    <h4>combine_dicts</h4>
+    <div class="code-body"><span class="kw">def</span> <span class="fn">combine_dicts</span>(dicts):
+    combined = {}
+    <span class="kw">for</span> key <span class="kw">in</span> dicts[<span class="num">0</span>].keys():
+        combined[key] = []
+        <span class="kw">for</span> d <span class="kw">in</span> dicts:
+            combined[key] += d[key]
+    <span class="kw">return</span> combined</div>
+  </div>
+</div>
+<div class="callout tip">
+  <div class="ti">Splitting on the right character</div>
+  <p>The notebook previews specs like <code class="inline">"Full Time · 2 – 3 Years · ..."</code> — the pieces are separated by the <code class="inline">·</code> character. A quick loop printing <code class="inline">len(spec.text.split(' · '))</code> per spec verifies every row splits into the same number of fields before you build the DataFrame.</p>
+</div>
+
+<h2 class="section"><span class="num">4</span>Coding 03 — the production script</h2>
+<p class="section-intro">The finished, runnable version: one function that scrapes, packages, and saves — guarded so it only runs when executed directly.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/04-python_web_scraping/CODE/scrap_jobs.py" target="_blank" rel="noopener">scrap_jobs.py</a></span></div>
+  <div class="code-body"><span class="kw">import</span> requests
+<span class="kw">from</span> bs4 <span class="kw">import</span> BeautifulSoup
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="kw">def</span> <span class="fn">scrap</span>():
+    response = requests.get(
+        <span class="str">'https://wuzzuf.net/search/jobs/?q=machine+learning&a=hpb'</span>)
+    soup = BeautifulSoup(response.content, <span class="str">'lxml'</span>)
+
+    titles = soup.find_all(<span class="str">"h2"</span>, {<span class="str">'class'</span>: <span class="str">'css-m604qf'</span>})
+    titles_lst = [title.a.text <span class="kw">for</span> title <span class="kw">in</span> titles]
+
+    links = [<span class="str">'https://wuzzuf.net'</span> + title.a[<span class="str">'href'</span>]
+             <span class="kw">for</span> title <span class="kw">in</span> titles]
+
+    occupations = soup.find_all(<span class="str">"div"</span>, {<span class="str">'class'</span>: <span class="str">'css-1lh32fc'</span>})
+    occupations_lst = [occupation.text
+                       <span class="kw">for</span> occupation <span class="kw">in</span> occupations]
+
+    companies = soup.find_all(<span class="str">"a"</span>, {<span class="str">'class'</span>: <span class="str">'css-17s97q8'</span>})
+    companies_lst = [company.text <span class="kw">for</span> company <span class="kw">in</span> companies]
+
+    specs = soup.find_all(<span class="str">"div"</span>, {<span class="str">'class'</span>: <span class="str">'css-y4udm8'</span>})
+    specs_lst = [spec.text <span class="kw">for</span> spec <span class="kw">in</span> specs]
+
+    scraped_data = {
+        <span class="str">'Title'</span>: titles_lst, <span class="str">'Link'</span>: links,
+        <span class="str">'Occupation'</span>: occupations_lst,
+        <span class="str">'Company'</span>: companies_lst, <span class="str">'Specs'</span>: specs_lst,
+    }
+
+    df = pd.DataFrame(scraped_data)
+    df.to_csv(<span class="str">'mljobs.csv'</span>, index=<span class="kw">False</span>)
+    <span class="fn">print</span>(<span class="str">"Jobs Scraped Successfully"</span>)
+    <span class="kw">return</span> df
+
+<span class="kw">if</span> __name__ == <span class="str">'__main__'</span>:
+    scrap()</div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>one function, five fields</b><p>The entire pipeline squeezed into a single <code class="inline">scrap()</code> — request, parse, five list comprehensions, DataFrame, CSV.</p></div>
+  <div class="annotation"><b>if __name__ == '__main__'</b><p>Importing the script elsewhere runs <code class="inline">scrap()</code> only when executed as a program — the Module 02 pattern for import-safe scripts.</p></div>
+  <div class="annotation"><b>the takeaway</b><p>Coding 01 per line, coding 02 generalized it to many pages, coding 03 made it re-runnable. That progression — explore → generalize → productionize — is the actual skill this module teaches.</p></div>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — scraping in one breath</h2>
+<p class="section-intro">The four lectures compress into a single pipeline.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">URL  --requests.get-->  HTML source  --BeautifulSoup-->  parsed tree
+  --find_all + .text/.a/['href']-->  parallel lists  --pd.DataFrame-->  table
+  --to_csv-->  mljobs.csv</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Scraping is the browser's request with no rendering: <code class="inline">requests</code> brings back the page's HTML, <code class="inline">BeautifulSoup</code> parses it into a tree you can search with <code class="inline">find</code>/<code class="inline">find_all</code>, and list comprehensions translate every matching element into the columns of a <code class="inline">pandas</code> DataFrame.</p>
+</div>
+<p class="section-intro">This module's deep-dive reference — the full theory line-by-line — lives in the <a href="Intro_to_Web_Scraping_Notes.html">Intro to Web Scraping study notes</a>, converted from <code class="inline">Intro_to_Web_Scraping_Complete_Notes.md</code>.</p>
+
+<div class="day-nav">
+  <a class="day-nav-link prev" href="../03-python_projects/03_reading.html">
+    <span class="dn-label">&larr; Previous</span>
+    <span class="dn-title">Module 03 &middot; Python Projects</span>
+  </a>
+  <a class="day-nav-link next" href="../05-git_and_github/05_reading.html">
+    <span class="dn-label">Next &rarr;</span>
+    <span class="dn-title">Module 05 &middot; Git &amp; GitHub</span>
+  </a>
+</div>
+
+<footer>Module 04 · Python Web Scraping · self-paced</footer>
+</div>
+<script>
+(function(){
+  var sidebar = document.querySelector('.site-sidebar');
+  var toggle = document.querySelector('.sidebar-toggle');
+  var backdrop = document.querySelector('.sidebar-backdrop');
+  if(!sidebar || !toggle || !backdrop) return;
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
+    if (sidebar.classList.contains('open')) close(); else openMenu();
+  });
+  backdrop.addEventListener('click', close);
+})();
+</script>
+<script>
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if(!btn) return;
+  function currentTheme(){
+    var attr = document.documentElement.getAttribute('data-theme');
+    if(attr === 'dark' || attr === 'light') return attr;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  btn.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
+</script>
+</body></html>
