@@ -60,16 +60,224 @@
 
 <div class="crumb">Module 05 of 12 · Git &amp; GitHub</div>
 <h1 class="title">Git &amp; GitHub</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">Six short lectures on the tool every developer uses daily — <code class="inline">Git</code> to track versions on your machine, <code class="inline">GitHub</code> to share them with the world, and the dozen commands that cover 95% of real work.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 05 · Git &amp; GitHub</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the handwritten <code class="inline">Git_and_GitHub_Notes.md</code> in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Explain why version control exists — and what goes wrong without it.</li>
+    <li>Tell <code class="inline">Git</code> (the tool, local) apart from <code class="inline">GitHub</code> (the host, cloud).</li>
+    <li>Describe how distributed version control differs from the old centralized model.</li>
+    <li>Use the core vocabulary: repository, clone, commit, push, pull, fork, branch, merge.</li>
+    <li>Run the everyday loop: <code class="inline">init</code>, <code class="inline">add</code>, <code class="inline">status</code>, <code class="inline">commit</code>, <code class="inline">push</code>, <code class="inline">pull</code>.</li>
+    <li>Inspect history with <code class="inline">log</code> and <code class="inline">diff</code>, and collaborate with branches, forks, and merges.</li>
+    <li>Write commit messages a teammate (or future-you) can actually understand.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/05-git_and_github" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="05_reading.html">Reading</a>
+  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/05-git_and_github/Git_and_GitHub_Notes.md" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>Source Notes</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Install <code class="inline">Git</code> and make a free <code class="inline">GitHub</code> account. No notebooks in this module — everything below runs in a terminal:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+    <div class="code-body">git --version</div>
+  </div>
+  <p>If that prints a version number, you're ready. This page covers the module's notes end to end — the full source is linked above as <code class="inline">Git_and_GitHub_Notes.md</code>.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>The versions problem</h2>
+<p class="section-intro">Why version control exists in the first place.</p>
+<p>Every beginner knows this folder: <code class="inline">project.zip</code>, <code class="inline">project-final.zip</code>, <code class="inline">project-final-2.zip</code>, <code class="inline">project-FINAL-really.zip</code> — four copies, no record of what changed between them, and genuine fear of deleting any of them. Multiply that by a team in different cities editing the same files, and you get lost work, overwritten fixes, and no way back.</p>
+<figure>
+  <div class="diagram-label">Copies vs. history</div>
+  <svg width="680" height="170" viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="680" height="170" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="170" fill="url(#erd-grid)"/>
+    <text x="150" y="22" text-anchor="middle" font-size="12.5" font-weight="700">WITHOUT VERSION CONTROL</text>
+    <rect x="40" y="35" width="220" height="28" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="150" y="54" text-anchor="middle" font-size="12">project.zip</text>
+    <rect x="40" y="68" width="220" height="28" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="150" y="87" text-anchor="middle" font-size="12">project-final.zip</text>
+    <rect x="40" y="101" width="220" height="28" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="150" y="120" text-anchor="middle" font-size="12">project-final-2.zip</text>
+    <rect x="40" y="134" width="220" height="28" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="150" y="153" text-anchor="middle" font-size="12">project-FINAL-really.zip</text>
+    <line x1="270" y1="95" x2="395" y2="95" stroke="#1f6fb2" stroke-width="2"/>
+    <text x="333" y="82" text-anchor="middle" font-size="12" fill="#1f6fb2" font-weight="600">git init</text>
+    <text x="540" y="22" text-anchor="middle" font-size="12.5" font-weight="700">WITH GIT</text>
+    <rect x="405" y="55" width="270" height="80" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="540" y="80" text-anchor="middle" font-size="13" font-weight="700">one folder: my-project/</text>
+    <text x="540" y="100" text-anchor="middle" font-size="12">every version recorded as</text>
+    <text x="540" y="118" text-anchor="middle" font-size="12">a commit you can revisit</text>
+  </svg>
+  <figcaption>version control replaces the zip pile with one folder plus a browsable history.</figcaption>
+</figure>
+<div class="callout insight">
+  <div class="ti">The one-sentence version</div>
+  <p>Git turns "which copy is current?" into a question with an exact answer — the history log.</p>
+</div>
+
+<h2 class="section"><span class="num">2</span>Git vs. GitHub, centralized vs. distributed</h2>
+<p class="section-intro">Two names beginners always mix up — and the idea that makes Git special.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Git</h4>
+    <p>A <strong>version control system</strong> — a tool on your machine that manages source-code history: tracking changes in files and reverting to a previous version when needed. Free and open source.</p>
+  </div>
+  <div class="col">
+    <h4>GitHub</h4>
+    <p>A <strong>cloud hosting service</strong> for Git repositories — the place your repo lives so others can see it, copy it, and collaborate on it.</p>
+  </div>
+</div>
+<h3 class="sub">2.1 Why Git won: it's distributed</h3>
+<p>Old systems were <strong>centralized</strong>: one server held the history, and without a connection you couldn't do much. Git is <strong>distributed</strong>: the full history lives on every developer's machine — so you can work offline, commit whenever you want, and sync with the team later. It's also fast, free, and lets people in multiple locations work on the same project.</p>
+<figure>
+  <div class="diagram-label">Centralized vs. distributed</div>
+  <svg width="680" height="170" viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="680" height="170" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="170" fill="url(#erd-grid)"/>
+    <text x="165" y="22" text-anchor="middle" font-size="12.5" font-weight="700">CENTRALIZED</text>
+    <rect x="95" y="40" width="140" height="40" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="165" y="57" text-anchor="middle" font-size="12.5" font-weight="700">server</text>
+    <text x="165" y="73" text-anchor="middle" font-size="11.5" fill="#5B6472">the only history</text>
+    <line x1="130" y1="90" x2="90" y2="120" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="200" y1="90" x2="240" y2="120" stroke="#9aa4b2" stroke-width="1.5"/>
+    <rect x="40" y="122" width="100" height="32" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="90" y="143" text-anchor="middle" font-size="12">dev A</text>
+    <rect x="190" y="122" width="100" height="32" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="240" y="143" text-anchor="middle" font-size="12">dev B</text>
+    <text x="515" y="22" text-anchor="middle" font-size="12.5" font-weight="700">DISTRIBUTED (GIT)</text>
+    <rect x="390" y="40" width="120" height="40" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="450" y="57" text-anchor="middle" font-size="12.5" font-weight="700">dev A</text>
+    <text x="450" y="73" text-anchor="middle" font-size="11.5" fill="#5B6472">full history</text>
+    <rect x="520" y="40" width="120" height="40" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="580" y="57" text-anchor="middle" font-size="12.5" font-weight="700">dev B</text>
+    <text x="580" y="73" text-anchor="middle" font-size="11.5" fill="#5B6472">full history</text>
+    <rect x="445" y="100" width="150" height="34" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="520" y="122" text-anchor="middle" font-size="12">GitHub: shared copy</text>
+  </svg>
+  <figcaption>in Git, every developer carries the whole history — GitHub is where those histories meet.</figcaption>
+</figure>
+
+<h2 class="section"><span class="num">3</span>Core vocabulary</h2>
+<p class="section-intro">Five words that unlock every Git conversation.</p>
+<div class="card-grid">
+  <div class="card"><h4>Repository</h4><p>A directory where a project lives — local on your computer, or remote on a server like GitHub. It holds the project files <strong>plus</strong> each file's revision history.</p></div>
+  <div class="card"><h4>Clone</h4><p>A copy of a repository that lives on your computer instead of a server — and the act of creating that copy.</p></div>
+  <div class="card"><h4>Commit</h4><p>An individual change saved <strong>within Git</strong> (like saving a file, but tracked). Each commit gets a unique ID called a <strong>hash</strong> recording what changed, when, and by whom — with a short message describing it.</p></div>
+</div>
+<div class="card-grid">
+  <div class="card"><h4>Push</h4><p>Sending your committed changes up to a remote repository, e.g. on GitHub.</p></div>
+  <div class="card"><h4>Pull</h4><p>Bringing remote changes down into your local repository. When your copy is behind the remote, pull before you can push successfully.</p></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Push vs. pull in one breath</div>
+  <p><strong>Push</strong> = my commits go up. <strong>Pull</strong> = their commits come down. Keeping that direction straight keeps you out of most beginner trouble.</p>
+</div>
+
+<h2 class="section"><span class="num">4</span>First commands walkthrough</h2>
+<p class="section-intro">The everyday loop, in order — start a repo, stage, inspect, save, share.</p>
+<h3 class="sub">4.1 Start: <code class="inline">init</code> or <code class="inline">clone</code></h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git init</div>
+</div>
+<p><code class="inline">git init</code> starts a new Git repository in the current folder. Joining an existing project instead? <code class="inline">git clone</code> obtains it from a URL:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git clone &lt;repository-url&gt;</div>
+</div>
+<h3 class="sub">4.2 Stage, inspect, save</h3>
+<p>Git only commits what you <strong>stage</strong> first. <code class="inline">git add</code> moves a change from the working directory to the staging area — telling Git to include it in the next commit:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git add &lt;file&gt;</div>
+</div>
+<p>Unsure what's staged? <code class="inline">git status</code> shows the state of the working directory and the staging area — which changes are staged, and which files Git isn't tracking yet:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git status</div>
+</div>
+<p>Happy with the staging area? <code class="inline">git commit</code> stores everything staged, with a message describing the change:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git commit -m "Commit message"</div>
+</div>
+<div class="callout tip">
+  <div class="ti">Two habits that pay off forever</div>
+  <p>Run <code class="inline">git status</code> constantly — it's a free X-ray of what you're about to save. And write messages that say <strong>why</strong>, not what: <code class="inline">"Fix off-by-one in pagination"</code> beats <code class="inline">"stuff"</code> for anyone reading the log later (including you).</p>
+</div>
+<h3 class="sub">4.3 Share: <code class="inline">push</code> and <code class="inline">pull</code></h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git push</div>
+</div>
+<p><code class="inline">git push</code> uploads your repository content to the remote. And <code class="inline">git pull</code> fetches content from the remote and immediately updates your local repository to match it:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git pull</div>
+</div>
+
+<h2 class="section"><span class="num">5</span>Collaborating: forks, branches, merges</h2>
+<p class="section-intro">How many people edit one project without stepping on each other.</p>
+<div class="card-grid">
+  <div class="card"><h4>Fork</h4><p>A personal copy of someone else's repository in <strong>your</strong> account. Change it freely without touching the original — it stays connected, so you can propose your work back with a pull request and pull in their updates.</p></div>
+  <div class="card"><h4>Branch</h4><p>A parallel version of a repository that lives <strong>inside</strong> it. Work on a branch without disrupting the main line; merge it back when the work is done.</p></div>
+</div>
+<figure>
+  <div class="diagram-label">Branch, work, merge</div>
+  <svg width="680" height="150" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="680" height="150" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="150" fill="url(#erd-grid)"/>
+    <line x1="40" y1="105" x2="640" y2="105" stroke="#1f6fb2" stroke-width="2.5"/>
+    <text x="60" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#1f6fb2">main</text>
+    <line x1="180" y1="105" x2="330" y2="45" stroke="#9aa4b2" stroke-width="2"/>
+    <line x1="330" y1="45" x2="500" y2="45" stroke="#9aa4b2" stroke-width="2"/>
+    <line x1="500" y1="45" x2="600" y2="105" stroke="#1f6fb2" stroke-width="2"/>
+    <rect x="160" y="92" width="40" height="26" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <rect x="320" y="32" width="40" height="26" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <rect x="420" y="32" width="40" height="26" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <rect x="580" y="92" width="40" height="26" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="415" y="22" text-anchor="middle" font-size="12" fill="#5B6472">feature branch: 2 commits, main untouched</text>
+    <text x="620" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#1f6fb2">merge</text>
+  </svg>
+  <figcaption>a branch splits off, collects commits safely aside, and merges back into main.</figcaption>
+</figure>
+<h3 class="sub">5.1 Seeing history and differences</h3>
+<p><code class="inline">git log</code> lists the version history of the current branch, newest first. <code class="inline">git diff</code> shows what changed between the working directory and what's staged:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git log
+git diff</div>
+</div>
+<h3 class="sub">5.2 Branching commands</h3>
+<p><code class="inline">git branch</code> lists, creates, or deletes branches; <code class="inline">git checkout</code> switches between them (or restores files); <code class="inline">git merge</code> joins histories back together:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">git branch
+git checkout &lt;branch-name&gt;
+git merge &lt;branch-name&gt;</div>
+</div>
+<div class="callout insight">
+  <div class="ti">The collaboration loop in one breath</div>
+  <p><strong>Fork</strong> their repo → <strong>clone</strong> your fork → <strong>branch</strong> for the feature → <strong>commit</strong> the work → <strong>push</strong> the branch → open a <strong>pull request</strong>. Every open-source contribution you'll ever make follows those six steps.</p>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — Git in one breath</h2>
+<p class="section-intro">The whole module as a single pipeline.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">init / clone  -->  edit files  -->  add (stage)  -->  commit (save + message)
+  -->  push (share)  -->  pull (sync)  -->  branch / fork  -->  merge (reunite)</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p><strong>Git</strong> records every version of your project as a commit on your own machine; <strong>GitHub</strong> hosts those histories so a team can push, pull, branch, and merge them together — and a dozen commands (<code class="inline">init</code>, <code class="inline">clone</code>, <code class="inline">add</code>, <code class="inline">status</code>, <code class="inline">commit</code>, <code class="inline">push</code>, <code class="inline">pull</code>, <code class="inline">log</code>, <code class="inline">diff</code>, <code class="inline">checkout</code>, <code class="inline">branch</code>, <code class="inline">merge</code>) cover nearly everything you'll ever type.</p>
 </div>
 
 <div class="day-nav">
@@ -85,35 +293,34 @@
 
 <footer>Module 05 · Git &amp; GitHub · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>

@@ -2,7 +2,7 @@
 
 > 🌐 **Read the course as a website:** https://a7madmostafa.github.io/Arabic_ML_Bootcamp/
 > — one reading page per module (written concepts, diagrams, worked examples, notebook links).
-> Modules 01–04 are complete; 05–12 are coming soon.
+> Modules 01–05 are complete; 06–12 are coming soon.
 
 <p align="center">
   <img src="machine_learning_bootcamp.png" alt="Arabic Machine Learning Bootcamp" width="600">
@@ -43,8 +43,8 @@ that presents the whole course as readable web pages — start at the landing pa
 - `index.html` — the landing page: sidebar navigation across all 12 modules, dark/light theme, and
   a card per module linking to its reading page and GitHub folder.
 - Each module's self-contained `NN_reading.html` (e.g. `01_reading.html`) turns that
-  module's lecture topics into written concepts, diagrams, and worked examples. Modules 01–04 are
-  complete; 05–12 currently show a coming-soon page that links to the module's material on GitHub.
+  module's lecture topics into written concepts, diagrams, and worked examples. Modules 01–05 are
+  complete; 06–12 currently show a coming-soon page that links to the module's material on GitHub.
 - The original per-module files (notebooks, PDFs, datasets, READMEs) are untouched and stay the
   source of truth — the reading pages link out to them.
 
