@@ -60,16 +60,219 @@
 
 <div class="crumb">Module 07 of 12 · Streamlit</div>
 <h1 class="title">Streamlit</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">Turn a Python script into an interactive web app — text, widgets, charts, multipage layouts, and deployment — all in pure Python, no HTML or JavaScript required.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 07 · Streamlit</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the <code class="inline">CODE/Streamlit Tutorial.ipynb</code> notebook in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Run any script as a web app with <code class="inline">streamlit run</code>.</li>
+    <li>Display text, markdown, media, DataFrames, and charts with <code class="inline">st.*</code> calls.</li>
+    <li>Collect input with buttons, checkboxes, selectors, sliders, and text/date/time fields.</li>
+    <li>Show progress, spinners, and success/error/warning/info messages.</li>
+    <li>Move controls into a sidebar and embed matplotlib and plotly figures.</li>
+    <li>Structure multipage apps — the <code class="inline">pages/</code> convention or a single-file navigator.</li>
+    <li>Freeze dependencies with <code class="inline">pipreqs</code> and deploy to Streamlit Cloud.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/07-streamlit" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="07_reading.html">Reading</a>
+  <a href="notebooks/Streamlit%20Tutorial.html">Streamlit Tutorial</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Install Streamlit, and understand the module's core rhythm — the notebook writes each demo to a <code class="inline">.py</code> file with the <code class="inline">%%writefile</code> magic, then launches it:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+    <div class="code-body">pip install streamlit
+streamlit run my_app.py</div>
+  </div>
+  <p>Every section below follows one demo app from the <a href="notebooks/Streamlit%20Tutorial.html">Streamlit Tutorial</a> notebook — copy its code into a <code class="inline">.py</code> file and run it the same way.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>Hello, Streamlit</h2>
+<p class="section-intro">The smallest possible app — and the mental model behind every bigger one.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Streamlit%20Tutorial.html">Streamlit Tutorial</a></span></div>
+  <div class="code-body"><span class="kw">import</span> streamlit <span class="kw">as</span> st
+
+st.<span class="fn">title</span>(<span class="str">"my first app"</span>)</div>
+</div>
+<p>Save that as <code class="inline">app.py</code>, run <code class="inline">streamlit run app.py</code>, and a browser tab opens with your title. Try <code class="inline">streamlit hello</code> any time for the official demo tour.</p>
+<figure>
+  <div class="diagram-label">How a Streamlit app runs</div>
+  <svg width="680" height="150" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="680" height="150" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="150" fill="url(#erd-grid)"/>
+    <rect x="20" y="50" width="140" height="52" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="90" y="72" text-anchor="middle" font-size="13" font-weight="700">app.py</text>
+    <text x="90" y="90" text-anchor="middle" font-size="11.5" fill="#5B6472">st.* calls</text>
+    <line x1="160" y1="76" x2="255" y2="76" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr7)"/>
+    <text x="208" y="62" text-anchor="middle" font-size="11.5" fill="#1f6fb2" font-weight="600">run</text>
+    <rect x="260" y="50" width="140" height="52" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="330" y="72" text-anchor="middle" font-size="13" font-weight="700">server</text>
+    <text x="330" y="90" text-anchor="middle" font-size="11.5" fill="#5B6472">localhost:8501</text>
+    <line x1="400" y1="76" x2="495" y2="76" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr7)"/>
+    <text x="448" y="62" text-anchor="middle" font-size="11.5" fill="#1f6fb2" font-weight="600">render</text>
+    <rect x="500" y="50" width="160" height="52" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="580" y="72" text-anchor="middle" font-size="13" font-weight="700">browser</text>
+    <text x="580" y="90" text-anchor="middle" font-size="11.5" fill="#5B6472">every widget edit reruns the script</text>
+  </svg>
+  <figcaption>write Python top to bottom; Streamlit serves it; each interaction reruns the script with new values.</figcaption>
+</figure>
+<div class="callout insight">
+  <div class="ti">The rerun model</div>
+  <p>There is no event loop to manage: when a user moves a slider, Streamlit <strong>reruns your whole script top to bottom</strong> with the new value in place. Write plain sequential Python and the framework handles the interactivity.</p>
+</div>
+
+<h2 class="section"><span class="num">2</span>Displaying things</h2>
+<p class="section-intro">Text first, then media, then data — the output half of every app.</p>
+<h3 class="sub">2.1 Text elements</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">01-displayText.py</span></div>
+  <div class="code-body">st.<span class="fn">title</span>(<span class="str">"this is the app title"</span>)
+st.<span class="fn">header</span>(<span class="str">"this is the markdown"</span>)
+st.<span class="fn">markdown</span>(<span class="str">"this is the header"</span>)
+st.<span class="fn">subheader</span>(<span class="str">"this is the subheader"</span>)
+st.<span class="fn">caption</span>(<span class="str">"this is the caption"</span>)
+st.<span class="fn">code</span>(<span class="str">"x=2021"</span>)
+st.<span class="fn">latex</span>(<span class="str">r''' a+a r^1+a r^2+a r^3 '''</span>)</div>
+</div>
+<p><code class="inline">st.markdown</code> understands full Markdown — headers, italics, bold, strikethrough, blockquotes, links, images — and even raw HTML when you opt in with <code class="inline">unsafe_allow_html=True</code> (centering and coloring text, in the lecture's example).</p>
+<h3 class="sub">2.2 Media and DataFrames</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">03-displayMedia.py · 04-displayDF.py</span></div>
+  <div class="code-body">st.<span class="fn">image</span>(<span class="str">"kid.png"</span>)     <span class="com"># st.audio / st.video work the same way</span>
+
+df = pd.<span class="fn">DataFrame</span>({<span class="str">'k'</span>:[<span class="str">1,2,3,4,5</span>], <span class="str">'v'</span>:[<span class="str">10,20,30,40,50</span>]})
+st.<span class="fn">dataframe</span>(df)        <span class="com"># scrollable, sortable table</span></div>
+</div>
+
+<h2 class="section"><span class="num">3</span>Input widgets</h2>
+<p class="section-intro">The input half: every widget returns the user's choice as a plain Python value.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">05-inputWidgets.py — choices</span></div>
+  <div class="code-body">st.<span class="fn">checkbox</span>(<span class="str">'yes'</span>)
+st.<span class="fn">button</span>(<span class="str">'Click'</span>)
+st.<span class="fn">radio</span>(<span class="str">'Pick your gender'</span>,[<span class="str">'Male'</span>,<span class="str">'Female'</span>])
+st.<span class="fn">selectbox</span>(<span class="str">'Pick your gender'</span>,[<span class="str">'Male'</span>,<span class="str">'Female'</span>])
+st.<span class="fn">multiselect</span>(<span class="str">'choose a planet'</span>,[<span class="str">'Jupiter'</span>, <span class="str">'Mars'</span>, <span class="str">'neptune'</span>])
+st.<span class="fn">select_slider</span>(<span class="str">'Pick a mark'</span>, [<span class="str">'Bad'</span>, <span class="str">'Good'</span>, <span class="str">'Excellent'</span>])
+st.<span class="fn">slider</span>(<span class="str">'Pick a number'</span>, <span class="str">0,50</span>)</div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">06-inputWidgets_2.py — entries</span></div>
+  <div class="code-body">st.<span class="fn">number_input</span>(<span class="str">'Pick a number'</span>, <span class="str">0,10</span>)
+st.<span class="fn">text_input</span>(<span class="str">'Email address'</span>)
+st.<span class="fn">date_input</span>(<span class="str">'Travelling date'</span>)
+st.<span class="fn">time_input</span>(<span class="str">'School time'</span>)
+st.<span class="fn">text_area</span>(<span class="str">'Description'</span>)
+st.<span class="fn">file_uploader</span>(<span class="str">'Upload a photo'</span>)
+st.<span class="fn">color_picker</span>(<span class="str">'Choose your favorite color'</span>)</div>
+</div>
+<div class="callout tip">
+  <div class="ti">Widgets are values</div>
+  <p>Each call <strong>returns</strong> the current choice — <code class="inline">name = st.text_input('Email address')</code> gives you a string to validate, store, or feed to a model. That return value plus the rerun model (§1) is how forms, filters, and dashboards work.</p>
+</div>
+
+<h2 class="section"><span class="num">4</span>Progress and status</h2>
+<p class="section-intro">Keep users oriented while work happens — and speak up clearly when it finishes or fails.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">07-progress.py · 08-status.py</span></div>
+  <div class="code-body">st.<span class="fn">progress</span>(<span class="str">75</span>)
+<span class="kw">with</span> st.<span class="fn">spinner</span>(<span class="str">'Wait for it...'</span>):
+    time.<span class="fn">sleep</span>(<span class="str">10</span>)
+    st.<span class="fn">balloons</span>()
+
+st.<span class="fn">success</span>(<span class="str">"You did it !"</span>)
+st.<span class="fn">error</span>(<span class="str">"Error"</span>)
+st.<span class="fn">warning</span>(<span class="str">"Warning"</span>)
+st.<span class="fn">info</span>(<span class="str">"It's easy to build a streamlit app"</span>)
+st.<span class="fn">exception</span>(<span class="fn">RuntimeError</span>(<span class="str">"RuntimeError exception"</span>))</div>
+</div>
+
+<h2 class="section"><span class="num">5</span>Sidebar</h2>
+<p class="section-intro">One prefix moves any element out of the main flow.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">09-sidebar.py</span></div>
+  <div class="code-body">st.sidebar.<span class="fn">title</span>(<span class="str">"This is the sidebar"</span>)
+st.sidebar.<span class="fn">header</span>(<span class="str">"This is the header"</span>)
+st.sidebar.<span class="fn">button</span>(<span class="str">"Click"</span>)
+st.sidebar.<span class="fn">checkbox</span>(<span class="str">"Yes"</span>)
+st.sidebar.<span class="fn">radio</span>(<span class="str">"Pick your gender: "</span>, [<span class="str">'male'</span>, <span class="str">'female'</span>])</div>
+</div>
+<p>Prefix <strong>any</strong> widget or text call with <code class="inline">st.sidebar</code> — navigation, filters, and settings live there; results stay center stage.</p>
+
+<h2 class="section"><span class="num">6</span>Charts</h2>
+<p class="section-intro">Your Module 06 plots, embedded with one line each.</p>
+<div class="compare">
+  <div class="col">
+    <h4>Matplotlib</h4>
+    <div class="code-body">fig, ax = plt.<span class="fn">subplots</span>()
+ax.<span class="fn">hist</span>(rand, bins=<span class="str">15</span>)
+st.<span class="fn">pyplot</span>(fig)</div>
+  </div>
+  <div class="col">
+    <h4>Plotly</h4>
+    <div class="code-body">fig = px.<span class="fn">histogram</span>(rand, nbins=<span class="str">15</span>)
+st.<span class="fn">plotly_chart</span>(fig)</div>
+  </div>
+</div>
+<p>The lecture builds three plotly views the same way — histogram, bar, and line charts via <code class="inline">px.histogram</code>, <code class="inline">px.bar</code>, and <code class="inline">px.line</code>, each rendered with <code class="inline">st.plotly_chart</code>. (Plotly figures stay interactive in the app: zoom, hover, pan.)</p>
+
+<h2 class="section"><span class="num">7</span>Multipage apps</h2>
+<p class="section-intro">Two ways to grow past one screen.</p>
+<h3 class="sub">7.1 The <code class="inline">pages/</code> convention</h3>
+<p>Put the entry script next to a <code class="inline">pages/</code> folder — every <code class="inline">.py</code> file inside becomes a navigable page automatically:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal layout</span></div>
+  <div class="code-body">my_app.py
+pages/about.py
+pages/Contact.py</div>
+</div>
+<h3 class="sub">7.2 Single-file navigator</h3>
+<p>Prefer one file? Map page names to functions and let a sidebar selectbox do the routing:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">my_app_2.py</span></div>
+  <div class="code-body">page_names_to_funcs = {
+    <span class="str">"Main Page"</span>: main_page,
+    <span class="str">"Page 2"</span>: page2,
+    <span class="str">"Page 3"</span>: page3,
+}
+
+selected_page = st.sidebar.<span class="fn">selectbox</span>(<span class="str">"Select a page"</span>, page_names_to_funcs.<span class="fn">keys</span>())
+<span class="fn">page_names_to_funcs[selected_page]()</span></div>
+</div>
+
+<h2 class="section"><span class="num">8</span>Deployment</h2>
+<p class="section-intro">From your laptop to a public URL in two steps.</p>
+<p>Hosting needs your dependency list. <code class="inline">pipreqs</code> scans your imports and writes it — then Streamlit Cloud builds and serves the app from your GitHub repo (the module's final lectures deploy the Covid-19 app exactly this way):</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+  <div class="code-body">pip install pipreqs
+pipreqs ./</div>
+</div>
+<div class="callout warn">
+  <div class="ti">Commit the requirements file</div>
+  <p>Push <code class="inline">requirements.txt</code> alongside the app — without it, the cloud builder installs the wrong versions (or nothing) and the deploy fails with an import error.</p>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — apps in one breath</h2>
+<p class="section-intro">The module compresses into a single loop.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">.py script  --streamlit run-->  local app  --widgets-->  values
+  --charts/sidebar/pages-->  real tool  --pipreqs + push-->  public URL</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Streamlit turns sequential Python into a web app: <code class="inline">st.*</code> calls declare text, widgets, and charts; every interaction reruns the script with fresh values; the sidebar, multipage layouts, and Streamlit Cloud take the result from demo to deployment.</p>
 </div>
 
 <div class="day-nav">
@@ -79,41 +282,40 @@
   </a>
   <a class="day-nav-link next" href="../08-data_preprocessing_and_feature_engineering/08_reading.html">
     <span class="dn-label">Next &rarr;</span>
-    <span class="dn-title">Module 08 &middot; Data Preprocessing &amp; Feature Engineering</span>
+    <span class="dn-title">Module 08 &middot; Preprocessing &amp; Feature Eng.</span>
   </a>
 </div>
 
 <footer>Module 07 · Streamlit · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
