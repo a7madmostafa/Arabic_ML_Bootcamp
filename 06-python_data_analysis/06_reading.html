@@ -60,16 +60,311 @@
 
 <div class="crumb">Module 06 of 12 · Python Data Analysis</div>
 <h1 class="title">Python Data Analysis</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">From raw CSVs to finished stories — <code class="inline">NumPy</code> arrays, <code class="inline">pandas</code> tables, statistics that actually mean something, and seven real end-to-end projects.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 06 · Python Data Analysis</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the <code class="inline">CODE/</code> tutorials (NumPy, Pandas, Data Visualization, EDA, projects) in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Place analysis in the data science lifecycle and name the four analysis types.</li>
+    <li>Compute with <code class="inline">NumPy</code> arrays — creation, indexing, aggregation, linear algebra.</li>
+    <li>Load, clean, filter, and aggregate tabular data with <code class="inline">pandas</code>.</li>
+    <li>Summarize any column with center, spread, five-number summary, and shape.</li>
+    <li>Read histograms, box plots, and heatmaps — and know which question each answers.</li>
+    <li>Tell correlation from causation, and covariance from correlation.</li>
+    <li>Run the EDA workflow on a new dataset and finish with a multivariate story.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="06_reading.html">Reading</a>
+  <a href="notebooks/01-%20Numpy%20Tutorial/Numpy_Tutorial.html">NumPy Tutorial</a>
+  <a href="notebooks/02-%20Pandas%20Tutorial/Pandas_EDA_Tutorial.html">Pandas Tutorial</a>
+  <a href="notebooks/03-%20Data%20Visualization%20Tutorial/Data_Visualization_Tutorial.html">Visualization Tutorial</a>
+  <a href="notebooks/04-%20Intro%20to%20EDA/Intro%20to%20EDA.html">Intro to EDA</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Comfortable Python (Modules 02–03) is assumed. Install the analysis stack once:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">terminal</span></div>
+    <div class="code-body">pip install numpy pandas matplotlib seaborn plotly</div>
+  </div>
+  <p>The four tutorial notebooks above are the hands-on spine of this module — read each section here, then run its notebook. The theory slides live in <code class="inline">PDFs/</code>: <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/06-python_data_analysis/PDFs/Intro%20to%20Data%20Analysis.pdf" target="_blank" rel="noopener">Intro to Data Analysis</a>, <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/06-python_data_analysis/PDFs/Intro%20to%20Linear%20Algebra.pdf" target="_blank" rel="noopener">Intro to Linear Algebra</a>, <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/06-python_data_analysis/PDFs/Descriptive%20Statistics.pdf" target="_blank" rel="noopener">Descriptive Statistics</a>.</p>
+</div>
+
+<h2 class="section" id="analysis"><span class="num">1</span>What is data analysis?</h2>
+<p class="section-intro">The frame everything else hangs on: where analysis sits, what data comes in, and which question you're answering.</p>
+<p>Data analysis is a process of <strong>examining data with the goal of discovering useful information, extracting insights, and informing conclusions to support decision-making</strong> — the science of collecting, analyzing, presenting, and interpreting data to get information <em>from</em> data.</p>
+<h3 class="sub">1.1 The data science lifecycle</h3>
+<p>Analysis is one stage of a loop: understand the business and the data, preprocess it, <strong>analyze</strong> it, model it, deploy the result — and the deployed model teaches you new questions to ask.</p>
+<figure>
+  <div class="diagram-label">Data science lifecycle</div>
+  <svg width="680" height="120" viewBox="0 0 680 120" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="680" height="120" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="120" fill="url(#erd-grid)"/>
+    <rect x="10" y="38" width="112" height="52" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="66" y="59" text-anchor="middle" font-size="11.5" font-weight="700">Understand</text>
+    <text x="66" y="75" text-anchor="middle" font-size="10.5" fill="#5B6472">business + data</text>
+    <rect x="136" y="38" width="112" height="52" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="192" y="59" text-anchor="middle" font-size="11.5" font-weight="700">Preprocess</text>
+    <text x="192" y="75" text-anchor="middle" font-size="10.5" fill="#5B6472">clean + shape</text>
+    <rect x="262" y="38" width="112" height="52" fill="#1f6fb2" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="318" y="59" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">Analyze</text>
+    <text x="318" y="75" text-anchor="middle" font-size="10.5" fill="#dfe3e8">this module</text>
+    <rect x="388" y="38" width="112" height="52" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="444" y="59" text-anchor="middle" font-size="11.5" font-weight="700">Model</text>
+    <text x="444" y="75" text-anchor="middle" font-size="10.5" fill="#5B6472">modules 09+</text>
+    <rect x="514" y="38" width="112" height="52" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="570" y="59" text-anchor="middle" font-size="11.5" font-weight="700">Deploy</text>
+    <text x="570" y="75" text-anchor="middle" font-size="10.5" fill="#5B6472">use it live</text>
+    <line x1="122" y1="64" x2="136" y2="64" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr6)"/>
+    <line x1="248" y1="64" x2="262" y2="64" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr6)"/>
+    <line x1="374" y1="64" x2="388" y2="64" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr6)"/>
+    <line x1="500" y1="64" x2="514" y2="64" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr6)"/>
+  </svg>
+  <figcaption>analysis turns clean data into insights that models (and decisions) build on.</figcaption>
+</figure>
+<h3 class="sub">1.2 Know your data types</h3>
+<p>Every column is either <strong>categorical</strong> or <strong>numerical</strong> — and the type decides which statistics and plots are even legal:</p>
+<table class="api">
+  <thead><tr><th>Family</th><th>Type</th><th>Meaning</th><th>Examples</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Categorical</strong></td><td>Nominal</td><td>No order</td><td>Country, color, gender</td></tr>
+    <tr><td><strong>Categorical</strong></td><td>Ordinal</td><td>Ordered</td><td>Levels, grades, ratings</td></tr>
+    <tr><td><strong>Numerical</strong></td><td>Discrete</td><td>Finite counts</td><td>No. of students, products</td></tr>
+    <tr><td><strong>Numerical</strong></td><td>Continuous</td><td>Infinite values</td><td>Salary, weight, temperature, speed</td></tr>
+  </tbody>
+</table>
+<div class="callout insight">
+  <div class="ti">Type before tool</div>
+  <p>Averaging a nominal column (mean country?) is nonsense, and a histogram of two categories tells you nothing. Name the type first — §3 and §4 then tell you exactly which summary and plot each type deserves.</p>
+</div>
+<h3 class="sub">1.3 The four analysis types</h3>
+<div class="card-grid">
+  <div class="card"><h4>Descriptive</h4><p>Summarize quantitative data with statistics — distributions, min/average/max/total per group. Answers <strong>"What happened?"</strong></p></div>
+  <div class="card"><h4>Diagnostic</h4><p>Once you know the <em>what</em>, find the <em>why</em> — sales swung for 10 years, why? Answers <strong>"Why did it happen?"</strong></p></div>
+  <div class="card"><h4>Predictive</h4><p>Understand the past to guess the future — next year's sales? Answers <strong>"What might happen?"</strong></p></div>
+  <div class="card"><h4>Prescriptive</h4><p>Turn the prediction into a plan — how to profit or avoid loss? Answers <strong>"What should we do?"</strong></p></div>
+</div>
+<p>This module lives mostly in descriptive and diagnostic territory; predictive modeling starts in Module 09.</p>
+<h3 class="sub">1.4 EDA steps</h3>
+<p>Exploratory Data Analysis is the ordered habit from the lectures: read the data, explore it, check columns and types, summarize with statistics — then let the plots (§4) ask the next question. The full step list runs as code in the Intro to EDA notebook.</p>
+
+<h2 class="section" id="representation"><span class="num">2</span>From math to Python</h2>
+<p class="section-intro">The translation layer: every math object you'll meet has one natural Python home.</p>
+<table class="api">
+  <thead><tr><th>Math idea</th><th>Python home</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td>Single value (scalar)</td><td>Variable / 0-D array</td><td><code class="inline">np.array(5.5)</code></td></tr>
+    <tr><td>Collection (vector)</td><td>1-D <code class="inline">NumPy</code> array</td><td><code class="inline">np.array([1, 2, 3])</code></td></tr>
+    <tr><td>Matrix</td><td>2-D <code class="inline">NumPy</code> array</td><td><code class="inline">np.array([[11, 12], [21, 22]])</code></td></tr>
+    <tr><td>Table</td><td><code class="inline">pandas</code> DataFrame</td><td><code class="inline">pd.DataFrame(data)</code></td></tr>
+  </tbody>
+</table>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/01-%20Numpy%20Tutorial/Numpy_Tutorial.html">Numpy_Tutorial.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">import</span> numpy <span class="kw">as</span> np
+v = np.<span class="fn">array</span>([<span class="str">1, 2, 3</span>])   <span class="com"># vector: shape (3,), one home for math</span>
+m = np.<span class="fn">array</span>([[<span class="str">11, 12</span>], [<span class="str">21, 22</span>]])  <span class="com"># matrix: shape (2, 2)</span></div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>arrays compute</b><p>Lists concatenate with <code class="inline">+</code>; arrays add element by element — the vectorized math every model expects.</p></div>
+  <div class="annotation"><b>shape is the compass</b><p><code class="inline">(3,)</code> is a vector, <code class="inline">(1, 3)</code> a row, <code class="inline">(3, 1)</code> a column — ML code cares even when the numbers look identical.</p></div>
+  <div class="annotation"><b>the full tutorial</b><p>Creation, indexing, element-wise ops, transpose/determinant/inverse/dot, aggregation with <code class="inline">axis</code>, reshape and broadcasting — all in the <a href="notebooks/01-%20Numpy%20Tutorial/Numpy_Tutorial.html">NumPy Tutorial</a> notebook.</p></div>
+</div>
+
+<h2 class="section" id="statistics"><span class="num">3</span>Statistics in practice</h2>
+<p class="section-intro">Descriptive statistics: describing a dataset's features with summary numbers — plus the plots that make them honest. (Slides: <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/06-python_data_analysis/PDFs/Descriptive%20Statistics.pdf" target="_blank" rel="noopener">Descriptive Statistics PDF</a>.)</p>
+<h3 class="sub">3.1 Center: mean, median, mode</h3>
+<p>Center gives <strong>one representative number</strong> for a feature. Mean is the average; median is the middle value (for even counts, the average of the two middle values); mode is the most frequent value.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">one representative number</span></div>
+  <div class="code-body">df.age.<span class="fn">mean</span>()     <span class="com"># average — sensitive to extremes</span>
+df.age.<span class="fn">median</span>()   <span class="com"># middle value — robust to extremes</span>
+df.age.<span class="fn">mode</span>()     <span class="com"># most frequent value</span></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Mean or median?</div>
+  <p>Salaries have outliers (a few huge paychecks drag the mean up), so the median represents "typical pay" better. Rule of thumb: <strong>skewed data → median; symmetric data → mean.</strong> (§3.4 shows how to see the skew.)</p>
+</div>
+<h3 class="sub">3.2 Five-number summary</h3>
+<table class="api">
+  <thead><tr><th>Stat</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>Minimum</td><td>The smallest value</td></tr>
+    <tr><td>Q1</td><td>25% of the data fall below</td></tr>
+    <tr><td>Q2 (median)</td><td>50% of the data fall below</td></tr>
+    <tr><td>Q3</td><td>75% of the data fall below</td></tr>
+    <tr><td>Maximum</td><td>The largest value</td></tr>
+  </tbody>
+</table>
+<p>In pandas, one call prints all five plus the count and mean: <code class="inline">df.describe()</code> — and <code class="inline">df.age.quantile([0.25, 0.5, 0.75])</code> pulls the quartiles directly.</p>
+<h3 class="sub">3.3 Spread: range, IQR, variance, standard deviation</h3>
+<p>Two datasets can share a mean of 7925 yet spread from 2650 to 12700 — the mean alone lies by omission. Spread measures <strong>how far data differs from the center</strong>:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">how far from center?</span></div>
+  <div class="code-body">df.age.<span class="fn">max</span>() - df.age.<span class="fn">min</span>()  <span class="com"># range = max - min</span>
+df.age.<span class="fn">quantile</span>(<span class="str">0.75</span>) - df.age.<span class="fn">quantile</span>(<span class="str">0.25</span>)  <span class="com"># IQR = Q3 - Q1</span>
+df.age.<span class="fn">var</span>()   <span class="com"># variance: average squared distance from the mean</span>
+df.age.<span class="fn">std</span>()   <span class="com"># standard deviation: sqrt(variance), back in original units</span></div>
+</div>
+<div class="callout tip">
+  <div class="ti">Which spread when?</div>
+  <p><strong>Range</strong> is one outlier away from useless. <strong>IQR</strong> ignores the tails (the middle 50%). <strong>Standard deviation</strong> is the workhorse — same units as the data, so "age ± 4 years" means something.</p>
+</div>
+<h3 class="sub">3.4 Shape: histograms, density, skew</h3>
+<p>A histogram bins a numeric column — each bar covers a value range, its height shows frequency — revealing peaks, symmetry vs. skew, and outliers at a glance. A density plot is its continuous, smoothed cousin. Try all three engines on one column:</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/04-%20Intro%20to%20EDA/Intro%20to%20EDA.html">Intro to EDA</a></span></div>
+  <div class="code-body">df.age.<span class="fn">hist</span>()              <span class="com"># pandas: quickest</span>
+plt.<span class="fn">hist</span>(df.age)           <span class="com"># matplotlib: full control</span>
+sns.<span class="fn">histplot</span>(x=<span class="str">'age'</span>, data=df)  <span class="com"># seaborn: prettiest + kde=True option</span></div>
+</div>
+<h3 class="sub">3.5 The normal distribution</h3>
+<p>The bell curve is statistics' favorite shape — symmetric around the mean, with the famous <strong>empirical rule</strong>: ≈68% of values within one standard deviation, ≈95% within two, ≈99.7% within three.</p>
+<figure>
+  <div class="diagram-label">Empirical rule (68 – 95 – 99.7)</div>
+  <svg width="560" height="200" viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="560" height="200" fill="#fff"/>
+    <rect x="0" y="0" width="560" height="200" fill="url(#erd-grid)"/>
+    <path d="M 40 170 C 140 170 180 60 280 60 C 380 60 420 170 520 170" fill="none" stroke="#1f6fb2" stroke-width="2.5"/>
+    <line x1="40" y1="170" x2="520" y2="170" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="280" y1="60" x2="280" y2="170" stroke="#1f6fb2" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="280" y="188" text-anchor="middle" font-size="12" font-weight="700">mean</text>
+    <line x1="200" y1="100" x2="200" y2="170" stroke="#9aa4b2" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="360" y1="100" x2="360" y2="170" stroke="#9aa4b2" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="130" y1="140" x2="130" y2="170" stroke="#9aa4b2" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="430" y1="140" x2="430" y2="170" stroke="#9aa4b2" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="280" y="40" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1f6fb2">68%</text>
+    <text x="165" y="128" text-anchor="middle" font-size="11.5" fill="#5B6472">95%</text>
+    <text x="395" y="128" text-anchor="middle" font-size="11.5" fill="#5B6472">95%</text>
+    <text x="85" y="160" text-anchor="middle" font-size="11" fill="#5B6472">99.7%</text>
+    <text x="475" y="160" text-anchor="middle" font-size="11" fill="#5B6472">99.7%</text>
+  </svg>
+  <figcaption>under a bell curve, nearly everything sits within three standard deviations.</figcaption>
+</figure>
+<h3 class="sub">3.6 Outliers and the box plot</h3>
+<p>Outliers demand a decision, not a reflex: at minimum note they exist and how they move your summaries — remove or fix only clear typos. The box plot exists for exactly this inspection: min, Q1, median, Q3, max in one glyph, with loners plotted as individual dots.</p>
+<figure>
+  <div class="diagram-label">Box plot anatomy</div>
+  <svg width="560" height="150" viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <rect x="0" y="0" width="560" height="150" fill="#fff"/>
+    <rect x="0" y="0" width="560" height="150" fill="url(#erd-grid)"/>
+    <line x1="40" y1="70" x2="480" y2="70" stroke="#9aa4b2" stroke-width="1.5"/>
+    <line x1="100" y1="55" x2="100" y2="85" stroke="#333" stroke-width="2"/>
+    <line x1="420" y1="55" x2="420" y2="85" stroke="#333" stroke-width="2"/>
+    <rect x="190" y="40" width="180" height="60" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="2"/>
+    <line x1="280" y1="40" x2="280" y2="100" stroke="#1f6fb2" stroke-width="2.5"/>
+    <circle cx="500" cy="70" r="5" fill="#fff" stroke="#333" stroke-width="2"/>
+    <text x="100" y="118" text-anchor="middle" font-size="11.5">Min</text>
+    <text x="190" y="118" text-anchor="middle" font-size="11.5">Q1</text>
+    <text x="280" y="118" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f6fb2">Median</text>
+    <text x="370" y="118" text-anchor="middle" font-size="11.5">Q3</text>
+    <text x="420" y="118" text-anchor="middle" font-size="11.5">Max</text>
+    <text x="500" y="118" text-anchor="middle" font-size="11.5">outlier</text>
+    <text x="280" y="22" text-anchor="middle" font-size="11.5" fill="#5B6472">box = middle 50% (IQR)</text>
+  </svg>
+  <figcaption>five numbers plus anything the whiskers can't reach.</figcaption>
+</figure>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">two orientations, one call</span></div>
+  <div class="code-body">sns.<span class="fn">boxplot</span>(x=<span class="str">"age"</span>, data=df)   <span class="com"># horizontal</span>
+sns.<span class="fn">boxplot</span>(y=<span class="str">"age"</span>, data=df)   <span class="com"># vertical</span></div>
+</div>
+<h3 class="sub">3.7 Covariance vs. correlation</h3>
+<div class="compare">
+  <div class="col">
+    <h4>Covariance</h4>
+    <p>Do paired values <strong>rise together</strong>, or does one rise as the other falls? Direction only — values range from <code class="inline">-∞</code> to <code class="inline">+∞</code>, so magnitude means little.</p>
+  </div>
+  <div class="col">
+    <h4>Correlation</h4>
+    <p><strong>How strong</strong> is the (linear) relationship? Dimensionless, from <code class="inline">-1</code> to <code class="inline">+1</code> — the closer to either end, the tighter the link. Salary vs. years of experience is the lecture's example.</p>
+  </div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">one number, whole matrix, picture</span></div>
+  <div class="code-body">df.<span class="fn">corr</span>()[<span class="str">'salary'</span>][<span class="str">'age'</span>]  <span class="com"># single pair</span>
+df.<span class="fn">corr</span>()                        <span class="com"># every pair at once</span>
+sns.<span class="fn">heatmap</span>(df.<span class="fn">corr</span>(), annot=<span class="kw">True</span>)  <span class="com"># the matrix as colors</span></div>
+</div>
+<div class="callout warn">
+  <div class="ti">Correlation is not causation</div>
+  <p>Two columns can march together for no causal reason at all. Correlation picks <strong>predictors and suspects of multicollinearity</strong> — it never proves why.</p>
+</div>
+
+<h2 class="section" id="eda"><span class="num">4</span>The EDA workflow</h2>
+<p class="section-intro">The ordered habit, from first sight of a CSV to a multivariate story — run it in the <a href="notebooks/04-%20Intro%20to%20EDA/Intro%20to%20EDA.html">Intro to EDA</a> notebook on the salary dataset.</p>
+<h3 class="sub">4.1 Read and explore</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">first sight</span></div>
+  <div class="code-body">df = pd.<span class="fn">read_csv</span>(<span class="str">'salary_data.csv'</span>)
+df.<span class="fn">head</span>()    <span class="com"># first 5 rows (head(3) for 3)</span>
+df.<span class="fn">tail</span>(<span class="str">3</span>)     <span class="com"># last 3 rows</span>
+df.<span class="fn">sample</span>(<span class="str">5</span>)   <span class="com"># 5 random rows</span>
+df.shape        <span class="com"># (rows, columns)</span></div>
+</div>
+<div class="callout tip">
+  <div class="ti">Pandas reads everything</div>
+  <p><code class="inline">read_csv</code> is the daily driver, but the same call pattern opens JSON, Excel, and more — the format changes, the exploration below doesn't.</p>
+</div>
+<h3 class="sub">4.2 Columns, types, summaries</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">know thy table</span></div>
+  <div class="code-body">df.<span class="fn">info</span>()       <span class="com"># columns, non-null counts, dtypes</span>
+df.dtypes        <span class="com"># per-column types (§1.2 decides what each deserves)</span>
+df.<span class="fn">describe</span>()   <span class="com"># §3.2's five numbers, for free</span></div>
+</div>
+<h3 class="sub">4.3 Clean before you trust</h3>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">duplicates, nulls, names</span></div>
+  <div class="code-body">df.<span class="fn">duplicated</span>().<span class="fn">sum</span>()   <span class="com"># any repeated rows?</span>
+df.<span class="fn">isnull</span>().<span class="fn">sum</span>()       <span class="com"># nulls per column</span>
+df.columns = [<span class="str">'exp'</span>, <span class="str">'age'</span>, <span class="str">'salary'</span>, <span class="str">'country'</span>]  <span class="com"># short, lowercase names</span>
+df.<span class="fn">to_csv</span>(<span class="str">'salary_modified.csv'</span>)  <span class="com"># save the cleaned table</span></div>
+</div>
+<h3 class="sub">4.4 Univariate → bivariate → multivariate</h3>
+<p>One variable at a time (numeric: hist/box + §3 stats; categorical: <code class="inline">value_counts()</code> + bar/pie), then pairs (<code class="inline">groupby</code> means, scatter, regression line), then everything at once (pairplot, hue/size scatter, correlation heatmap):</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">one, two, all</span></div>
+  <div class="code-body">df.country.<span class="fn">value_counts</span>()            <span class="com"># univariate categorical</span>
+df.<span class="fn">groupby</span>(<span class="str">'country'</span>).salary.<span class="fn">agg</span>([<span class="str">'mean'</span>, <span class="str">'std'</span>])  <span class="com"># bivariate summary</span>
+sns.<span class="fn">pairplot</span>(df)                       <span class="com"># multivariate: every pair at once</span></div>
+</div>
+<div class="annotations">
+  <div class="annotation"><b>Pandas Tutorial</b><p>Selection, filtering, groupby, aggregation, merging — the manipulation half of EDA, on the Superstore dataset.</p></div>
+  <div class="annotation"><b>Visualization Tutorial</b><p>Every plot above and beyond — matplotlib basics, seaborn statistics, plotly interactivity, faceted and multivariate views.</p></div>
+  <div class="annotation"><b>Intro to EDA</b><p>The full workflow start to finish on the salary dataset — the notebook this section follows.</p></div>
+</div>
+
+<h2 class="section" id="projects"><span class="num">5</span>Seven projects</h2>
+<p class="section-intro">The module's payoff: whole analyses on real datasets, each in its own folder on GitHub.</p>
+<div class="card-grid">
+  <div class="card"><h4>Titanic</h4><p>The classic survival EDA, plus a full project solution notebook. <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/01-%20Titanic%20Data%20Analysis%20Project" target="_blank" rel="noopener">Open folder</a></p></div>
+  <div class="card"><h4>Covid-19</h4><p>Global case data, dashboards, and a Streamlit Covid app. <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/02-%20Covid-19%20Data%20Analysis%20Project" target="_blank" rel="noopener">Open folder</a></p></div>
+  <div class="card"><h4>Airbnb NYC</h4><p>Listings, prices, and maps of New York stays. <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/03-%20Airbnb%20Data%20Analysis%20Project" target="_blank" rel="noopener">Open folder</a></p></div>
+  <div class="card"><h4>Airline Satisfaction</h4><p>What drives passenger satisfaction? <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/04-%20Airline%20Passenger%20Satisfaction" target="_blank" rel="noopener">Open folder</a></p></div>
+  <div class="card"><h4>Play Store Apps</h4><p>Ratings, reviews, and categories at store scale. <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/05-%20Google%20Play%20Store%20Apps" target="_blank" rel="noopener">Open folder</a></p></div>
+  <div class="card"><h4>World Happiness</h4><p>What makes countries happy, 2021 report. <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/06-%20World%20Happiness%20EDA" target="_blank" rel="noopener">Open folder</a></p></div>
+  <div class="card"><h4>Zomato Restaurants</h4><p>Cuisines, costs, and ratings. <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/06-python_data_analysis/CODE/05-%20Data%20Analysis%20Projects/07-%20Zomato%20Restaurants%20EDA" target="_blank" rel="noopener">Open folder</a></p></div>
+</div>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — analysis in one breath</h2>
+<p class="section-intro">The module compresses into a single pipeline.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">CSV  --pd.read_csv-->  DataFrame  --head/info/describe-->  questions
+  --groupby/corr/plots-->  insights  --projects-->  stories</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>Analysis is asking a table questions in order: <code class="inline">NumPy</code> handles the math, <code class="inline">pandas</code> handles the table, statistics summarizes each column honestly, plots reveal what numbers hide, and the EDA workflow — read, explore, clean, compare, visualize — turns any new CSV into a story.</p>
 </div>
 
 <div class="day-nav">
@@ -85,35 +380,34 @@
 
 <footer>Module 06 · Python Data Analysis · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
