@@ -60,16 +60,130 @@
 
 <div class="crumb">Module 12 of 12 · Intro to NLP</div>
 <h1 class="title">Intro to NLP</h1>
-<p class="subtitle">Written-concepts page for this module — currently being prepared.</p>
+<p class="subtitle">Teaching machines to read — cleaning raw tweets, turning words into numbers, and climbing from logistic regression to recurrent networks on sentiment analysis.</p>
 
-<div class="callout tip">
-  <div class="ti">Coming soon</div>
-  <p>The full reading page for <strong>Module 12 · Intro to NLP</strong> is on its way: written concepts, diagrams, worked examples, and notebook links in the style of Modules 01–04. Meanwhile, the course material is already available — the text-processing and sentiment-analysis notebooks in <code class="inline">CODE/</code> in the module folder on GitHub.</p>
+<div class="objectives">
+  <h2>What you'll be able to do after this lesson</h2>
+  <ul>
+    <li>Explain what NLP is, why sequences are special, and where classic methods end and modern ones begin.</li>
+    <li>Clean text: lowercase, tokenize, remove stop words, stem and lemmatize.</li>
+    <li>Turn text into features with bag-of-words and <code class="inline">CountVectorizer</code>.</li>
+    <li>Represent meaning with embeddings — word2vec intuition and Keras embedding layers.</li>
+    <li>Run the same sentiment task with LogReg, ANN, and RNN — and read the scoreboard.</li>
+    <li>Explain why sequences need memory: RNNs, and what LSTMs add.</li>
+  </ul>
 </div>
 
 <div class="day-links">
-  <a class="primary" href="../index.html">Home</a>
-  <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/tree/main/12-intro_to_nlp" target="_blank" rel="noopener"><svg class="dl-icon"><use href="#icon-external"/></svg>View on GitHub</a>
+  <a class="primary" href="12_reading.html">Reading</a>
+  <a href="notebooks/Text%20Cleaning%20and%20Processing.html">Text Cleaning</a>
+  <a href="notebooks/Tweets%20Sentiment%20Analysis_LogReg.html">Sentiment LogReg</a>
+  <a href="notebooks/Tweets%20Sentiment%20Analysis_ANN.html">Sentiment ANN</a>
+  <a href="notebooks/Tweets%20Sentiment%20Analysis_RNN.html">Sentiment RNN</a>
+</div>
+
+<div class="callout tip">
+  <div class="ti">Before you start</div>
+  <p>Module 10 (neural nets, Keras, embeddings layers) is assumed. The sentiment notebooks read <code class="inline">tweets.csv</code> — about 239 MB, git-ignored, so download it separately before running them; the exported pages above already include outputs. Theory: <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/12-intro_to_nlp/PDFs/NLP%20with%20Deep%20Learning.pdf" target="_blank" rel="noopener">NLP with Deep Learning PDF</a>, <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/12-intro_to_nlp/PDFs/RNN%20%26%20LSTM.pdf" target="_blank" rel="noopener">RNN &amp; LSTM PDF</a>.</p>
+</div>
+
+<h2 class="section"><span class="num">1</span>What makes language special</h2>
+<p class="section-intro">Why text gets its own module instead of being "just another column."</p>
+<p>Natural language processing is how machines work with human text — search, translation, chatbots, sentiment checks are the everyday applications. Two facts shape everything below: language arrives as <strong>sequences</strong> (order carries meaning — "dog bites man" is not "man bites dog"), and models eat numbers, not words — so every pipeline below is a bridge from strings to vectors. The classic era counted words; the modern era learns their meaning (more in §3).</p>
+<figure>
+  <div class="diagram-label">The NLP pipeline</div>
+  <svg width="680" height="130" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" fill="#333">
+    <defs>
+      <marker id="arr12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6fb2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="680" height="130" fill="#fff"/>
+    <rect x="0" y="0" width="680" height="130" fill="url(#erd-grid)"/>
+    <rect x="10" y="45" width="115" height="48" fill="#eaf1fb" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="67" y="65" text-anchor="middle" font-size="12" font-weight="700">raw text</text>
+    <text x="67" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">tweets</text>
+    <rect x="140" y="45" width="115" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="197" y="65" text-anchor="middle" font-size="12" font-weight="700">clean</text>
+    <text x="197" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">§2 pipeline</text>
+    <rect x="270" y="45" width="115" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="327" y="65" text-anchor="middle" font-size="12" font-weight="700">vectorize</text>
+    <text x="327" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">§3 numbers</text>
+    <rect x="400" y="45" width="115" height="48" fill="#f2f6fc" stroke="#1f6fb2" stroke-width="1.5"/>
+    <text x="457" y="65" text-anchor="middle" font-size="12" font-weight="700">model</text>
+    <text x="457" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">§4 ladder</text>
+    <rect x="530" y="45" width="140" height="48" fill="#f8fafc" stroke="#9aa4b2" stroke-width="1.5"/>
+    <text x="600" y="65" text-anchor="middle" font-size="12" font-weight="700">sentiment</text>
+    <text x="600" y="82" text-anchor="middle" font-size="10.5" fill="#5B6472">positive / negative</text>
+    <line x1="125" y1="69" x2="140" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr12)"/>
+    <line x1="255" y1="69" x2="270" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr12)"/>
+    <line x1="385" y1="69" x2="400" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr12)"/>
+    <line x1="515" y1="69" x2="530" y2="69" stroke="#1f6fb2" stroke-width="2" marker-end="url(#arr12)"/>
+  </svg>
+  <figcaption>strings in, numbers through the middle, decisions out.</figcaption>
+</figure>
+
+<h2 class="section"><span class="num">2</span>Cleaning text</h2>
+<p class="section-intro">Garbage in, vectors out — so clean first.</p>
+<p>The <a href="notebooks/Text%20Cleaning%20and%20Processing.html">cleaning notebook</a> builds one <code class="inline">preprocess_text</code> function from four stages, each demonstrated before being folded in:</p>
+<div class="card-grid">
+  <div class="card"><h4>Lowercase</h4><p>The simplest, most effective normalization — "Great" and "great" become one token.</p></div>
+  <div class="card"><h4>Tokenize</h4><p>Split the string into its working pieces (words), the units everything downstream counts.</p></div>
+  <div class="card"><h4>Stop words</h4><p>Drop the filler ("the", "is", "and") that carries no sentiment signal.</p></div>
+  <div class="card"><h4>Stem + lemma</h4><p>Reduce inflections to roots — stemming chops ("helping" → "help"), lemmatization does it with grammar (plus POS tagging for word roles).</p></div>
+</div>
+<div class="callout tip">
+  <div class="ti">One function to rule them</div>
+  <p>The notebook ends the pipeline in a single <code class="inline">preprocess_text</code> — the same "lock it in a reusable unit" instinct as Module 08's pipelines. Every sentiment notebook below starts by calling it.</p>
+</div>
+
+<h2 class="section"><span class="num">3</span>Words into numbers</h2>
+<p class="section-intro">Two generations of "what does this text look like to a model?"</p>
+<div class="compare">
+  <div class="col">
+    <h4>Bag of words</h4>
+    <p>Count which words appear — <code class="inline">CountVectorizer</code> turns the cleaned tweets into a document-term matrix. Order is ignored, frequencies rule. Simple, strong baseline, and exactly what the LogReg notebook eats.</p>
+  </div>
+  <div class="col">
+    <h4>Embeddings</h4>
+    <p>Learn dense vectors where <strong>meaning neighbors</strong> sit together — the word2vec idea, implemented as a Keras <code class="inline">Embedding</code> layer that trains alongside the network. What the ANN and RNN notebooks eat.</p>
+  </div>
+</div>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname"><a href="notebooks/Text%20Cleaning%20and%20Processing.html">Text Cleaning and Processing.ipynb</a></span></div>
+  <div class="code-body"><span class="kw">from</span> sklearn.feature_extraction.text <span class="kw">import</span> CountVectorizer
+
+vectorizer = <span class="fn">CountVectorizer</span>()       <span class="com"># learn the vocabulary</span>
+X = vectorizer.<span class="fn">fit_transform</span>(tweets)  <span class="com"># tweets → sparse count matrix</span></div>
+</div>
+
+<h2 class="section"><span class="num">4</span>The sentiment ladder</h2>
+<p class="section-intro">Same tweets, three engines — watch scores climb with model power.</p>
+<p>All three sentiment notebooks share one skeleton — describe the data, read it, preprocess (§2), split, extract features (§3) — and differ only in the final box:</p>
+<div class="card-grid">
+  <div class="card"><h4>Logistic Regression</h4><p>Module 09's classifier on bag-of-words counts. The baseline every fancier model must beat. <a href="notebooks/Tweets%20Sentiment%20Analysis_LogReg.html">Open notebook</a></p></div>
+  <div class="card"><h4>ANN on embeddings</h4><p>Dense network over learned word vectors — meaning-aware features, same task. <a href="notebooks/Tweets%20Sentiment%20Analysis_ANN.html">Open notebook</a></p></div>
+  <div class="card"><h4>RNN on embeddings</h4><p>A network that reads word <em>order</em> — the sequence-native answer to sentiment. <a href="notebooks/Tweets%20Sentiment%20Analysis_RNN.html">Open notebook</a></p></div>
+</div>
+<div class="callout insight">
+  <div class="ti">Same data, fair fight</div>
+  <p>Keeping tweets, cleaning, and splits fixed while swapping only features + model is what makes the comparison honest — the scoreboard then measures modeling choices, not data luck.</p>
+</div>
+
+<h2 class="section"><span class="num">5</span>Memory for sequences</h2>
+<p class="section-intro">Why order needs architecture, not just features.</p>
+<p>Bag-of-words forgets sequence by design — "not good" and "good" share a vocabulary. <strong>Recurrent networks</strong> carry a running state across words, so position shapes meaning (theory: <a href="https://github.com/a7madmostafa/Arabic_ML_Bootcamp/blob/main/12-intro_to_nlp/PDFs/RNN%20%26%20LSTM.pdf" target="_blank" rel="noopener">RNN &amp; LSTM PDF</a>). <strong>LSTMs</strong> extend the idea with gated memory that holds distant context — the subject from ten words back still counts when the verb arrives.</p>
+
+<h2 class="section"><span class="num">◐</span>Wrap-up — NLP in one breath</h2>
+<p class="section-intro">The module compresses into a single pipeline.</p>
+<div class="code-block">
+  <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fname">the whole story</span></div>
+  <div class="code-body">raw tweets  -->  clean (lower/token/stop/stem)  -->  vectorize (counts/embeddings)
+  -->  LogReg → ANN → RNN  -->  sentiment</div>
+</div>
+<div class="callout recap">
+  <div class="ti">The one-sentence version</div>
+  <p>NLP is plumbing for meaning: clean the text into tokens, turn tokens into vectors that respect order and sense, then climb the model ladder — counts with logistic regression, embeddings with dense nets, sequences with recurrent ones — and the bootcamp ends where it began, turning raw data into decisions.</p>
 </div>
 
 <div class="day-nav">
@@ -85,35 +199,34 @@
 
 <footer>Module 12 · Intro to NLP · self-paced</footer>
 </div>
-
 <script>
-(function(){{
+(function(){
   var sidebar = document.querySelector('.site-sidebar');
   var toggle = document.querySelector('.sidebar-toggle');
   var backdrop = document.querySelector('.sidebar-backdrop');
   if(!sidebar || !toggle || !backdrop) return;
-  function close(){{ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }}
-  function openMenu(){{ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }}
-  toggle.addEventListener('click', function(){{
+  function close(){ sidebar.classList.remove('open'); backdrop.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  function openMenu(){ sidebar.classList.add('open'); backdrop.classList.add('open'); toggle.setAttribute('aria-expanded','true'); }
+  toggle.addEventListener('click', function(){
     if (sidebar.classList.contains('open')) close(); else openMenu();
-  }});
+  });
   backdrop.addEventListener('click', close);
-}})();
+})();
 </script>
 <script>
-(function(){{
+(function(){
   var btn = document.querySelector('.theme-toggle');
   if(!btn) return;
-  function currentTheme(){{
+  function currentTheme(){
     var attr = document.documentElement.getAttribute('data-theme');
     if(attr === 'dark' || attr === 'light') return attr;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }}
-  btn.addEventListener('click', function(){{
+  }
+  btn.addEventListener('click', function(){
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try{{ localStorage.setItem('theme', next); }}catch(e){{}}
-  }});
-}})();
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+})();
 </script>
 </body></html>
